@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Vigne — 畑の記録</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap');
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --paper:#F4F0E8; --cream:#FBF9F3; --bark:#6B5641; --vine:#4A3B2A; --leaf:#5C6B4A;
+  --sea:#5B7A86; --dusk:#C08A56; --wine:#7A4B52; --line:#DDD5C7; --line-soft:#E8E1D3;
+  --text:#3A3128; --text-muted:#8A7E6D; --radius:6px; --radius-sm:4px;
+  --shadow:0 1px 3px rgba(74,59,42,0.06),0 4px 16px rgba(74,59,42,0.04);
+  --nav-h:66px; --header-h:60px;
+}
+html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',system-ui,sans-serif;color:var(--text);-webkit-tap-highlight-color:transparent;line-height:1.6;}
+#app{height:100dvh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;position:relative;background:var(--paper);overflow:hidden;box-shadow:0 0 64px rgba(74,59,42,0.10);}
+.mincho{font-family:'Shippori Mincho',serif;}
+.app-header{height:var(--header-h);background:var(--cream);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 18px;gap:12px;flex-shrink:0;position:relative;z-index:10;}
+.app-header .back-btn{width:34px;height:34px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--bark);font-size:20px;flex-shrink:0;transition:opacity .15s;}
+.app-header .back-btn:active{opacity:.5;}
+.app-header h1{font-family:'Shippori Mincho',serif;font-size:19px;font-weight:600;flex:1;color:var(--vine);letter-spacing:.08em;}
+.header-mark{font-size:11px;color:var(--text-muted);letter-spacing:.15em;}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+.screen.hidden{display:none;}
+.bottom-nav{height:var(--nav-h);background:var(--cream);border-top:1px solid var(--line);display:flex;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0);}
+.nav-item{flex:1;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--text-muted);font-family:inherit;font-size:9.5px;font-weight:500;transition:color .2s;position:relative;letter-spacing:.02em;}
+.nav-item.active{color:var(--vine);}
+.nav-icon{font-size:19px;line-height:1;opacity:.85;}
+.nav-item.active .nav-icon{opacity:1;}
+.nav-item.active::after{content:'';position:absolute;bottom:8px;width:4px;height:4px;background:var(--dusk);border-radius:50%;}
+.fab{position:absolute;right:20px;bottom:calc(var(--nav-h) + 18px);width:54px;height:54px;border-radius:50%;background:var(--vine);color:var(--cream);border:none;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(74,59,42,.25);display:flex;align-items:center;justify-content:center;transition:transform .15s;z-index:20;font-weight:300;}
+.fab:active{transform:scale(.92);}
+.card{background:var(--cream);border-radius:var(--radius);border:1px solid var(--line);overflow:hidden;}
+.card-tap{cursor:pointer;transition:transform .15s,border-color .15s;}
+.card-tap:active{transform:scale(.99);border-color:var(--bark);}
+#screen-dashboard .hero{padding:28px 22px 24px;position:relative;border-bottom:1px solid var(--line);background:var(--cream);}
+#screen-dashboard .hero::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,var(--dusk) 50%,transparent);opacity:.4;}
+.hero-eyebrow{font-size:10px;letter-spacing:.25em;color:var(--dusk);text-transform:uppercase;margin-bottom:8px;font-weight:700;}
+.hero-date{font-size:13px;color:var(--text-muted);margin-bottom:2px;letter-spacing:.05em;}
+.hero-title{font-family:'Shippori Mincho',serif;font-size:25px;font-weight:600;color:var(--vine);letter-spacing:.04em;}
+.hero-subtitle{font-size:12px;color:var(--text-muted);margin-top:6px;letter-spacing:.05em;}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border-bottom:1px solid var(--line);}
+.stat-card{background:var(--cream);padding:18px 10px 16px;text-align:center;}
+.stat-val{font-family:'Shippori Mincho',serif;font-size:30px;font-weight:600;line-height:1;color:var(--vine);}
+.stat-unit{font-size:11px;color:var(--text-muted);margin-left:1px;}
+.stat-label{font-size:11px;color:var(--text-muted);margin-top:6px;letter-spacing:.08em;}
+.section{padding:0 18px 18px;}
+.section-header{display:flex;justify-content:space-between;align-items:baseline;padding:22px 0 12px;}
+.section-title{font-family:'Shippori Mincho',serif;font-size:15px;font-weight:600;color:var(--vine);letter-spacing:.1em;display:flex;align-items:center;gap:7px;}
+.section-title .dot{width:5px;height:5px;background:var(--dusk);border-radius:50%;display:inline-block;}
+.section-link{font-size:11px;color:var(--bark);cursor:pointer;letter-spacing:.08em;}
+.section-link:active{opacity:.5;}
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
+.qa-btn{background:var(--cream);padding:16px 6px 13px;border:none;cursor:pointer;text-align:center;transition:background .15s;font-family:inherit;}
+.qa-btn:active{background:var(--paper);}
+.qa-icon{font-size:21px;line-height:1.2;opacity:.85;}
+.qa-label{font-size:11px;font-weight:500;color:var(--bark);margin-top:6px;letter-spacing:.04em;}
+.progress-item{display:flex;align-items:center;gap:12px;padding:11px 0;}
+.progress-item + .progress-item{border-top:1px solid var(--line-soft);}
+.progress-name{font-size:13px;font-weight:500;width:54px;flex-shrink:0;color:var(--vine);}
+.progress-bar-wrap{flex:1;height:6px;background:var(--paper);border-radius:3px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:3px;transition:width .7s ease;}
+.progress-pct{font-family:'Shippori Mincho',serif;font-size:14px;font-weight:600;width:38px;text-align:right;}
+.work-item{display:flex;align-items:flex-start;gap:13px;padding:13px 0;}
+.work-item + .work-item{border-top:1px solid var(--line-soft);}
+.work-badge{width:36px;height:36px;border-radius:var(--radius-sm);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--paper);border:1px solid var(--line);}
+.work-info{flex:1;min-width:0;}
+.work-name{font-size:14px;font-weight:700;color:var(--vine);letter-spacing:.03em;}
+.work-meta{font-size:12px;color:var(--text-muted);margin-top:2px;}
+.work-stage-tag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:10px;background:var(--paper);border:1px solid var(--line);color:var(--leaf);margin-top:3px;letter-spacing:.03em;}
+.work-date{font-size:12px;color:var(--text-muted);white-space:nowrap;font-family:'Shippori Mincho',serif;}
+.field-card-inner{padding:20px;}
+.field-name{font-family:'Shippori Mincho',serif;font-size:22px;font-weight:600;letter-spacing:.08em;color:var(--vine);}
+.field-sub{font-size:12px;color:var(--text-muted);margin-top:3px;letter-spacing:.05em;}
+.plot-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;}
+.plot-chip{font-size:11px;padding:4px 11px;border-radius:20px;font-weight:500;border:1px solid;letter-spacing:.02em;white-space:nowrap;}
+.field-footer{display:flex;justify-content:space-between;align-items:center;padding:13px 20px;border-top:1px solid var(--line);background:var(--paper);}
+.field-stat-mini{font-size:12px;color:var(--text-muted);letter-spacing:.04em;}
+.field-stat-mini strong{color:var(--vine);font-weight:700;font-family:'Shippori Mincho',serif;}
+.form-body{padding:20px 18px;display:flex;flex-direction:column;gap:20px;}
+.form-group{display:flex;flex-direction:column;gap:8px;}
+.form-label{font-size:11px;font-weight:700;color:var(--bark);letter-spacing:.12em;}
+.form-input,.form-select,.form-textarea{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--line);background:var(--cream);font-family:inherit;font-size:15px;color:var(--text);transition:border-color .15s;outline:none;appearance:none;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--bark);}
+.form-textarea{min-height:76px;resize:vertical;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.form-hint{font-size:11px;color:var(--text-muted);letter-spacing:.03em;margin-top:-2px;}
+.work-type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;}
+.wt-chip{padding:12px 6px;border:none;text-align:center;cursor:pointer;transition:background .12s;background:var(--cream);font-family:inherit;}
+.wt-chip .wt-icon{font-size:20px;display:block;opacity:.85;}
+.wt-chip .wt-text{font-size:12px;font-weight:500;display:block;margin-top:4px;color:var(--bark);letter-spacing:.03em;}
+.wt-chip.active{background:var(--vine);}
+.wt-chip.active .wt-text{color:var(--cream);font-weight:700;}
+.wt-chip.active .wt-icon{opacity:1;}
+.scope-tabs{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;}
+.scope-tab{flex:1;padding:10px 6px;border:none;background:var(--cream);font-family:inherit;font-size:13px;color:var(--bark);cursor:pointer;transition:background .12s;text-align:center;}
+.scope-tab.active{background:var(--vine);color:var(--cream);font-weight:700;}
+.variety-pick-wrap{display:flex;flex-wrap:wrap;gap:7px;}
+.vp-chip{font-size:12px;padding:6px 12px;border-radius:20px;border:1px solid var(--line);background:var(--cream);color:var(--bark);cursor:pointer;font-family:inherit;transition:all .12s;}
+.vp-chip.active{background:var(--leaf);border-color:var(--leaf);color:var(--cream);font-weight:700;}
+.slider-group{display:flex;flex-direction:column;gap:8px;}
+.slider-header{display:flex;justify-content:space-between;align-items:baseline;}
+.slider-cap{font-size:12px;color:var(--text-muted);letter-spacing:.05em;}
+.slider-val{font-family:'Shippori Mincho',serif;font-size:19px;font-weight:600;color:var(--vine);}
+.slider-input{width:100%;height:3px;border-radius:2px;appearance:none;background:var(--line);outline:none;cursor:pointer;}
+.slider-input::-webkit-slider-thumb{appearance:none;width:22px;height:22px;border-radius:50%;background:var(--cream);border:2px solid var(--vine);cursor:pointer;}
+.slider-input::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--cream);border:2px solid var(--vine);cursor:pointer;}
+.save-btn{width:100%;padding:16px;border:none;border-radius:var(--radius);background:var(--vine);color:var(--cream);font-family:'Shippori Mincho',serif;font-size:16px;font-weight:600;cursor:pointer;letter-spacing:.1em;transition:background .15s,transform .12s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.save-btn:active{transform:scale(.99);background:var(--bark);}
+.trellis-header-card{background:var(--cream);border:1px solid var(--line);padding:24px 22px;margin:18px 18px 0;border-radius:var(--radius);position:relative;overflow:hidden;}
+.trellis-header-card::after{content:'';position:absolute;left:22px;right:22px;bottom:0;height:1px;background:linear-gradient(90deg,transparent,var(--dusk),transparent);opacity:.3;}
+.trellis-overall-pct{font-family:'Shippori Mincho',serif;font-size:46px;font-weight:600;line-height:1;color:var(--vine);}
+.trellis-overall-label{font-size:12px;color:var(--text-muted);margin-top:6px;letter-spacing:.05em;}
+.trellis-overall-bar{height:5px;background:var(--paper);border-radius:3px;margin-top:16px;overflow:hidden;}
+.trellis-overall-fill{height:100%;background:var(--leaf);border-radius:3px;transition:width .8s ease;}
+.trellis-plot-card{padding:16px 18px;}
+.trellis-plot-name{font-family:'Shippori Mincho',serif;font-size:16px;font-weight:600;color:var(--vine);letter-spacing:.05em;}
+.trellis-plot-pct{font-family:'Shippori Mincho',serif;font-size:22px;font-weight:600;}
+.trellis-plot-bar-wrap{height:6px;background:var(--paper);border-radius:3px;overflow:hidden;margin:8px 0;}
+.trellis-plot-fill{height:100%;border-radius:3px;transition:width .6s;}
+.trellis-plot-meta{font-size:11px;color:var(--text-muted);letter-spacing:.04em;}
+.harvest-summary{display:grid;grid-template-columns:1.1fr 1fr;gap:12px;padding:18px;}
+.harvest-big{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;}
+.harvest-big::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--dusk);opacity:.5;}
+.harvest-big-val{font-family:'Shippori Mincho',serif;font-size:38px;font-weight:600;line-height:1;color:var(--vine);}
+.harvest-big-unit{font-size:13px;color:var(--text-muted);}
+.harvest-big-label{font-size:12px;color:var(--text-muted);margin-top:6px;letter-spacing:.08em;}
+.harvest-sub{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:11px;justify-content:center;}
+.harvest-sub-row{display:flex;justify-content:space-between;align-items:baseline;}
+.harvest-sub-label{font-size:12px;color:var(--text-muted);letter-spacing:.04em;}
+.harvest-sub-val{font-family:'Shippori Mincho',serif;font-size:16px;font-weight:600;color:var(--vine);}
+.harvest-record{padding:16px 18px;display:flex;align-items:center;gap:14px;}
+.harvest-record + .harvest-record{border-top:1px solid var(--line-soft);}
+.harvest-date-badge{text-align:center;flex-shrink:0;width:42px;}
+.harvest-date-d{font-family:'Shippori Mincho',serif;font-size:24px;font-weight:600;color:var(--vine);line-height:1;}
+.harvest-date-m{font-size:10px;color:var(--text-muted);margin-top:2px;letter-spacing:.05em;}
+.harvest-divider-v{width:1px;align-self:stretch;background:var(--line);}
+.harvest-info{flex:1;min-width:0;}
+.harvest-plot{font-size:14px;font-weight:700;color:var(--vine);}
+.harvest-details{font-size:12px;color:var(--text-muted);margin-top:2px;}
+.harvest-kg{font-family:'Shippori Mincho',serif;font-size:18px;font-weight:600;color:var(--leaf);white-space:nowrap;}
+.toast{position:fixed;bottom:calc(var(--nav-h) + 18px);left:50%;transform:translateX(-50%) translateY(16px);background:var(--vine);color:var(--cream);padding:12px 22px;border-radius:30px;font-size:14px;font-weight:500;z-index:100;letter-spacing:.04em;opacity:0;transition:opacity .25s,transform .25s;white-space:nowrap;box-shadow:0 6px 24px rgba(74,59,42,.2);max-width:90%;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.empty-state{text-align:center;padding:52px 24px;}
+.empty-icon{font-size:44px;margin-bottom:14px;opacity:.5;}
+.empty-text{font-size:14px;color:var(--text-muted);line-height:1.8;letter-spacing:.04em;}
+.modal-overlay{position:fixed;inset:0;background:rgba(58,49,40,.4);z-index:50;display:flex;align-items:flex-end;opacity:0;transition:opacity .25s;pointer-events:none;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-sheet{width:100%;max-height:92dvh;background:var(--paper);border-radius:14px 14px 0 0;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.34,1.05,.6,1);max-width:480px;margin:0 auto;}
+.modal-overlay.open .modal-sheet{transform:translateY(0);}
+.modal-handle{width:36px;height:4px;background:var(--line);border-radius:2px;margin:12px auto 6px;}
+.modal-title{font-family:'Shippori Mincho',serif;font-size:18px;font-weight:600;padding:10px 20px 16px;border-bottom:1px solid var(--line);color:var(--vine);letter-spacing:.08em;}
+.divider{height:1px;background:var(--line-soft);margin:0 18px;}
+.loading-dots{display:flex;gap:6px;justify-content:center;padding:36px;}
+.loading-dots span{width:7px;height:7px;border-radius:50%;background:var(--line);animation:bounce .8s ease infinite;}
+.loading-dots span:nth-child(2){animation-delay:.15s;}
+.loading-dots span:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{0%,80%,100%{transform:scale(.7);opacity:.5}40%{transform:scale(1);opacity:1}}
+.info-note{background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--dusk);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;color:var(--bark);letter-spacing:.03em;line-height:1.7;}
+.weather-box{border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--cream);padding:14px;min-height:54px;display:flex;flex-direction:column;justify-content:center;}
+.weather-hint{font-size:12px;color:var(--text-muted);letter-spacing:.03em;line-height:1.6;}
+.weather-loading{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--text-muted);}
+.weather-spinner{width:15px;height:15px;border:2px solid var(--line);border-top-color:var(--dusk);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.weather-main{display:flex;align-items:center;gap:14px;}
+.weather-emoji{font-size:32px;line-height:1;}
+.weather-temps{display:flex;flex-direction:column;gap:1px;}
+.weather-cond{font-size:14px;font-weight:700;color:var(--vine);letter-spacing:.04em;}
+.weather-temp-row{font-size:13px;color:var(--text);}
+.weather-temp-hi{color:var(--wine);font-weight:700;}
+.weather-temp-lo{color:var(--sea);font-weight:700;}
+.weather-sub{display:flex;gap:16px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line-soft);}
+.weather-sub-item{font-size:12px;color:var(--text-muted);}
+.weather-sub-item strong{font-family:'Shippori Mincho',serif;font-size:14px;color:var(--vine);font-weight:600;margin-right:1px;}
+.weather-src{font-size:10px;color:var(--text-muted);margin-top:8px;letter-spacing:.04em;opacity:.8;}
+.weather-retry{font-size:12px;color:var(--bark);text-decoration:underline;cursor:pointer;margin-top:4px;}
+.weather-manual{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+.weather-mini-input{padding:9px 11px;border-radius:var(--radius-sm);border:1px solid var(--line);background:var(--cream);font-family:inherit;font-size:14px;color:var(--text);outline:none;width:100%;}
+.weather-mini-input:focus{border-color:var(--bark);}
+.weather-mini-label{font-size:10px;color:var(--text-muted);margin-bottom:3px;letter-spacing:.06em;}
+.wx-quick-words{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.wx-word-chip{font-size:12px;padding:5px 11px;border-radius:20px;border:1px solid var(--line);background:var(--cream);color:var(--bark);cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap;}
+.wx-word-chip:active{background:var(--paper);border-color:var(--dusk);}
+.wx-temp-row{display:flex;gap:12px;margin-top:12px;}
+.wx-temp-field{flex:1;display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--cream);padding:8px 12px;}
+.wx-temp-cap{font-size:11px;color:var(--text-muted);letter-spacing:.06em;flex-shrink:0;}
+.wx-temp-input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:'Shippori Mincho',serif;font-size:18px;color:var(--vine);text-align:right;width:100%;}
+.wx-temp-unit{font-size:12px;color:var(--text-muted);flex-shrink:0;}
+.wx-auto-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px;}
+.wx-auto-hint{font-size:11px;color:var(--text-muted);letter-spacing:.02em;line-height:1.5;}
+.wx-auto-btn{font-size:12px;color:var(--bark);border:1px solid var(--line);border-radius:20px;padding:5px 12px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .12s;}
+.wx-auto-btn:active{background:var(--paper);}
+.wx-auto-btn.loading{opacity:.6;pointer-events:none;}
+/* ── くらべる（年比較）ビュー ── */
+.cmp-intro{padding:22px 22px 18px;background:var(--cream);border-bottom:1px solid var(--line);position:relative;}
+.cmp-intro::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,var(--dusk) 50%,transparent);opacity:.4;}
+.cmp-intro-title{font-family:'Shippori Mincho',serif;font-size:20px;font-weight:600;color:var(--vine);letter-spacing:.05em;}
+.cmp-intro-sub{font-size:12px;color:var(--text-muted);margin-top:5px;letter-spacing:.04em;line-height:1.6;}
+.cmp-controls{display:flex;flex-direction:column;gap:14px;padding:18px;}
+.cmp-control-row{display:flex;flex-direction:column;gap:8px;}
+.cmp-seg{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;}
+.cmp-seg button{flex:1;padding:9px 6px;border:none;background:var(--cream);font-family:inherit;font-size:12px;color:var(--bark);cursor:pointer;transition:background .12s;white-space:nowrap;}
+.cmp-seg button.active{background:var(--vine);color:var(--cream);font-weight:700;}
+.cmp-year-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.cmp-year-pill{font-size:13px;padding:6px 14px;border-radius:20px;border:1px solid var(--line);background:var(--cream);color:var(--bark);cursor:pointer;font-family:'Shippori Mincho',serif;font-weight:600;transition:all .12s;}
+.cmp-year-pill.y-a{border-color:var(--dusk);}
+.cmp-year-pill.y-a.active{background:var(--dusk);color:#fff;}
+.cmp-year-pill.y-b{border-color:var(--sea);}
+.cmp-year-pill.y-b.active{background:var(--sea);color:#fff;}
+.cmp-section{padding:0 18px 22px;}
+.cmp-section-title{font-family:'Shippori Mincho',serif;font-size:15px;font-weight:600;color:var(--vine);letter-spacing:.08em;padding:18px 0 4px;display:flex;align-items:center;gap:7px;}
+.cmp-section-title .dot{width:5px;height:5px;background:var(--dusk);border-radius:50%;}
+.cmp-section-note{font-size:11px;color:var(--text-muted);margin-bottom:12px;letter-spacing:.03em;line-height:1.6;}
+.cmp-legend{display:flex;gap:14px;margin:0 0 12px;flex-wrap:wrap;}
+.cmp-legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);}
+.cmp-legend-swatch{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
+/* 週グリッド（作業の時期比較） */
+.cmp-week-card{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:14px 12px;overflow-x:auto;}
+.cmp-week-grid{min-width:max-content;}
+.cmp-week-head{display:grid;grid-auto-flow:column;grid-auto-columns:22px;gap:2px;margin-left:62px;}
+.cmp-month-head{margin-bottom:1px;}
+.cmp-month-head span{font-size:9px;color:var(--bark);font-weight:700;text-align:left;white-space:nowrap;letter-spacing:0;height:14px;line-height:14px;overflow:visible;}
+.cmp-month-head span.on{position:relative;}
+.cmp-month-head span.on::before{content:'';position:absolute;left:0;top:-2px;width:1px;height:13px;background:var(--line);}
+.cmp-weekofmonth-head{margin-bottom:5px;}
+.cmp-weekofmonth-head span{font-size:9px;color:var(--text-muted);text-align:center;height:14px;line-height:14px;}
+.cmp-week-row{display:flex;align-items:center;gap:0;margin-bottom:3px;}
+.cmp-week-label{width:60px;flex-shrink:0;font-size:11px;color:var(--bark);font-weight:500;padding-right:2px;text-align:right;letter-spacing:.02em;}
+.cmp-week-cells{display:grid;grid-auto-flow:column;grid-auto-columns:22px;gap:2px;}
+.cmp-week-cell{height:24px;border-radius:3px;background:var(--paper);position:relative;cursor:default;}
+.cmp-week-cell.tappable{cursor:pointer;}
+.cmp-week-cell.tappable:active{transform:scale(.9);}
+.cmp-week-cell.has-a{background:var(--dusk);}
+.cmp-week-cell.has-b{background:var(--sea);}
+.cmp-week-cell.sel{outline:2px solid var(--vine);outline-offset:1px;}
+.cmp-cell-detail{max-height:0;overflow:hidden;transition:max-height .25s ease;}
+.cmp-cell-detail.show{max-height:200px;margin-top:12px;}
+.cmp-cell-detail-inner{background:var(--cream);border:1px solid var(--line);border-left:3px solid var(--vine);border-radius:var(--radius);padding:13px 15px;}
+.cmp-cell-detail-head{font-family:'Shippori Mincho',serif;font-size:14px;font-weight:600;color:var(--vine);letter-spacing:.05em;margin-bottom:9px;}
+.cmp-cell-detail-dates{display:flex;flex-wrap:wrap;gap:7px;}
+.cmp-date-chip{font-size:12px;padding:5px 12px;border-radius:20px;background:var(--paper);border:1px solid var(--line);color:var(--bark);letter-spacing:.02em;}
+/* 天候の月別バー比較 */
+.cmp-wx-card{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:16px;}
+.cmp-wx-row{margin-bottom:16px;}
+.cmp-wx-row:last-child{margin-bottom:0;}
+.cmp-wx-month{font-size:12px;color:var(--bark);font-weight:700;margin-bottom:7px;letter-spacing:.04em;}
+.cmp-wx-bars{display:flex;flex-direction:column;gap:6px;}
+.cmp-wx-bar-line{display:flex;align-items:center;gap:8px;}
+.cmp-wx-bar-yr{font-size:10px;color:var(--text-muted);width:30px;flex-shrink:0;font-family:'Shippori Mincho',serif;}
+.cmp-wx-bar-track{flex:1;height:16px;background:var(--paper);border-radius:3px;overflow:hidden;position:relative;}
+.cmp-wx-bar-fill{height:100%;border-radius:3px;transition:width .6s ease;min-width:2px;}
+.cmp-wx-bar-val{font-size:11px;color:var(--vine);font-weight:600;width:54px;flex-shrink:0;text-align:right;font-family:'Shippori Mincho',serif;}
+.cmp-empty{text-align:center;padding:30px 20px;color:var(--text-muted);font-size:13px;line-height:1.8;}
+.cmp-wx-fetch{margin:0 18px 18px;padding:14px 16px;border:1px dashed var(--line);border-radius:var(--radius);background:var(--paper);font-size:12px;color:var(--bark);line-height:1.7;letter-spacing:.02em;}
+.cmp-wx-fetch-btn{display:inline-block;margin-top:8px;font-size:13px;color:var(--cream);background:var(--vine);border-radius:20px;padding:7px 16px;cursor:pointer;font-family:'Shippori Mincho',serif;letter-spacing:.06em;}
+.cmp-wx-fetch-btn.loading{opacity:.6;pointer-events:none;}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="app-header" id="app-header">
+    <button class="back-btn hidden" id="back-btn" onclick="goBack()">←</button>
+    <h1 id="header-title">Vigne</h1>
+    <span class="header-mark" id="header-mark">余川・磯辺・十二町</span>
+  </header>
+
+  <div class="screen" id="screen-dashboard">
+    <div class="hero">
+      <div class="hero-eyebrow">Vineyard Journal</div>
+      <div class="hero-date" id="hero-date"></div>
+      <div class="hero-title">今日の畑</div>
+      <div class="hero-subtitle" id="hero-subtitle">読み込み中…</div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card"><div><span class="stat-val" id="stat-works">0</span><span class="stat-unit">件</span></div><div class="stat-label">今月の作業</div></div>
+      <div class="stat-card"><div><span class="stat-val" id="stat-spray">0</span><span class="stat-unit">回</span></div><div class="stat-label">今月の防除</div></div>
+      <div class="stat-card"><div><span class="stat-val" id="stat-harvest">0</span><span class="stat-unit">kg</span></div><div class="stat-label">収穫合計</div></div>
+    </div>
+    <div class="section">
+      <div class="section-header"><span class="section-title"><span class="dot"></span>畑仕事を記す</span></div>
+      <div class="quick-actions" id="quick-actions"></div>
+    </div>
+    <div class="section">
+      <div class="section-header"><span class="section-title"><span class="dot"></span>誘引の進み</span><span class="section-link" onclick="switchTab('trellis')">すべて見る →</span></div>
+      <div class="card"><div style="padding:16px 18px" id="dash-trellis-list"><div class="loading-dots"><span></span><span></span><span></span></div></div></div>
+    </div>
+    <div class="section">
+      <div class="section-header"><span class="section-title"><span class="dot"></span>最近の手しごと</span><span class="section-link" onclick="switchTab('work')">すべて見る →</span></div>
+      <div class="card"><div id="recent-work-list" style="padding:0 18px"><div class="loading-dots"><span></span><span></span><span></span></div></div></div>
+    </div>
+    <div style="height:80px"></div>
+  </div>
+
+  <div class="screen hidden" id="screen-fields"><div id="field-list-content" style="padding:18px;display:flex;flex-direction:column;gap:14px"><div class="loading-dots"><span></span><span></span><span></span></div></div><div style="height:80px"></div></div>
+  <div class="screen hidden" id="screen-field-detail"><div id="field-detail-content"></div></div>
+  <div class="screen hidden" id="screen-work"><div id="work-list-content" style="padding:18px;display:flex;flex-direction:column;gap:18px"><div class="loading-dots"><span></span><span></span><span></span></div></div><div style="height:80px"></div></div>
+  <div class="screen hidden" id="screen-trellis"><div id="trellis-content"><div class="loading-dots"><span></span><span></span><span></span></div></div><div style="height:80px"></div></div>
+  <div class="screen hidden" id="screen-harvest"><div id="harvest-content"><div class="loading-dots"><span></span><span></span><span></span></div></div><div style="height:80px"></div></div>
+  <div class="screen hidden" id="screen-compare"><div id="compare-content"><div class="loading-dots"><span></span><span></span><span></span></div></div><div style="height:80px"></div></div>
+
+  <nav class="bottom-nav" id="bottom-nav">
+    <button class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')"><span class="nav-icon">🏠</span>ホーム</button>
+    <button class="nav-item" data-tab="fields" onclick="switchTab('fields')"><span class="nav-icon">🌿</span>圃場</button>
+    <button class="nav-item" data-tab="work" onclick="switchTab('work')"><span class="nav-icon">✎</span>作業</button>
+    <button class="nav-item" data-tab="compare" onclick="switchTab('compare')"><span class="nav-icon">📊</span>くらべる</button>
+    <button class="nav-item" data-tab="trellis" onclick="switchTab('trellis')"><span class="nav-icon">🪢</span>誘引</button>
+    <button class="nav-item" data-tab="harvest" onclick="switchTab('harvest')"><span class="nav-icon">🍇</span>収穫</button>
+  </nav>
+  <button class="fab" id="fab-btn" onclick="onFabClick()">＋</button>
+</div>
+
+<div class="modal-overlay" id="modal-work">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-work-title">作業を記す</div>
+    <div class="form-body">
+      <div class="form-group"><label class="form-label">作業の種類</label><div class="work-type-grid" id="work-type-grid"></div></div>
+      <div class="form-group"><label class="form-label">作業日</label><input class="form-input" type="date" id="work-date"></div>
+      <div class="form-group">
+        <label class="form-label">作業の範囲</label>
+        <div class="scope-tabs" id="scope-tabs">
+          <button class="scope-tab active" data-scope="field" onclick="setScope('field',this)">圃場ぜんぶ</button>
+          <button class="scope-tab" data-scope="plot" onclick="setScope('plot',this)">区画</button>
+          <button class="scope-tab" data-scope="variety" onclick="setScope('variety',this)">区画＋品種</button>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">圃場</label><select class="form-select" id="work-field" onchange="onWorkFieldChange()"><option value="">選択</option></select></div>
+      <div class="form-group" id="work-plot-group" style="display:none"><label class="form-label">区画</label><select class="form-select" id="work-plot" onchange="onWorkPlotChange()"><option value="">選択</option></select></div>
+      <div class="form-group" id="work-variety-group" style="display:none">
+        <label class="form-label">品種（この区画の中から選ぶ）</label>
+        <div class="variety-pick-wrap" id="work-variety-pick"></div>
+        <div class="form-hint">選ばなければ区画ぜんぶが対象になります</div>
+      </div>
+      <div class="form-group" id="work-stage-group">
+        <label class="form-label">生育ステージ（任意）</label>
+        <select class="form-select" id="work-stage"><option value="">記録しない</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">その日の天気（任意）</label>
+        <input class="form-input" type="text" id="wx-text" placeholder="例：晴れ、曇りのち雨、晴れ時々曇り">
+        <div class="wx-quick-words" id="wx-quick-words"></div>
+        <div class="wx-temp-row">
+          <div class="wx-temp-field">
+            <span class="wx-temp-cap">最高</span>
+            <input class="wx-temp-input" type="number" id="wx-tmax" inputmode="numeric" placeholder="—">
+            <span class="wx-temp-unit">℃</span>
+          </div>
+          <div class="wx-temp-field">
+            <span class="wx-temp-cap">最低</span>
+            <input class="wx-temp-input" type="number" id="wx-tmin" inputmode="numeric" placeholder="—">
+            <span class="wx-temp-unit">℃</span>
+          </div>
+        </div>
+        <div class="wx-auto-row">
+          <span class="wx-auto-hint" id="wx-auto-hint">天気をことばで書けます（日報の表現そのままでOK）</span>
+          <span class="wx-auto-btn" id="wx-auto-btn" onclick="tryFetchWorkWeather()">📡 自動でひく</span>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">覚え書き</label><textarea class="form-textarea" id="work-comment" placeholder="畑の様子など"></textarea></div>
+      <button class="save-btn" onclick="saveWork()">記録する</button>
+      <div style="height:8px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-trellis">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">誘引の進みを記す</div>
+    <div class="form-body">
+      <div class="form-group"><label class="form-label">作業日</label><input class="form-input" type="date" id="trellis-date"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">圃場</label><select class="form-select" id="trellis-field" onchange="updateTrellisPlotSelect()"><option value="">選択</option></select></div>
+        <div class="form-group"><label class="form-label">区画</label><select class="form-select" id="trellis-plot"><option value="">選択</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">完了率</label><div class="slider-group"><div class="slider-header"><span class="slider-cap">進み</span><span class="slider-val"><span id="trellis-pct-val">50</span>%</span></div><input class="slider-input" type="range" min="0" max="100" step="5" value="50" id="trellis-pct" oninput="document.getElementById('trellis-pct-val').textContent=this.value"></div></div>
+      <div class="form-group"><label class="form-label">覚え書き</label><textarea class="form-textarea" id="trellis-comment" placeholder="状況メモなど"></textarea></div>
+      <button class="save-btn" onclick="saveTrellis()">記録する</button>
+      <div style="height:8px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-harvest">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">収穫を記す</div>
+    <div class="form-body">
+      <div class="form-group"><label class="form-label">収穫日</label><input class="form-input" type="date" id="harvest-date"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">圃場</label><select class="form-select" id="harvest-field" onchange="onHarvestFieldChange()"><option value="">選択</option></select></div>
+        <div class="form-group"><label class="form-label">区画</label><select class="form-select" id="harvest-plot" onchange="onHarvestPlotChange()"><option value="">選択</option></select></div>
+      </div>
+      <div class="form-group" id="harvest-variety-group" style="display:none"><label class="form-label">品種</label><select class="form-select" id="harvest-variety"><option value="">区画ぜんぶ</option></select></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">収穫量 (kg)</label><input class="form-input" type="number" id="harvest-weight" placeholder="0.0" step="0.1"></div>
+        <div class="form-group"><label class="form-label">コンテナ数</label><input class="form-input" type="number" id="harvest-containers" placeholder="0"></div>
+      </div>
+      <div class="form-row-3">
+        <div class="form-group"><label class="form-label">糖度 Brix</label><input class="form-input" type="number" id="harvest-brix" placeholder="0.0" step="0.1"></div>
+        <div class="form-group"><label class="form-label">酸度</label><input class="form-input" type="number" id="harvest-acidity" placeholder="0.0" step="0.01"></div>
+        <div class="form-group"><label class="form-label">pH</label><input class="form-input" type="number" id="harvest-ph" placeholder="3.5" step="0.01"></div>
+      </div>
+      <div class="form-group"><label class="form-label">覚え書き</label><textarea class="form-textarea" id="harvest-comment" placeholder="天候・品質メモなど"></textarea></div>
+      <button class="save-btn" onclick="saveHarvest()">記録する</button>
+      <div style="height:8px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-field">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">圃場・区画を加える</div>
+    <div class="form-body">
+      <div class="info-note">圃場名（例：余川）を入れ、続けて区画を加えます。同じ圃場名なら自動でまとまります。品種は複数えらべます。</div>
+      <div class="form-group"><label class="form-label">圃場名</label><input class="form-input" type="text" id="field-name" placeholder="例：余川、磯辺、十二町"></div>
+      <div class="form-group"><label class="form-label">区画名</label><input class="form-input" type="text" id="plot-name" placeholder="例：A1、B2、アラヤ"></div>
+      <div class="form-group"><label class="form-label">品種（複数えらべます）</label><div class="variety-pick-wrap" id="field-variety-pick"></div></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">面積 (a)</label><input class="form-input" type="number" id="plot-area" placeholder="0.0" step="0.1"></div>
+        <div class="form-group"><label class="form-label">植栽本数</label><input class="form-input" type="number" id="plot-trees" placeholder="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">樹齢</label><input class="form-input" type="number" id="plot-age" placeholder="0"></div>
+        <div class="form-group"><label class="form-label">台木品種</label><input class="form-input" type="text" id="plot-rootstock" placeholder="例：5BB"></div>
+      </div>
+      <button class="save-btn" onclick="saveField()">加える</button>
+      <div style="height:8px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DB_NAME='VigneDB', DB_VER=3;
+let db;
+
+const WORK_TYPES=[
+  {label:'芽かき',icon:'🌱'},{label:'誘引',icon:'🪢'},{label:'摘芯',icon:'✂️'},
+  {label:'防除',icon:'💧'},{label:'草刈り',icon:'🌾'},{label:'摘房',icon:'🍇'},
+  {label:'除葉',icon:'🍃'},{label:'潅水',icon:'🚿'},{label:'施肥',icon:'🌰'},
+  {label:'ボトリング',icon:'🍾'},{label:'収穫',icon:'🧺'},{label:'その他',icon:'✎'}
+];
+
+const VARIETIES=[
+  {name:'シャルドネ',          c:'#8A6D2E', bg:'#F3EFE3', bd:'#D8C99A'},
+  {name:'アルバリーニョ',      c:'#9A7A2E', bg:'#F1EFE6', bd:'#C9B88A'},
+  {name:'ソーヴィニヨン・ブラン',c:'#5C6B4A', bg:'#ECEFE6', bd:'#A8B894'},
+  {name:'セミヨン',            c:'#7E8A4A', bg:'#EEF0E4', bd:'#BCC692'},
+  {name:'プティ・マンサン',    c:'#6E8A5A', bg:'#EBEFE7', bd:'#AEC29A'},
+  {name:'メルロー',            c:'#7A4B52', bg:'#F2E9E8', bd:'#C7A0A0'},
+  {name:'カベルネ・ソーヴィニヨン',c:'#6B3A40',bg:'#F0E6E6',bd:'#BE9296'},
+  {name:'ピノ・ノワール',      c:'#8A4A5E', bg:'#F2E8EC', bd:'#CC9CAE'},
+  {name:'サンジョベーゼ',      c:'#9A5240', bg:'#F3EAE5', bd:'#D2A48E'},
+  {name:'テンプラニーリョ',    c:'#7A4438', bg:'#F1E8E4', bd:'#C89A86'},
+  {name:'マルベック',          c:'#5E4660', bg:'#EDE8EE', bd:'#A892AA'},
+  {name:'その他',              c:'#6B5641', bg:'#EEEAE2', bd:'#C8BCA8'},
+  {name:'未定',                c:'#8A7E6D', bg:'#EFEDE8', bd:'#CFC6B6'},
+];
+const VMAP=Object.fromEntries(VARIETIES.map(v=>[v.name,v]));
+function varietyStyle(name){const v=VMAP[name]||VMAP['その他'];return `background:${v.bg};border-color:${v.bd};color:${v.c}`;}
+
+const STAGES=['萌芽','展葉','開花','結実','ヴェレゾン','成熟','収穫','落葉・休眠'];
+
+const FIELD_DATA=[
+  {id:'f_yokawa', name:'余川', lat:36.895556, lng:136.951940, plots:[
+    {name:'A1', v:['シャルドネ','ピノ・ノワール']},
+    {name:'A2', v:['アルバリーニョ','ソーヴィニヨン・ブラン']},
+    {name:'A3', v:['メルロー','アルバリーニョ','ピノ・ノワール']},
+    {name:'A4', v:['カベルネ・ソーヴィニヨン','サンジョベーゼ','ピノ・ノワール','ソーヴィニヨン・ブラン','セミヨン']},
+    {name:'B2', v:['アルバリーニョ','ピノ・ノワール']},
+    {name:'B3', v:['シャルドネ']},
+    {name:'B4', v:['シャルドネ','テンプラニーリョ']},
+    {name:'B5', v:['カベルネ・ソーヴィニヨン','シャルドネ']},
+    {name:'B6', v:['メルロー','ソーヴィニヨン・ブラン']},
+    {name:'B7', v:['メルロー']},
+    {name:'B8', v:['シャルドネ']},
+    {name:'B9', v:['アルバリーニョ','その他']},
+    {name:'B10',v:['アルバリーニョ']},
+    {name:'C1', v:['アルバリーニョ']},
+    {name:'C2', v:['アルバリーニョ']},
+    {name:'アラヤ', v:['ピノ・ノワール']},
+  ]},
+  {id:'f_isobe', name:'磯辺', lat:36.911023, lng:136.953405, plots:[
+    {name:'アルバリーニョ', v:['アルバリーニョ']},
+  ]},
+  {id:'f_juni', name:'十二町', lat:36.843043, lng:136.955935, plots:[
+    {name:'アルバリーニョ', v:['アルバリーニョ']},
+    {name:'シャルドネ', v:['シャルドネ']},
+    {name:'A', v:['プティ・マンサン']},
+    {name:'B', v:['マルベック']},
+    {name:'C', v:['テンプラニーリョ']},
+    {name:'D', v:['アルバリーニョ']},
+    {name:'E', v:['未定']},
+    {name:'F', v:['未定']},
+  ]},
+];
+
+let currentTab='dashboard', screenStack=[], selectedWorkType='芽かき';
+let workScope='field';
+let selectedWorkVariety=null;
+let fieldFormVarieties=[];
+let currentWorkWeather=null;   // 作業フォームで確定した天候
+let weatherFetchToken=0;       // 取得競合の防止
+
+// ── 天候コード → 絵文字・和名（Open-Meteo WMO weather_code）──
+const WEATHER_CODES={
+  0:{e:'☀️',t:'快晴'},1:{e:'🌤',t:'晴れ'},2:{e:'⛅️',t:'薄曇り'},3:{e:'☁️',t:'曇り'},
+  45:{e:'🌫',t:'霧'},48:{e:'🌫',t:'霧（着氷）'},
+  51:{e:'🌦',t:'霧雨'},53:{e:'🌦',t:'霧雨'},55:{e:'🌧',t:'霧雨（強）'},
+  56:{e:'🌧',t:'着氷性霧雨'},57:{e:'🌧',t:'着氷性霧雨'},
+  61:{e:'🌦',t:'弱い雨'},63:{e:'🌧',t:'雨'},65:{e:'🌧',t:'強い雨'},
+  66:{e:'🌧',t:'みぞれ'},67:{e:'🌧',t:'みぞれ'},
+  71:{e:'🌨',t:'弱い雪'},73:{e:'🌨',t:'雪'},75:{e:'❄️',t:'強い雪'},77:{e:'🌨',t:'霧雪'},
+  80:{e:'🌦',t:'にわか雨'},81:{e:'🌧',t:'にわか雨'},82:{e:'⛈',t:'激しいにわか雨'},
+  85:{e:'🌨',t:'にわか雪'},86:{e:'❄️',t:'にわか雪（強）'},
+  95:{e:'⛈',t:'雷雨'},96:{e:'⛈',t:'雷雨（雹）'},99:{e:'⛈',t:'雷雨（雹）'},
+};
+function weatherInfo(code){return WEATHER_CODES[code]||{e:'🌡',t:'—'};}
+
+// 保存済み天候を1行テキストに（一覧表示用）
+function condEmoji(w){
+  // codeがあればそれ優先、なければ文言から推測
+  if(w.code!=null && WEATHER_CODES[w.code]) return WEATHER_CODES[w.code].e;
+  const c=(w.cond||'');
+  if(/雪/.test(c)) return '🌨';
+  if(/大雨|豪雨/.test(c)) return '⛈';
+  if(/雨/.test(c)) return /のち|時々|一時/.test(c)&&/晴|曇/.test(c)?'🌦':'🌧';
+  if(/曇/.test(c)) return /晴/.test(c)?'⛅️':'☁️';
+  if(/晴|快晴/.test(c)) return /曇/.test(c)?'🌤':'☀️';
+  return '🌡';
+}
+function weatherLine(w){
+  if(!w) return '';
+  let s=`${condEmoji(w)} ${w.cond||weatherInfo(w.code).t}`;
+  if(w.tmax!=null&&w.tmin!=null) s+=` ${Math.round(w.tmax)}〜${Math.round(w.tmin)}℃`;
+  const extra=[];
+  if(w.rain!=null&&w.rain>0) extra.push(`雨 ${w.rain}mm`);
+  if(w.sun!=null) extra.push(`日照 ${w.sun}h`);
+  if(extra.length) s+=` ・ ${extra.join(' ・ ')}`;
+  return s;
+}
+
+// Open-Meteo から取得（過去実測 archive / 直近・予報 forecast を日付で振り分け）
+async function fetchWeather(lat,lng,dateStr){
+  const today=new Date();today.setHours(0,0,0,0);
+  const target=new Date(dateStr+'T00:00:00');
+  const diffDays=Math.round((target-today)/86400000);
+  const daily='temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum,sunshine_duration';
+
+  // 1日ぶんを応答から取り出す（日付一致を厳密に確認）
+  function pick(j,src){
+    const d=j&&j.daily;
+    if(!d||!Array.isArray(d.time)) throw new Error('daily欠落');
+    const idx=d.time.indexOf(dateStr);
+    if(idx<0) throw new Error('対象日なし');
+    const val=a=>Array.isArray(a)&&a[idx]!=null?a[idx]:null;
+    const tmax=val(d.temperature_2m_max), tmin=val(d.temperature_2m_min);
+    if(tmax==null&&tmin==null) throw new Error('数値なし');
+    const code=val(d.weather_code);
+    const sunSec=val(d.sunshine_duration);
+    return {code,cond:weatherInfo(code).t,tmax,tmin,
+      rain:val(d.precipitation_sum),
+      sun:sunSec!=null?Math.round((sunSec/3600)*10)/10:null,
+      lat,lng,source:src,fetched_at:new Date().toISOString(),manual:false};
+  }
+  async function get(url){
+    const res=await fetch(url);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    return res.json();
+  }
+
+  // 候補URLを順に試す。近い日付は予報API（past_days最大92）でほぼ賄える。
+  const fc=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=${daily}&timezone=Asia%2FTokyo&past_days=92&forecast_days=10`;
+  const ar=`https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lng}&start_date=${dateStr}&end_date=${dateStr}&daily=${daily}&timezone=Asia%2FTokyo`;
+  const order = diffDays<=-90 ? [['実測',ar],['予報',fc]] : [['予報/実測',fc],['実測',ar]];
+
+  let lastErr;
+  for(const [src,url] of order){
+    try{ return pick(await get(url), src); }
+    catch(e){ lastErr=e; }
+  }
+  throw lastErr||new Error('取得不可');
+}
+
+// よく使う天気の語（タップで入力欄に挿入）
+const WX_WORDS=['晴れ','曇り','雨','晴れのち曇り','曇りのち晴れ','曇りのち雨','雨のち曇り','晴れ時々曇り','曇り時々雨','小雨','大雨','雪'];
+
+function buildWxPick(){
+  const wrap=document.getElementById('wx-quick-words');
+  if(!wrap)return;
+  wrap.innerHTML=WX_WORDS.map(w=>`<button class="wx-word-chip" onclick="setWxWord('${w}')">${w}</button>`).join('');
+}
+// チップをタップ：空なら置き換え、何か書いてあれば「のち/時々」を促す形で末尾に追記しすぎないよう単純置換
+function setWxWord(word){
+  const input=document.getElementById('wx-text');
+  input.value=word;
+  input.focus();
+}
+function resetWxForm(){
+  currentWorkWeather=null;
+  const txt=document.getElementById('wx-text');if(txt)txt.value='';
+  const tmax=document.getElementById('wx-tmax'),tmin=document.getElementById('wx-tmin');
+  if(tmax)tmax.value='';if(tmin)tmin.value='';
+  const hint=document.getElementById('wx-auto-hint');if(hint)hint.textContent='天気をことばで書けます（日報の表現そのままでOK）';
+}
+// 作業フォームの天気入力を1オブジェクトにまとめる（保存時に呼ぶ）
+function collectWorkWeather(){
+  const condV=document.getElementById('wx-text').value.trim();
+  const tmaxV=document.getElementById('wx-tmax').value;
+  const tminV=document.getElementById('wx-tmin').value;
+  const base=currentWorkWeather||{};
+  const hasAny = condV!=='' || tmaxV!=='' || tminV!=='' || base.rain!=null || base.sun!=null;
+  if(!hasAny) return null;
+  return {
+    code: base.code!=null?base.code:null,
+    cond: condV!==''?condV:(base.cond||null),
+    tmax: tmaxV!==''?parseFloat(tmaxV):(base.tmax!=null?base.tmax:null),
+    tmin: tminV!==''?parseFloat(tminV):(base.tmin!=null?base.tmin:null),
+    rain: base.rain!=null?base.rain:null,
+    sun:  base.sun!=null?base.sun:null,
+    manual: !(base.source&&base.source!=='手入力'),
+    source: (base.source&&condV===''&&tmaxV==='')?base.source:'手入力',
+    fetched_at:new Date().toISOString()
+  };
+}
+
+// 任意：自動でひく（https環境のみ成功。失敗しても手入力で進める）
+async function tryFetchWorkWeather(){
+  const fid=document.getElementById('work-field').value;
+  const date=document.getElementById('work-date').value;
+  const hint=document.getElementById('wx-auto-hint');
+  const btn=document.getElementById('wx-auto-btn');
+  if(!fid||!date){if(hint)hint.textContent='先に圃場と作業日を選ぶと自動取得できます';return;}
+  const fields=await dbGetAll('fields');const f=fields.find(x=>x.id===fid);
+  if(!f||f.lat==null){if(hint)hint.textContent='この圃場はGPS未登録のため自動取得できません（手入力でOK）';return;}
+  const token=++weatherFetchToken;
+  btn.classList.add('loading');btn.textContent='取得中…';
+  try{
+    const w=await fetchWeather(f.lat,f.lng,date);
+    if(token!==weatherFetchToken)return;
+    currentWorkWeather=w;
+    // フォームに反映（天気は和名をテキスト欄へ。すでに手書きがあれば上書きしない）
+    const txt=document.getElementById('wx-text');
+    if(w.cond&&txt&&txt.value.trim()==='')txt.value=w.cond;
+    if(w.tmax!=null)document.getElementById('wx-tmax').value=Math.round(w.tmax);
+    if(w.tmin!=null)document.getElementById('wx-tmin').value=Math.round(w.tmin);
+    const extra=[];if(w.rain!=null)extra.push(`雨${w.rain}mm`);if(w.sun!=null)extra.push(`日照${w.sun}h`);
+    if(hint)hint.textContent=`✓ ${w.source}から取得${extra.length?'（'+extra.join('・')+'）':''}`;
+  }catch(err){
+    if(token!==weatherFetchToken)return;
+    const reason=(err&&err.message)?err.message:'不明';
+    const offline=(typeof navigator!=='undefined'&&navigator.onLine===false);
+    if(hint)hint.textContent=offline?'オフラインのため取得できません（手入力でOK）':`自動取得できませんでした（手入力でOK）／${reason}`;
+  }finally{
+    btn.classList.remove('loading');btn.textContent='📡 自動でひく';
+  }
+}
+
+function isoWeek(dateStr){
+  const d=new Date(dateStr+'T00:00:00');
+  const t=new Date(d.valueOf());
+  const day=(d.getDay()+6)%7;
+  t.setDate(t.getDate()-day+3);
+  const firstThu=new Date(t.getFullYear(),0,4);
+  const week=1+Math.round(((t-firstThu)/86400000-3+((firstThu.getDay()+6)%7))/7);
+  return {year:t.getFullYear(), week};
+}
+
+function initDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,DB_VER);r.onupgradeneeded=e=>{const d=e.target.result;
+  if(!d.objectStoreNames.contains('fields')){d.createObjectStore('fields',{keyPath:'id'}).createIndex('name','name',{unique:false});}
+  if(!d.objectStoreNames.contains('plots')){const ps=d.createObjectStore('plots',{keyPath:'id'});ps.createIndex('field_id','field_id',{unique:false});}
+  if(!d.objectStoreNames.contains('work_records')){const w=d.createObjectStore('work_records',{keyPath:'id'});w.createIndex('plot_id','plot_id',{unique:false});w.createIndex('work_date','work_date',{unique:false});w.createIndex('iso_year','iso_year',{unique:false});}
+  if(!d.objectStoreNames.contains('trellis')){d.createObjectStore('trellis',{keyPath:'id'}).createIndex('plot_id','plot_id',{unique:false});}
+  if(!d.objectStoreNames.contains('harvest')){d.createObjectStore('harvest',{keyPath:'id'}).createIndex('plot_id','plot_id',{unique:false});}
+  if(!d.objectStoreNames.contains('meta')){d.createObjectStore('meta',{keyPath:'id'});}
+};r.onsuccess=e=>{db=e.target.result;res();};r.onerror=rej;});}
+function dbGetAll(s){return new Promise((res,rej)=>{const q=db.transaction(s,'readonly').objectStore(s).getAll();q.onsuccess=()=>res(q.result);q.onerror=rej;});}
+function dbPut(s,o){return new Promise((res,rej)=>{const q=db.transaction(s,'readwrite').objectStore(s).put(o);q.onsuccess=()=>res(q.result);q.onerror=rej;});}
+function dbClear(s){return new Promise((res,rej)=>{const q=db.transaction(s,'readwrite').objectStore(s).clear();q.onsuccess=()=>res();q.onerror=rej;});}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function fmtDate(b,o){const d=new Date(b);d.setDate(d.getDate()+o);return d.toISOString().split('T')[0];}
+
+async function seedRealData(){
+  const existing=await dbGetAll('fields');
+  const needReset = existing.length===0 || !existing.find(f=>f.id==='f_yokawa');
+  if(!needReset) return;
+  await dbClear('fields'); await dbClear('plots'); await dbClear('work_records'); await dbClear('trellis'); await dbClear('harvest');
+  for(const f of FIELD_DATA){
+    await dbPut('fields',{id:f.id,name:f.name,lat:f.lat,lng:f.lng,created_at:new Date().toISOString()});
+    for(const p of f.plots){
+      await dbPut('plots',{id:uid(),field_id:f.id,name:p.name,varieties:p.v,area:null,tree_count:null,tree_age:null,rootstock:''});
+    }
+  }
+  const plots=await dbGetAll('plots');
+  const pid=(fid,nm)=>plots.find(p=>p.field_id===fid&&p.name===nm)?.id;
+  const t=new Date();
+  const mk=(plotName,fid,type,off,extra={})=>{const date=fmtDate(t,off);const iso=isoWeek(date);return {id:uid(),field_id:fid,plot_id:pid(fid,plotName),work_date:date,work_type:type,scope:'plot',variety:null,stage:extra.stage||'',weather:extra.weather||null,comment:extra.cm||'',iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()};};
+  // 絶対日付で作る版（年比較サンプル用）
+  const mkD=(plotName,fid,type,dateStr,extra={})=>{const iso=isoWeek(dateStr);return {id:uid(),field_id:fid,plot_id:pid(fid,plotName),work_date:dateStr,work_type:type,scope:extra.scope||'plot',variety:null,stage:extra.stage||'',weather:extra.weather||null,comment:extra.cm||'',iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()};};
+  const Y=t.getFullYear(), LY=Y-1;
+  const samples=[
+    mk('A1','f_yokawa','防除',0,{cm:'ベト病予防、薬剤散布',stage:'展葉'}),
+    mk('B4','f_yokawa','誘引',0,{cm:'新梢を傷めないよう丁寧に',stage:'展葉'}),
+    mk('B5','f_yokawa','誘引',0,{stage:'展葉'}),
+    mk('B7','f_yokawa','草刈り',-2,{}),
+    mk('アルバリーニョ','f_isobe','防除',-1,{cm:'ベト病予防',stage:'展葉'}),
+    mk('A','f_juni','誘引',-3,{stage:'展葉'}),
+    // ── 今年の草刈り（5月中旬〜6月上旬）──
+    mkD('A1','f_yokawa','草刈り',`${Y}-05-12`,{cm:'1回目 開始'}),
+    mkD('B2','f_yokawa','草刈り',`${Y}-05-19`,{}),
+    mkD('C1','f_yokawa','草刈り',`${Y}-05-27`,{}),
+    mkD('アルバリーニョ','f_isobe','草刈り',`${Y}-06-03`,{cm:'1回目 完了'}),
+    // ── 去年の草刈り（少し早め）──
+    mkD('A1','f_yokawa','草刈り',`${LY}-05-06`,{cm:'1回目 開始'}),
+    mkD('B2','f_yokawa','草刈り',`${LY}-05-13`,{}),
+    mkD('C1','f_yokawa','草刈り',`${LY}-05-21`,{}),
+    mkD('アルバリーニョ','f_isobe','草刈り',`${LY}-05-28`,{cm:'1回目 完了'}),
+    // ── カメムシ防除（ダントツ）今年/去年 ──
+    mkD('A1','f_yokawa','防除',`${Y}-06-18`,{cm:'カメムシ対策 ダントツ'}),
+    mkD('A1','f_yokawa','防除',`${LY}-06-12`,{cm:'カメムシ対策 ダントツ'}),
+  ].filter(s=>s.plot_id);
+  for(const s of samples) await dbPut('work_records',s);
+  const tr=[['A1',80],['A2',65],['A3',40],['A4',30],['B2',90],['B3',55],['B4',100],['B5',100]];
+  for(const [nm,pct] of tr){const id=pid('f_yokawa',nm);if(id)await dbPut('trellis',{id:uid(),plot_id:id,work_date:fmtDate(t,0),progress_pct:pct,comment:''});}
+}
+
+const TAB_SCREENS={dashboard:'screen-dashboard',fields:'screen-fields',work:'screen-work',compare:'screen-compare',trellis:'screen-trellis',harvest:'screen-harvest'};
+const TAB_TITLES={dashboard:'Vigne',fields:'圃場',work:'作業の記録',compare:'去年とくらべる',trellis:'誘引の進み',harvest:'収穫'};
+const TAB_FAB={dashboard:false,fields:true,work:true,compare:false,trellis:true,harvest:true};
+const TAB_MARK={dashboard:'余川・磯辺・十二町',fields:'Fields',work:'Work',compare:'Compare',trellis:'Trellising',harvest:'Harvest'};
+
+function switchTab(tab){currentTab=tab;screenStack=[];document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));document.getElementById(TAB_SCREENS[tab]).classList.remove('hidden');document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.getElementById('header-title').textContent=TAB_TITLES[tab];document.getElementById('header-mark').textContent=TAB_MARK[tab];document.getElementById('back-btn').classList.add('hidden');document.getElementById('fab-btn').style.display=TAB_FAB[tab]?'flex':'none';renderTab(tab);}
+function pushScreen(id,title){screenStack.push({screenId:TAB_SCREENS[currentTab],title:TAB_TITLES[currentTab],mark:TAB_MARK[currentTab]});document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.getElementById('header-title').textContent=title;document.getElementById('header-mark').textContent='';document.getElementById('back-btn').classList.remove('hidden');document.getElementById('fab-btn').style.display='none';}
+function goBack(){if(!screenStack.length)return;const p=screenStack.pop();document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));document.getElementById(p.screenId).classList.remove('hidden');document.getElementById('header-title').textContent=p.title;document.getElementById('header-mark').textContent=p.mark;if(!screenStack.length){document.getElementById('back-btn').classList.add('hidden');document.getElementById('fab-btn').style.display=TAB_FAB[currentTab]?'flex':'none';}}
+function onFabClick(){if(currentTab==='fields')openModal('modal-field');if(currentTab==='work')openModal('modal-work');if(currentTab==='trellis')openModal('modal-trellis');if(currentTab==='harvest')openModal('modal-harvest');}
+
+function openModal(id){document.getElementById(id).classList.add('open');populateFieldSelects();if(id==='modal-field')buildFieldVarietyPick();}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
+
+async function populateFieldSelects(){const fields=await dbGetAll('fields');['work-field','trellis-field','harvest-field'].forEach(id=>{const sel=document.getElementById(id);if(!sel)return;const cur=sel.value;sel.innerHTML='<option value="">圃場を選択</option>'+fields.map(f=>`<option value="${f.id}">${f.name}</option>`).join('');if(cur)sel.value=cur;});}
+
+function setScope(scope,btn){workScope=scope;document.querySelectorAll('#scope-tabs .scope-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');
+  document.getElementById('work-plot-group').style.display=(scope==='plot'||scope==='variety')?'flex':'none';
+  document.getElementById('work-variety-group').style.display=(scope==='variety')?'flex':'none';
+  selectedWorkVariety=null;
+}
+async function onWorkFieldChange(){const fid=document.getElementById('work-field').value;await fillPlotSelect('work-plot',fid);document.getElementById('work-variety-pick').innerHTML='';}
+async function onWorkPlotChange(){
+  const pid=document.getElementById('work-plot').value;
+  const plots=await dbGetAll('plots');const plot=plots.find(p=>p.id===pid);
+  const wrap=document.getElementById('work-variety-pick');
+  if(plot&&plot.varieties){wrap.innerHTML=plot.varieties.map(v=>`<button class="vp-chip" onclick="pickWorkVariety('${v.replace(/'/g,"\\'")}',this)">${v}</button>`).join('');}
+  else wrap.innerHTML='';
+  document.getElementById('work-stage').innerHTML='<option value="">記録しない</option>'+STAGES.map(s=>`<option value="${s}">${s}</option>`).join('');
+}
+function pickWorkVariety(v,btn){if(selectedWorkVariety===v){selectedWorkVariety=null;btn.classList.remove('active');}else{selectedWorkVariety=v;document.querySelectorAll('#work-variety-pick .vp-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');}}
+
+async function updateTrellisPlotSelect(){await fillPlotSelect('trellis-plot',document.getElementById('trellis-field').value);}
+async function onHarvestFieldChange(){await fillPlotSelect('harvest-plot',document.getElementById('harvest-field').value);document.getElementById('harvest-variety-group').style.display='none';}
+async function onHarvestPlotChange(){const pid=document.getElementById('harvest-plot').value;const plots=await dbGetAll('plots');const plot=plots.find(p=>p.id===pid);const grp=document.getElementById('harvest-variety-group');if(plot&&plot.varieties&&plot.varieties.length>1){grp.style.display='flex';document.getElementById('harvest-variety').innerHTML='<option value="">区画ぜんぶ</option>'+plot.varieties.map(v=>`<option value="${v}">${v}</option>`).join('');}else{grp.style.display='none';}}
+async function fillPlotSelect(sid,fid){const plots=(await dbGetAll('plots')).filter(p=>p.field_id===fid);document.getElementById(sid).innerHTML='<option value="">区画を選択</option>'+plots.map(p=>`<option value="${p.id}">${p.name}（${(p.varieties||[]).join('・')}）</option>`).join('');}
+
+function buildWorkTypeGrid(){document.getElementById('work-type-grid').innerHTML=WORK_TYPES.map(t=>`<button class="wt-chip ${t.label===selectedWorkType?'active':''}" onclick="selectWorkType('${t.label}',this)"><span class="wt-icon">${t.icon}</span><span class="wt-text">${t.label}</span></button>`).join('');}
+function selectWorkType(t,btn){selectedWorkType=t;document.querySelectorAll('.wt-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');}
+function buildQuickActions(){const items=WORK_TYPES.slice(0,8);document.getElementById('quick-actions').innerHTML=items.map(t=>`<button class="qa-btn" onclick="openWorkForm('${t.label}')"><div class="qa-icon">${t.icon}</div><div class="qa-label">${t.label}</div></button>`).join('');}
+function openWorkForm(t){selectedWorkType=t;buildWorkTypeGrid();document.getElementById('work-date').value=new Date().toISOString().split('T')[0];
+  workScope='field';document.querySelectorAll('#scope-tabs .scope-tab').forEach((tb,i)=>tb.classList.toggle('active',i===0));
+  document.getElementById('work-plot-group').style.display='none';document.getElementById('work-variety-group').style.display='none';
+  document.getElementById('work-stage').innerHTML='<option value="">記録しない</option>'+STAGES.map(s=>`<option value="${s}">${s}</option>`).join('');
+  selectedWorkVariety=null;buildWxPick();resetWxForm();
+  openModal('modal-work');}
+
+function buildFieldVarietyPick(){fieldFormVarieties=[];document.getElementById('field-variety-pick').innerHTML=VARIETIES.map(v=>`<button class="vp-chip" onclick="toggleFieldVariety('${v.name.replace(/'/g,"\\'")}',this)">${v.name}</button>`).join('');}
+function toggleFieldVariety(v,btn){const i=fieldFormVarieties.indexOf(v);if(i>=0){fieldFormVarieties.splice(i,1);btn.classList.remove('active');}else{fieldFormVarieties.push(v);btn.classList.add('active');}}
+
+async function saveWork(){
+  const fid=document.getElementById('work-field').value;
+  if(!fid){showToast('圃場を選んでください');return;}
+  const date=document.getElementById('work-date').value;
+  if(!date){showToast('作業日を入れてください');return;}
+  let plotId=null;
+  if(workScope!=='field'){plotId=document.getElementById('work-plot').value;if(!plotId){showToast('区画を選んでください');return;}}
+  const variety=(workScope==='variety')?selectedWorkVariety:null;
+  const iso=isoWeek(date);
+  const rec={id:uid(),field_id:fid,plot_id:plotId,scope:workScope,variety:variety||null,
+    work_date:date,work_type:selectedWorkType,stage:document.getElementById('work-stage').value||'',
+    weather:collectWorkWeather(),
+    comment:document.getElementById('work-comment').value,
+    iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()};
+  await dbPut('work_records',rec);
+  closeModal('modal-work');showToast('作業を記録しました');clearForm('work');renderTab(currentTab);
+}
+async function saveTrellis(){const plotId=document.getElementById('trellis-plot').value,date=document.getElementById('trellis-date').value;if(!plotId||!date){showToast('圃場・区画・日付を入れてください');return;}const all=await dbGetAll('trellis'),ex=all.find(t=>t.plot_id===plotId);await dbPut('trellis',{id:ex?ex.id:uid(),plot_id:plotId,work_date:date,progress_pct:parseInt(document.getElementById('trellis-pct').value),comment:document.getElementById('trellis-comment').value});closeModal('modal-trellis');showToast('進みを記録しました');renderTab(currentTab);}
+async function saveHarvest(){const plotId=document.getElementById('harvest-plot').value,date=document.getElementById('harvest-date').value,w=document.getElementById('harvest-weight').value;if(!plotId||!date||!w){showToast('圃場・区画・収穫量を入れてください');return;}const iso=isoWeek(date);await dbPut('harvest',{id:uid(),plot_id:plotId,variety:document.getElementById('harvest-variety').value||null,harvest_date:date,weight_kg:parseFloat(w),container_count:parseInt(document.getElementById('harvest-containers').value)||null,brix:parseFloat(document.getElementById('harvest-brix').value)||null,acidity:parseFloat(document.getElementById('harvest-acidity').value)||null,ph:parseFloat(document.getElementById('harvest-ph').value)||null,comment:document.getElementById('harvest-comment').value,iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});closeModal('modal-harvest');showToast('収穫を記録しました');clearForm('harvest');renderTab(currentTab);}
+async function saveField(){const fn=document.getElementById('field-name').value.trim(),pn=document.getElementById('plot-name').value.trim();if(!fn||!pn){showToast('圃場名と区画名を入れてください');return;}const vs=fieldFormVarieties.length?fieldFormVarieties.slice():['未定'];const fields=await dbGetAll('fields');let field=fields.find(f=>f.name===fn);if(!field){field={id:uid(),name:fn,lat:null,lng:null,created_at:new Date().toISOString()};await dbPut('fields',field);}await dbPut('plots',{id:uid(),field_id:field.id,name:pn,varieties:vs,area:parseFloat(document.getElementById('plot-area').value)||null,tree_count:parseInt(document.getElementById('plot-trees').value)||null,tree_age:parseInt(document.getElementById('plot-age').value)||null,rootstock:document.getElementById('plot-rootstock').value});closeModal('modal-field');showToast('圃場・区画を加えました');clearForm('field');renderTab(currentTab);}
+function clearForm(t){if(t==='work'){document.getElementById('work-comment').value='';resetWxForm();}if(t==='harvest'){['harvest-weight','harvest-containers','harvest-brix','harvest-acidity','harvest-ph','harvest-comment'].forEach(id=>document.getElementById(id).value='');}if(t==='field'){['field-name','plot-name','plot-area','plot-trees','plot-age','plot-rootstock'].forEach(id=>document.getElementById(id).value='');fieldFormVarieties=[];}}
+
+async function renderTab(tab){if(tab==='dashboard')await renderDashboard();if(tab==='fields')await renderFields();if(tab==='work')await renderWork();if(tab==='compare')await renderCompare();if(tab==='trellis')await renderTrellis();if(tab==='harvest')await renderHarvest();}
+function barColor(p){return p>=80?'var(--leaf)':p>=50?'var(--dusk)':'var(--wine)';}
+
+function workTargetLabel(w, plotMap, fieldMap){
+  if(w.scope==='field'||!w.plot_id){const f=fieldMap[w.field_id];return (f?.name||'不明')+' ぜんぶ';}
+  const p=plotMap[w.plot_id];
+  const fn=p?fieldMap[p.field_id]?.name:'';
+  let lbl=`${fn||''}${p?' › '+p.name:''}`;
+  if(w.variety) lbl+=` ／ ${w.variety}`;
+  return lbl;
+}
+
+async function renderDashboard(){
+  const now=new Date(),days=['日','月','火','水','木','金','土'];
+  document.getElementById('hero-date').textContent=`${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日（${days[now.getDay()]}）`;
+  const [fields,plots,works,trellis,harvest]=await Promise.all([dbGetAll('fields'),dbGetAll('plots'),dbGetAll('work_records'),dbGetAll('trellis'),dbGetAll('harvest')]);
+  document.getElementById('hero-subtitle').textContent=`${fields.length} 圃場 ・ ${plots.length} 区画を見守り中`;
+  const tm=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  document.getElementById('stat-works').textContent=works.filter(w=>w.work_date?.startsWith(tm)).length;
+  document.getElementById('stat-spray').textContent=works.filter(w=>w.work_date?.startsWith(tm)&&w.work_type==='防除').length;
+  document.getElementById('stat-harvest').textContent=Math.round(harvest.reduce((s,h)=>s+(h.weight_kg||0),0)).toLocaleString();
+  const tMap={};for(const t of trellis){if(!tMap[t.plot_id]||tMap[t.plot_id].work_date<t.work_date)tMap[t.plot_id]=t;}
+  const plotMap=Object.fromEntries(plots.map(p=>[p.id,p])),fieldMap=Object.fromEntries(fields.map(f=>[f.id,f])),fieldPlots={};
+  for(const p of plots){(fieldPlots[p.field_id]=fieldPlots[p.field_id]||[]).push(p);}
+  const tEl=document.getElementById('dash-trellis-list');
+  tEl.innerHTML=fields.length===0?'<div class="empty-state"><div class="empty-icon">🌿</div><div class="empty-text">圃場を加えると<br>誘引の進みが見られます</div></div>':fields.map(f=>{const fps=fieldPlots[f.id]||[],a=fps.map(p=>tMap[p.id]?.progress_pct??0),avg=a.length?Math.round(a.reduce((s,v)=>s+v,0)/a.length):0,c=barColor(avg);return `<div class="progress-item"><span class="progress-name">${f.name}</span><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${avg}%;background:${c}"></div></div><span class="progress-pct" style="color:${c}">${avg}<span style="font-size:10px">%</span></span></div>`;}).join('');
+  const rEl=document.getElementById('recent-work-list'),sorted=[...works].sort((a,b)=>b.work_date?.localeCompare(a.work_date)||0).slice(0,6);
+  if(!sorted.length){rEl.innerHTML='<div class="empty-state"><div class="empty-icon">✎</div><div class="empty-text">まだ記録がありません</div></div>';return;}
+  rEl.innerHTML=sorted.map(w=>{const wt=WORK_TYPES.find(t=>t.label===w.work_type)||{icon:'✎'},d=w.work_date?w.work_date.slice(5).replace('-','/'):'';const tgt=workTargetLabel(w,plotMap,fieldMap);return `<div class="work-item"><div class="work-badge">${wt.icon}</div><div class="work-info"><div class="work-name">${w.work_type}</div><div class="work-meta">${tgt}</div>${w.stage?`<span class="work-stage-tag">${w.stage}</span>`:''}</div><div class="work-date">${d}</div></div>`;}).join('<div class="divider"></div>');
+}
+
+async function renderFields(){
+  const [fields,plots]=await Promise.all([dbGetAll('fields'),dbGetAll('plots')]),el=document.getElementById('field-list-content');
+  if(!fields.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">🌿</div><div class="empty-text">まだ圃場がありません<br>右下の ＋ から加えましょう</div></div>';return;}
+  el.innerHTML=fields.map(f=>{const fps=plots.filter(p=>p.field_id===f.id);
+    const vset=[...new Set(fps.flatMap(p=>p.varieties||[]))];
+    const chips=vset.map(v=>`<span class="plot-chip" style="${varietyStyle(v)}">${v}</span>`).join('');
+    return `<div class="card card-tap" onclick="openFieldDetail('${f.id}')"><div class="field-card-inner"><div class="field-name">${f.name}</div><div class="field-sub">${fps.length} 区画 ・ ${vset.length} 品種</div><div class="plot-chips">${chips||'<span style="font-size:13px;color:var(--text-muted)">区画はまだありません</span>'}</div></div><div class="field-footer"><span class="field-stat-mini">区画 <strong>${fps.length}</strong></span><span class="field-stat-mini">${f.lat?'📍 GPS登録済':'GPS未登録'}</span><span style="font-size:12px;color:var(--bark)">詳しく →</span></div></div>`;}).join('');
+}
+
+async function openFieldDetail(fid){
+  const [fields,plots,works,trellis]=await Promise.all([dbGetAll('fields'),dbGetAll('plots'),dbGetAll('work_records'),dbGetAll('trellis')]);
+  const field=fields.find(f=>f.id===fid);if(!field)return;const fps=plots.filter(p=>p.field_id===fid),tMap={};
+  for(const t of trellis){if(!tMap[t.plot_id]||tMap[t.plot_id].work_date<t.work_date)tMap[t.plot_id]=t;}
+  const rows=fps.map(p=>{const tp=tMap[p.id]?.progress_pct??null,c=tp===null?'var(--line)':barColor(tp),pw=works.filter(w=>w.plot_id===p.id).length,vchips=(p.varieties||[]).map(v=>`<span class="plot-chip" style="${varietyStyle(v)};font-size:10px">${v}</span>`).join(' ');return `<div class="card" style="margin-bottom:12px"><div style="padding:16px 18px"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div style="flex:1;min-width:0"><div class="mincho" style="font-size:18px;font-weight:600;color:var(--vine);letter-spacing:.05em">${p.name}</div><div class="plot-chips" style="margin-top:7px">${vchips}</div></div>${tp!==null?`<div style="text-align:right;flex-shrink:0;margin-left:10px"><div class="mincho" style="font-size:22px;font-weight:600;color:${c}">${tp}%</div><div style="font-size:11px;color:var(--text-muted)">誘引の進み</div></div>`:''}</div>${tp!==null?`<div style="margin-top:10px;height:5px;background:var(--paper);border-radius:3px;overflow:hidden"><div style="height:100%;width:${tp}%;background:${c};border-radius:3px"></div></div>`:''}<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px">${[['面積(a)',p.area],['本数',p.tree_count],['樹齢',p.tree_age],['作業',pw]].map(x=>`<div style="text-align:center"><div class="mincho" style="font-size:17px;font-weight:600;color:var(--vine)">${x[1]??'—'}</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">${x[0]}</div></div>`).join('')}</div>${p.rootstock?`<div style="margin-top:10px;font-size:12px;color:var(--text-muted)">台木 ・ ${p.rootstock}</div>`:''}</div></div>`;}).join('');
+  document.getElementById('field-detail-content').innerHTML=`<div style="background:var(--cream);border-bottom:1px solid var(--line);padding:26px 22px 22px;position:relative"><div class="hero-eyebrow">Field</div><div class="mincho" style="font-size:28px;font-weight:600;color:var(--vine);letter-spacing:.08em">${field.name}</div><div style="font-size:12px;color:var(--text-muted);margin-top:4px;letter-spacing:.05em">${fps.length} 区画${field.lat?' ・ 📍 '+field.lat.toFixed(4)+', '+field.lng.toFixed(4):''}</div></div><div style="padding:18px"><div style="font-size:11px;font-weight:700;color:var(--bark);margin-bottom:12px;letter-spacing:.12em">区画一覧</div>${rows||'<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-text">区画はまだありません</div></div>'}</div>`;
+  pushScreen('screen-field-detail',field.name);
+}
+
+async function renderWork(){
+  const [works,plots,fields]=await Promise.all([dbGetAll('work_records'),dbGetAll('plots'),dbGetAll('fields')]),plotMap=Object.fromEntries(plots.map(p=>[p.id,p])),fieldMap=Object.fromEntries(fields.map(f=>[f.id,f])),sorted=[...works].sort((a,b)=>b.work_date?.localeCompare(a.work_date)||0),el=document.getElementById('work-list-content');
+  if(!sorted.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">✎</div><div class="empty-text">まだ記録がありません<br>右下の ＋ から加えましょう</div></div>';return;}
+  const groups={};for(const w of sorted){(groups[w.work_date||'未定']=groups[w.work_date||'未定']||[]).push(w);}
+  el.innerHTML=Object.entries(groups).map(([date,ws])=>{const rows=ws.map(w=>{const wt=WORK_TYPES.find(t=>t.label===w.work_type)||{icon:'✎'};const tgt=workTargetLabel(w,plotMap,fieldMap);return `<div class="work-item"><div class="work-badge">${wt.icon}</div><div class="work-info"><div class="work-name">${w.work_type}</div><div class="work-meta">${tgt}</div>${w.weather?`<div class="work-meta">${weatherLine(w.weather)}</div>`:''}${w.stage?`<span class="work-stage-tag">${w.stage}</span>`:''}${w.comment?`<div class="work-meta" style="font-style:italic;color:var(--bark);margin-top:3px">${w.comment}</div>`:''}</div></div>`;}).join('<div class="divider"></div>');const d=new Date(date),label=isNaN(d)?date:`${d.getMonth()+1}月${d.getDate()}日`,iso=isNaN(d)?null:isoWeek(date);return `<div><div class="mincho" style="font-size:14px;font-weight:600;color:var(--bark);padding:0 0 8px;letter-spacing:.08em">${label}${iso?`<span style="font-size:11px;color:var(--text-muted);margin-left:8px">${iso.year}年 第${iso.week}週</span>`:''}</div><div class="card" style="padding:0 18px">${rows}</div></div>`;}).join('');
+}
+
+async function renderTrellis(){
+  const [fields,plots,trellis]=await Promise.all([dbGetAll('fields'),dbGetAll('plots'),dbGetAll('trellis')]),tMap={};
+  for(const t of trellis){if(!tMap[t.plot_id]||tMap[t.plot_id].work_date<t.work_date)tMap[t.plot_id]=t;}
+  const allP=plots.map(p=>tMap[p.id]?.progress_pct??0),avg=allP.length?Math.round(allP.reduce((s,v)=>s+v,0)/allP.length):0;
+  let html=`<div class="trellis-header-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="hero-eyebrow">Trellising</div><div class="trellis-overall-pct">${avg}<span style="font-size:24px">%</span></div><div class="trellis-overall-label">${plots.length} 区画ぜんたい</div></div><div style="text-align:right"><div style="font-size:11px;color:var(--text-muted)">遅れ気味</div><div class="mincho" style="font-size:28px;font-weight:600;color:var(--wine)">${allP.filter(p=>p<50).length}</div><div style="font-size:11px;color:var(--text-muted)">50%未満</div></div></div><div class="trellis-overall-bar"><div class="trellis-overall-fill" style="width:${avg}%"></div></div></div><div style="height:16px"></div>`;
+  if(!fields.length){html+='<div class="empty-state"><div class="empty-icon">🪢</div><div class="empty-text">圃場を加えると<br>誘引の進みを記録できます</div></div>';}
+  else{for(const f of fields){const fps=plots.filter(p=>p.field_id===f.id);html+=`<div style="padding:0 18px 10px"><div class="mincho" style="font-size:14px;font-weight:600;color:var(--vine);margin-bottom:10px;letter-spacing:.08em">📍 ${f.name}</div><div class="card">`;html+=fps.map(p=>{const pct=tMap[p.id]?.progress_pct??null,dp=pct??0,c=barColor(dp),vlabel=(p.varieties||[]).join('・'),ds=tMap[p.id]?.work_date?tMap[p.id].work_date.slice(5).replace('-','/'):'未記録';return `<div class="trellis-plot-card"><div style="display:flex;justify-content:space-between;align-items:center"><div style="flex:1;min-width:0"><div class="trellis-plot-name">${p.name}</div><div class="trellis-plot-meta" style="margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${vlabel}</div></div><div style="text-align:right;flex-shrink:0;margin-left:10px"><div class="trellis-plot-pct" style="color:${c}">${pct!==null?dp+'%':'—'}</div><div class="trellis-plot-meta">更新 ${ds}</div></div></div><div class="trellis-plot-bar-wrap"><div class="trellis-plot-fill" style="width:${dp}%;background:${c}"></div></div></div>`;}).join('<div class="divider"></div>');html+=`</div></div>`;}}
+  document.getElementById('trellis-content').innerHTML=html;document.getElementById('trellis-date').value=new Date().toISOString().split('T')[0];
+}
+
+async function renderHarvest(){
+  const [harvest,plots,fields]=await Promise.all([dbGetAll('harvest'),dbGetAll('plots'),dbGetAll('fields')]),plotMap=Object.fromEntries(plots.map(p=>[p.id,p])),fieldMap=Object.fromEntries(fields.map(f=>[f.id,f])),sorted=[...harvest].sort((a,b)=>b.harvest_date?.localeCompare(a.harvest_date)||0);
+  const total=harvest.reduce((s,h)=>s+(h.weight_kg||0),0),bx=harvest.filter(h=>h.brix),avgB=bx.length?(bx.reduce((s,h)=>s+h.brix,0)/bx.length).toFixed(1):'—',mx=harvest.length?Math.max(...harvest.map(h=>h.weight_kg||0)).toFixed(0):'—';
+  let html=`<div class="harvest-summary"><div class="harvest-big"><div class="hero-eyebrow">Harvest</div><div class="harvest-big-val">${Math.round(total).toLocaleString()}<span class="harvest-big-unit"> kg</span></div><div class="harvest-big-label">総収穫量</div></div><div class="harvest-sub"><div class="harvest-sub-row"><span class="harvest-sub-label">平均糖度</span><span class="harvest-sub-val">${avgB}°</span></div><div class="harvest-sub-row"><span class="harvest-sub-label">記録</span><span class="harvest-sub-val">${harvest.length} 件</span></div><div class="harvest-sub-row"><span class="harvest-sub-label">最多収量</span><span class="harvest-sub-val">${mx} kg</span></div></div></div>`;
+  if(!sorted.length){html+='<div class="empty-state"><div class="empty-icon">🍇</div><div class="empty-text">まだ収穫の記録がありません<br>右下の ＋ から加えましょう</div></div>';}
+  else{html+='<div class="card" style="margin:0 18px 18px">';html+=sorted.map(h=>{const p=plotMap[h.plot_id],f=p?fieldMap[p.field_id]:null,d=new Date(h.harvest_date),m=isNaN(d)?'':`${d.getMonth()+1}月`,day=isNaN(d)?h.harvest_date:`${d.getDate()}`,vname=h.variety||(p?.varieties||[]).join('・')||'不明',q=[];if(h.brix)q.push(`糖度 ${h.brix}°`);if(h.acidity)q.push(`酸度 ${h.acidity}`);if(h.ph)q.push(`pH ${h.ph}`);return `<div class="harvest-record"><div class="harvest-date-badge"><div class="harvest-date-d">${day}</div><div class="harvest-date-m">${m}</div></div><div class="harvest-divider-v"></div><div class="harvest-info"><div class="harvest-plot">${f?.name||''}${p?' ・ '+p.name:''}</div><span class="plot-chip" style="${varietyStyle(h.variety||(p?.varieties||[])[0])};display:inline-block;margin:4px 0;font-size:10px">${vname}</span>${q.length?`<div class="harvest-details">${q.join(' ・ ')}</div>`:''}${h.comment?`<div class="harvest-details" style="font-style:italic">${h.comment}</div>`:''}</div><div class="harvest-kg">${h.weight_kg} kg</div></div>`;}).join('<div class="divider"></div>');html+='</div>';}
+  document.getElementById('harvest-content').innerHTML=html;document.getElementById('harvest-date').value=new Date().toISOString().split('T')[0];
+}
+
+// ── くらべる（年比較ビュー）状態 ──
+const CMP_STATE={metric:'work', workType:'草刈り', scope:'all', fieldId:null, yearA:null, yearB:null};
+let cmpWxCache={};  // {fieldId_year_month: {rain, sun}} 実測集計のキャッシュ
+
+async function renderCompare(){
+  const el=document.getElementById('compare-content');
+  const [works,fields,harvest]=await Promise.all([dbGetAll('work_records'),dbGetAll('fields'),dbGetAll('harvest')]);
+
+  const yearsSet=new Set();
+  works.forEach(w=>{if(w.iso_year)yearsSet.add(w.iso_year);});
+  harvest.forEach(h=>{if(h.iso_year)yearsSet.add(h.iso_year);});
+  const nowY=new Date().getFullYear();yearsSet.add(nowY);yearsSet.add(nowY-1);
+  const years=[...yearsSet].sort((a,b)=>b-a);
+  if(CMP_STATE.yearA==null)CMP_STATE.yearA=years[0];
+  if(CMP_STATE.yearB==null)CMP_STATE.yearB=years[1]!=null?years[1]:years[0]-1;
+  if(CMP_STATE.fieldId==null&&fields.length)CMP_STATE.fieldId=fields[0].id;
+
+  const workTypesUsed=[...new Set(works.map(w=>w.work_type))];
+  const wtOptions=WORK_TYPES.filter(t=>workTypesUsed.includes(t.label)||['草刈り','防除','摘芯','誘引'].includes(t.label));
+
+  let html=`<div class="cmp-intro">
+    <div class="cmp-intro-title">去年とくらべる</div>
+    <div class="cmp-intro-sub">「去年の今ごろ何してたっけ？」を時期で見くらべます。年を2つえらんで、作業の時期や天候をならべて確認できます。</div>
+  </div>`;
+
+  html+=`<div class="cmp-controls">
+    <div class="cmp-control-row">
+      <span class="cmp-section-note" style="margin:0">くらべる2つの年</span>
+      <div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap">
+        <div><div style="font-size:10px;color:var(--dusk);font-weight:700;margin-bottom:5px;letter-spacing:.1em">今年がわ</div><div class="cmp-year-pills">${years.map(y=>`<button class="cmp-year-pill y-a ${y===CMP_STATE.yearA?'active':''}" onclick="cmpSetYear('A',${y})">${y}</button>`).join('')}</div></div>
+        <div><div style="font-size:10px;color:var(--sea);font-weight:700;margin-bottom:5px;letter-spacing:.1em">くらべる年</div><div class="cmp-year-pills">${years.map(y=>`<button class="cmp-year-pill y-b ${y===CMP_STATE.yearB?'active':''}" onclick="cmpSetYear('B',${y})">${y}</button>`).join('')}</div></div>
+      </div>
+    </div>
+    <div class="cmp-control-row">
+      <span class="cmp-section-note" style="margin:0">何をくらべる？</span>
+      <div class="cmp-seg">
+        <button class="${CMP_STATE.metric==='work'?'active':''}" onclick="cmpSetMetric('work')">作業の時期</button>
+        <button class="${CMP_STATE.metric==='rain'?'active':''}" onclick="cmpSetMetric('rain')">雨量</button>
+        <button class="${CMP_STATE.metric==='sun'?'active':''}" onclick="cmpSetMetric('sun')">日照</button>
+      </div>
+    </div>`;
+
+  if(CMP_STATE.metric==='work'){
+    html+=`<div class="cmp-control-row">
+      <span class="cmp-section-note" style="margin:0">どの作業？</span>
+      <div class="cmp-seg" style="flex-wrap:wrap">${wtOptions.map(t=>`<button class="${CMP_STATE.workType===t.label?'active':''}" onclick="cmpSetWorkType('${t.label}')">${t.icon} ${t.label}</button>`).join('')}</div>
+    </div>`;
+  }else{
+    html+=`<div class="cmp-control-row">
+      <span class="cmp-section-note" style="margin:0">どの圃場？</span>
+      <div class="cmp-seg" style="flex-wrap:wrap">${fields.map(f=>`<button class="${CMP_STATE.fieldId===f.id?'active':''}" onclick="cmpSetField('${f.id}')">${f.name}</button>`).join('')}</div>
+    </div>`;
+  }
+  html+=`</div>`;
+
+  if(CMP_STATE.metric==='work'){
+    html+=renderCompareWork(works,fields);
+  }else{
+    html+=renderCompareWeather(fields);
+  }
+
+  el.innerHTML=html;
+
+  if(CMP_STATE.metric!=='work'){
+    const btn=document.getElementById('cmp-wx-fetch-btn');
+    if(btn)btn.onclick=()=>cmpFetchWeatherData(btn);
+  }
+}
+
+function renderCompareWork(works,fields){
+  const yA=CMP_STATE.yearA, yB=CMP_STATE.yearB, wt=CMP_STATE.workType;
+  const weeksA=new Set(), weeksB=new Set();
+  const workDatesByWeek={}; // 'year_week' -> [dateStr,...]
+  works.forEach(w=>{
+    if(w.work_type!==wt||!w.iso_week)return;
+    if(w.iso_year===yA)weeksA.add(w.iso_week);
+    if(w.iso_year===yB)weeksB.add(w.iso_week);
+    if(w.iso_year===yA||w.iso_year===yB){
+      const k=w.iso_year+'_'+w.iso_week;
+      (workDatesByWeek[k]=workDatesByWeek[k]||[]).push(w.work_date);
+    }
+  });
+  const allWeeks=[...weeksA,...weeksB];
+  let wMin=allWeeks.length?Math.min(...allWeeks):13;
+  let wMax=allWeeks.length?Math.max(...allWeeks):44;
+  wMin=Math.max(1,wMin-1);wMax=Math.min(53,wMax+1);
+  if(wMax-wMin<11){const mid=Math.round((wMin+wMax)/2);wMin=Math.max(1,mid-6);wMax=Math.min(53,mid+6);}
+  const weekNums=[];for(let i=wMin;i<=wMax;i++)weekNums.push(i);
+
+  // ISO週の代表日（木曜）から「月」と「その月の第何週」を求める
+  function isoWeekThursday(year,wk){
+    // ISO: 1月4日を含む週が第1週。木曜基準。
+    const jan4=new Date(year,0,4);
+    const jan4Day=(jan4.getDay()+6)%7; // 月=0
+    const week1Mon=new Date(jan4);week1Mon.setDate(jan4.getDate()-jan4Day);
+    const thu=new Date(week1Mon);thu.setDate(week1Mon.getDate()+(wk-1)*7+3);
+    return thu;
+  }
+  function weekMonthInfo(year,wk){
+    const thu=isoWeekThursday(year,wk);
+    const month=thu.getMonth()+1;
+    // その月の第何週か：同月内で何回目の木曜か＝ceil(日付/7)に近い。木曜の日にちで判定
+    const weekOfMonth=Math.ceil(thu.getDate()/7);
+    return {month,weekOfMonth,thu};
+  }
+  // 各週の月内ラベル（基準はyA。年がずれても時期の目安として十分）
+  const colInfo=weekNums.map(wk=>weekMonthInfo(yA,wk));
+
+  if(!weeksA.size&&!weeksB.size){
+    return `<div class="cmp-section"><div class="cmp-section-title"><span class="dot"></span>${wt}の時期</div>
+      <div class="cmp-week-card"><div class="cmp-empty">${yA}年・${yB}年とも、まだ「${wt}」の記録がありません。<br>作業を記録していくと、ここに時期がならびます。</div></div></div>`;
+  }
+
+  // 上段：月が変わる最初の列にだけ「○月」、それ以外は空
+  let lastM=null;
+  const monthHeadCells=colInfo.map(ci=>{const show=ci.month!==lastM;lastM=ci.month;return `<span class="cmp-mh ${show?'on':''}">${show?ci.month+'月':''}</span>`;}).join('');
+  // 下段：その月の第何週
+  const weekHeadCells=colInfo.map(ci=>`<span>${ci.weekOfMonth}</span>`).join('');
+
+  // マス：その年・その週に作業があれば、日付リストをdata属性に持たせてタップ可能に
+  function cellRow(year,weeks,cls){
+    return weekNums.map((wk,i)=>{
+      const on=weeks.has(wk);
+      const dates=on?(workDatesByWeek[year+'_'+wk]||[]):[];
+      const ci=colInfo[i];
+      const dataAttr=on?`data-cell='${JSON.stringify({y:year,wk,m:ci.month,wom:ci.weekOfMonth,dates}).replace(/'/g,"&#39;")}'`:'';
+      return `<div class="cmp-week-cell ${on?cls:''} ${on?'tappable':''}" ${dataAttr} ${on?'onclick="showCellDates(this)"':''}></div>`;
+    }).join('');
+  }
+
+  return `<div class="cmp-section">
+    <div class="cmp-section-title"><span class="dot"></span>${wt}の時期くらべ</div>
+    <div class="cmp-section-note">色のついた週が、その作業をした週です。横軸は「○月の第○週」。マスをタップすると実際の作業日が見られます。横にスクロールできます。</div>
+    <div class="cmp-legend">
+      <div class="cmp-legend-item"><span class="cmp-legend-swatch" style="background:var(--dusk)"></span>${yA}年</div>
+      <div class="cmp-legend-item"><span class="cmp-legend-swatch" style="background:var(--sea)"></span>${yB}年</div>
+    </div>
+    <div class="cmp-week-card"><div class="cmp-week-grid">
+      <div class="cmp-week-head cmp-month-head">${monthHeadCells}</div>
+      <div class="cmp-week-head cmp-weekofmonth-head">${weekHeadCells}</div>
+      <div class="cmp-week-row"><span class="cmp-week-label">${yA}年</span><div class="cmp-week-cells">${cellRow(yA,weeksA,'has-a')}</div></div>
+      <div class="cmp-week-row"><span class="cmp-week-label">${yB}年</span><div class="cmp-week-cells">${cellRow(yB,weeksB,'has-b')}</div></div>
+    </div></div>
+    <div id="cmp-cell-detail" class="cmp-cell-detail"></div>
+    ${renderWorkSummary(weeksA,weeksB,yA,yB,wt)}
+  </div>`;
+}
+
+// マスのタップで作業日を表示
+function showCellDates(el){
+  let data;try{data=JSON.parse(el.getAttribute('data-cell').replace(/&#39;/g,"'"));}catch(e){return;}
+  const box=document.getElementById('cmp-cell-detail');if(!box)return;
+  // 選択中マスの強調
+  document.querySelectorAll('.cmp-week-cell.sel').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  const days=['日','月','火','水','木','金','土'];
+  const list=(data.dates||[]).slice().sort().map(ds=>{const d=new Date(ds+'T00:00:00');const md=`${d.getMonth()+1}月${d.getDate()}日`;const wd=days[d.getDay()];return `<span class="cmp-date-chip">${md}（${wd}）</span>`;}).join('');
+  box.innerHTML=`<div class="cmp-cell-detail-inner">
+    <div class="cmp-cell-detail-head">${data.y}年 ${data.m}月 第${data.wom}週</div>
+    <div class="cmp-cell-detail-dates">${list||'記録なし'}</div>
+  </div>`;
+  box.classList.add('show');
+}
+
+function renderWorkSummary(weeksA,weeksB,yA,yB,wt){
+  function span(weeks){if(!weeks.size)return null;const a=[...weeks].sort((x,y)=>x-y);return {first:a[0],last:a[a.length-1],count:a.length};}
+  const sA=span(weeksA),sB=span(weeksB);
+  if(!sA&&!sB)return '';
+  const fmt=s=>s?`第${s.first}週〜第${s.last}週 ・ ${s.count}週ぶん`:'記録なし';
+  let diff='';
+  if(sA&&sB){
+    const d=sA.first-sB.first;
+    if(d===0)diff='開始の時期は去年と同じくらいです。';
+    else if(d>0)diff=`${yA}年は${yB}年より <b>${d}週おそい</b> 開始です。`;
+    else diff=`${yA}年は${yB}年より <b>${-d}週はやい</b> 開始です。`;
+  }
+  return `<div style="margin-top:14px;background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px"><span style="font-size:12px;color:var(--dusk);font-weight:700">${yA}年</span><span style="font-size:12px;color:var(--vine);font-family:'Shippori Mincho',serif">${fmt(sA)}</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline${diff?';border-bottom:1px solid var(--line-soft);padding-bottom:10px;margin-bottom:10px':''}"><span style="font-size:12px;color:var(--sea);font-weight:700">${yB}年</span><span style="font-size:12px;color:var(--vine);font-family:'Shippori Mincho',serif">${fmt(sB)}</span></div>
+    ${diff?`<div style="font-size:13px;color:var(--bark);letter-spacing:.02em;line-height:1.6">${diff}</div>`:''}
+  </div>`;
+}
+
+function renderCompareWeather(fields){
+  const yA=CMP_STATE.yearA, yB=CMP_STATE.yearB, fid=CMP_STATE.fieldId, metric=CMP_STATE.metric;
+  const field=fields.find(f=>f.id===fid);
+  const unit=metric==='rain'?'mm':'h';
+  const label=metric==='rain'?'雨量':'日照';
+
+  const dataA=cmpMonthlyFromCache(fid,yA,metric);
+  const dataB=cmpMonthlyFromCache(fid,yB,metric);
+  const hasData=dataA.some(v=>v!=null)||dataB.some(v=>v!=null);
+
+  let html=`<div class="cmp-section">
+    <div class="cmp-section-title"><span class="dot"></span>${field?field.name:''}の${label}くらべ</div>
+    <div class="cmp-section-note">月ごとの${label}を、正確な実測データ（気象記録）から${yA}年と${yB}年でならべます。</div>`;
+
+  if(!hasData){
+    html+=`<div class="cmp-wx-fetch">
+      月別の${label}は、正確な実測データから集計します。${field&&field.lat!=null?`下のボタンで${field.name}の${yA}年・${yB}年ぶんをまとめて取り込みます（ネット接続が必要です）。一度取り込めば端末に保存され、次からはすぐ表示されます。`:'この圃場はGPS座標が未登録のため取得できません。圃場にGPSを登録すると集計できます。'}
+      ${field&&field.lat!=null?`<br><span class="cmp-wx-fetch-btn" id="cmp-wx-fetch-btn">📡 ${yA}年・${yB}年の実測をとりこむ</span>`:''}
+    </div></div>`;
+    return html;
+  }
+
+  const maxV=Math.max(1,...dataA.filter(v=>v!=null),...dataB.filter(v=>v!=null));
+  const monthRows=[];
+  for(let m=0;m<12;m++){
+    const vA=dataA[m], vB=dataB[m];
+    if(vA==null&&vB==null)continue;
+    monthRows.push(`<div class="cmp-wx-row">
+      <div class="cmp-wx-month">${m+1}月</div>
+      <div class="cmp-wx-bars">
+        <div class="cmp-wx-bar-line"><span class="cmp-wx-bar-yr" style="color:var(--dusk)">${yA}</span><div class="cmp-wx-bar-track"><div class="cmp-wx-bar-fill" style="width:${vA!=null?(vA/maxV*100):0}%;background:var(--dusk)"></div></div><span class="cmp-wx-bar-val">${vA!=null?vA.toFixed(metric==='rain'?0:1)+unit:'—'}</span></div>
+        <div class="cmp-wx-bar-line"><span class="cmp-wx-bar-yr" style="color:var(--sea)">${yB}</span><div class="cmp-wx-bar-track"><div class="cmp-wx-bar-fill" style="width:${vB!=null?(vB/maxV*100):0}%;background:var(--sea)"></div></div><span class="cmp-wx-bar-val">${vB!=null?vB.toFixed(metric==='rain'?0:1)+unit:'—'}</span></div>
+      </div>
+    </div>`);
+  }
+  html+=`<div class="cmp-legend">
+      <div class="cmp-legend-item"><span class="cmp-legend-swatch" style="background:var(--dusk)"></span>${yA}年</div>
+      <div class="cmp-legend-item"><span class="cmp-legend-swatch" style="background:var(--sea)"></span>${yB}年</div>
+    </div>
+    <div class="cmp-wx-card">${monthRows.join('')}</div>
+    <div style="margin-top:10px;text-align:center"><span class="cmp-wx-fetch-btn" id="cmp-wx-fetch-btn" style="background:var(--bark)">↻ 取り込み直す</span></div>
+  </div>`;
+  return html;
+}
+
+function cmpMonthlyFromCache(fid,year,metric){
+  const arr=new Array(12).fill(null);
+  for(let m=1;m<=12;m++){
+    const key=`${fid}_${year}_${m}`;
+    const c=cmpWxCache[key];
+    if(c&&c[metric]!=null)arr[m-1]=c[metric];
+  }
+  return arr;
+}
+
+function cmpSetYear(slot,y){if(slot==='A')CMP_STATE.yearA=y;else CMP_STATE.yearB=y;renderCompare();}
+function cmpSetMetric(m){CMP_STATE.metric=m;renderCompare();}
+function cmpSetWorkType(t){CMP_STATE.workType=t;renderCompare();}
+function cmpSetField(f){CMP_STATE.fieldId=f;renderCompare();}
+
+async function cmpFetchWeatherData(btn){
+  const fid=CMP_STATE.fieldId, yA=CMP_STATE.yearA, yB=CMP_STATE.yearB;
+  const fields=await dbGetAll('fields');const f=fields.find(x=>x.id===fid);
+  if(!f||f.lat==null){showToast('この圃場はGPS未登録です');return;}
+  if(btn){btn.classList.add('loading');btn.textContent='取り込み中…';}
+  try{
+    for(const yr of [yA,yB]){await cmpFetchYear(f,yr);}
+    await saveCmpCache();
+    showToast('実測データを取り込みました');
+    renderCompare();
+  }catch(err){
+    const reason=(err&&err.message)?err.message:'不明';
+    const offline=(typeof navigator!=='undefined'&&navigator.onLine===false);
+    showToast(offline?'オフラインのため取得できません':`取得できませんでした（${reason}）`);
+    if(btn){btn.classList.remove('loading');btn.textContent='📡 もう一度ためす';}
+  }
+}
+
+async function cmpFetchYear(field,year){
+  const today=new Date();
+  let start=`${year}-01-01`;
+  let end=`${year}-12-31`;
+  const endDate=new Date(end+'T00:00:00');
+  if(endDate>today){end=today.toISOString().split('T')[0];}
+  const url=`https://archive-api.open-meteo.com/v1/archive?latitude=${field.lat}&longitude=${field.lng}&start_date=${start}&end_date=${end}&daily=precipitation_sum,sunshine_duration&timezone=Asia%2FTokyo`;
+  const res=await fetch(url);
+  if(!res.ok)throw new Error('HTTP '+res.status);
+  const j=await res.json();
+  const d=j.daily;if(!d||!d.time)throw new Error('データなし');
+  const rainByM=new Array(12).fill(null), sunByM=new Array(12).fill(null);
+  d.time.forEach((dateStr,i)=>{
+    const m=parseInt(dateStr.slice(5,7))-1;
+    const rain=d.precipitation_sum?d.precipitation_sum[i]:null;
+    const sunSec=d.sunshine_duration?d.sunshine_duration[i]:null;
+    if(rain!=null){rainByM[m]=(rainByM[m]||0)+rain;}
+    if(sunSec!=null){sunByM[m]=(sunByM[m]||0)+sunSec/3600;}
+  });
+  for(let m=0;m<12;m++){
+    const key=`${field.id}_${year}_${m+1}`;
+    cmpWxCache[key]={rain:rainByM[m]!=null?Math.round(rainByM[m]*10)/10:null,
+                     sun:sunByM[m]!=null?Math.round(sunByM[m]*10)/10:null};
+  }
+}
+
+async function saveCmpCache(){try{await dbPut('meta',{id:'cmpWxCache',data:cmpWxCache});}catch(e){}}
+async function loadCmpCache(){try{const all=await dbGetAll('meta');const c=all.find(x=>x.id==='cmpWxCache');if(c)cmpWxCache=c.data||{};}catch(e){}}
+
+let toastTimer;
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2800);}
+
+async function init(){await initDB();await seedRealData();await loadCmpCache();buildWorkTypeGrid();buildQuickActions();const today=new Date().toISOString().split('T')[0];['work-date','trellis-date','harvest-date'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=today;});await renderDashboard();document.getElementById('fab-btn').style.display='none';}
+init().catch(console.error);
+</script>
+</body>
+</html>
