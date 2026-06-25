@@ -336,6 +336,12 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .cal-cell.sun .cal-day-num{color:var(--wine);}
 .cal-cell.sat .cal-day-num{color:var(--sea);}
 .cal-wx{font-size:10px;line-height:1;margin-top:1px;}
+.cal-rain{font-size:8px;line-height:1;color:var(--sea);margin-top:1px;font-weight:700;}
+.cal-cell.forecast{border:1px dashed var(--line);background:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(91,122,134,.04) 4px,rgba(91,122,134,.04) 8px);}
+.cal-cell.forecast .cal-day-num{color:var(--text-muted);}
+.cal-forecast-note{font-size:11px;color:var(--text-muted);padding:10px 18px 0;line-height:1.6;letter-spacing:.02em;}
+.cal-forecast-note b{color:var(--sea);}
+.cal-detail-wx{font-size:12px;color:var(--bark);background:var(--paper);border-radius:var(--radius-sm);padding:8px 11px;margin-bottom:10px;letter-spacing:.02em;}
 .cal-spray-dots{display:flex;flex-wrap:wrap;gap:1px;justify-content:center;margin-top:auto;padding-bottom:1px;}
 .cal-spray-dot{width:5px;height:5px;border-radius:50%;background:var(--leaf);}
 .cal-pest-mark{position:absolute;top:2px;right:3px;font-size:8px;}
@@ -1363,6 +1369,33 @@ async function renderHarvest(){
 let sprayCalYear=null, sprayCalMonth=null; // 表示中の年月
 let sprayCalSelDate=null; // 選択中の日
 let editingSprayId=null;
+let forecastCache={};       // 'YYYY-MM-DD' -> {code,cond,tmax,tmin,rain,forecast:true}
+let forecastFetchedAt=0;    // 最後に予報を取った時刻（ミリ秒）
+
+// 余川を代表に、7日先までの予報を取得してforecastCacheに入れる
+async function fetchSprayForecast(){
+  // 10分以内に取得済みなら使い回す
+  if(Date.now()-forecastFetchedAt < 10*60*1000 && Object.keys(forecastCache).length) return false;
+  const fields=await dbGetAll('fields');
+  const f=fields.find(x=>x.id==='f_yokawa')||fields.find(x=>x.lat!=null);
+  if(!f||f.lat==null) return false;
+  const daily='temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum';
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${f.lat}&longitude=${f.lng}&daily=${daily}&timezone=Asia%2FTokyo&forecast_days=8`;
+  const res=await fetch(url);
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  const j=await res.json();const d=j.daily;if(!d||!d.time) throw new Error('予報なし');
+  const cache={};
+  d.time.forEach((ds,i)=>{
+    const code=d.weather_code?d.weather_code[i]:null;
+    cache[ds]={code,cond:weatherInfo(code).t,
+      tmax:d.temperature_2m_max?d.temperature_2m_max[i]:null,
+      tmin:d.temperature_2m_min?d.temperature_2m_min[i]:null,
+      rain:d.precipitation_sum?d.precipitation_sum[i]:null,
+      forecast:true};
+  });
+  forecastCache=cache;forecastFetchedAt=Date.now();
+  return true;
+}
 const PEST_QUICK=['ベト病','うどんこ病','灰色かび病','晩腐病','黒とう病','さび病','カメムシ','ハダニ','コガネムシ','スリップス','チャノキイロアザミウマ'];
 
 function openSprayForm(){
@@ -1499,17 +1532,25 @@ async function renderSpray(){
     const ds=`${sprayCalYear}-${String(sprayCalMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const dow=new Date(sprayCalYear,sprayCalMonth,d).getDay();
     const sp=sprayByDate[ds]||[];
-    const wx=wxByDate[ds];
+    // 天気：実測の記録があればそれ、なければ予報（未来日）
+    let wx=wxByDate[ds]; let isForecast=false;
+    if(!wx && forecastCache[ds]){wx=forecastCache[ds];isForecast=true;}
     const hasPest=pestRecs.some(p=>p.date===ds);
     const dots=sp.slice(0,4).map(()=>`<span class="cal-spray-dot"></span>`).join('');
-    html+=`<div class="cal-cell ${sp.length?'has-spray':''} ${ds===todayStr?'today':''} ${ds===sprayCalSelDate?'sel':''} ${dow===0?'sun':''} ${dow===6?'sat':''}" onclick="sprayCalSelect('${ds}')">
+    const rainStr=(isForecast&&wx&&wx.rain!=null&&wx.rain>=1)?`<div class="cal-rain">${Math.round(wx.rain)}mm</div>`:'';
+    html+=`<div class="cal-cell ${sp.length?'has-spray':''} ${ds===todayStr?'today':''} ${ds===sprayCalSelDate?'sel':''} ${isForecast?'forecast':''} ${dow===0?'sun':''} ${dow===6?'sat':''}" onclick="sprayCalSelect('${ds}')">
       <div class="cal-day-num">${d}</div>
       ${wx?`<div class="cal-wx">${condEmoji(wx)}</div>`:''}
+      ${rainStr}
       ${hasPest?`<div class="cal-pest-mark">⚠</div>`:''}
       <div class="cal-spray-dots">${dots}</div>
     </div>`;
   }
   html+=`</div></div>`;
+  // 予報の注記
+  if(Object.keys(forecastCache).length){
+    html+=`<div class="cal-forecast-note">点線の日は<b>余川の予報</b>です（雨は1mm以上のとき表示）。雨の前の防除の目安に。</div>`;
+  }
 
   // 選択日の詳細（防除記録）
   if(sprayCalSelDate){
@@ -1517,6 +1558,15 @@ async function renderSpray(){
     const d=new Date(sprayCalSelDate+'T00:00:00');
     const days=['日','月','火','水','木','金','土'];
     html+=`<div class="cal-detail"><div class="cal-detail-head">${d.getMonth()+1}月${d.getDate()}日（${days[d.getDay()]}）の防除</div>`;
+    // 予報（実測の記録がなく予報がある日）
+    const selWx=wxByDate[sprayCalSelDate]||forecastCache[sprayCalSelDate];
+    if(selWx){
+      const isF=!wxByDate[sprayCalSelDate]&&forecastCache[sprayCalSelDate];
+      const parts=[`${condEmoji(selWx)} ${selWx.cond||''}`];
+      if(selWx.tmax!=null)parts.push(`${Math.round(selWx.tmax)}〜${selWx.tmin!=null?Math.round(selWx.tmin):'—'}℃`);
+      if(selWx.rain!=null&&selWx.rain>=0.1)parts.push(`雨 ${selWx.rain}mm`);
+      html+=`<div class="cal-detail-wx">${isF?'予報：':'天気：'}${parts.join(' ・ ')}</div>`;
+    }
     if(!sp.length){html+=`<div class="spray-empty">この日の防除記録はありません。<br>右下の ＋ から記録できます。</div>`;}
     else{html+=sp.map(s=>sprayRecHtml(s,fieldMap)).join('');}
     html+=`</div>`;
@@ -1537,6 +1587,12 @@ async function renderSpray(){
   html+=`<div style="height:20px"></div>`;
 
   el.innerHTML=html;
+
+  // 予報をバックグラウンドで取得（今月を表示しているときだけ）。取れたら静かに再描画。
+  const showingCurrentMonth = sprayCalYear===now.getFullYear() && sprayCalMonth===now.getMonth();
+  if(showingCurrentMonth){
+    fetchSprayForecast().then(updated=>{ if(updated) renderSpray(); }).catch(()=>{});
+  }
 }
 function sprayRecHtml(s,fieldMap){
   const d=new Date(s.spray_date+'T00:00:00');
