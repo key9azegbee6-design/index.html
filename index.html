@@ -2946,7 +2946,10 @@ function parseReportLine(line, ctx, fields, plots){
           matched=matchPlot(raw, usedFieldId, plots);
         }
       }
-      if(matched.plotId){usedFieldId=matched.fieldId||usedFieldId; usedFieldName=matched.fieldName||usedFieldName;}
+      if(matched.plotId && matched.fieldId){
+        usedFieldId=matched.fieldId;
+        usedFieldName=fields.find(f=>f.id===matched.fieldId)?.name||usedFieldName;
+      }
       rows.push({fieldId:usedFieldId, fieldName:usedFieldName,
         plotName: matched.plotName || normalizePlotName(raw),
         plotId: matched.plotId,
