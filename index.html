@@ -42,6 +42,47 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .hero-title{font-family:'Shippori Mincho',serif;font-size:25px;font-weight:600;color:var(--vine);letter-spacing:.04em;}
 .hero-subtitle{font-size:12px;color:var(--text-muted);margin-top:6px;letter-spacing:.05em;}
 .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border-bottom:1px solid var(--line);}
+.dash-card{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;cursor:pointer;}
+.dash-card-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.dash-card-icon{font-size:16px;}
+.dash-card-title{font-size:12px;font-weight:700;color:var(--bark);letter-spacing:.08em;flex:1;}
+.dash-card-go{font-size:20px;color:var(--line);}
+.dash-weather-card{cursor:default;}
+.dash-weather-empty,.dash-weather-fetch{font-size:13px;color:var(--bark);text-align:center;padding:8px;cursor:pointer;}
+.dash-weather-today{display:flex;align-items:center;gap:14px;padding-bottom:12px;border-bottom:1px solid var(--line-soft);}
+.dash-weather-emoji{font-size:38px;line-height:1;}
+.dash-weather-cond{font-size:15px;color:var(--vine);font-weight:600;font-family:'Shippori Mincho',serif;letter-spacing:.04em;}
+.dash-weather-temp{font-size:13px;color:var(--bark);margin-top:3px;}
+.dash-temp-hi{color:var(--wine);font-weight:700;}
+.dash-temp-lo{color:var(--sea);font-weight:700;}
+.dash-weather-week{display:flex;justify-content:space-between;gap:4px;padding:12px 0 4px;}
+.dash-week-day{flex:1;text-align:center;padding:7px 2px;border-radius:var(--radius-sm);}
+.dash-week-day.rain-warn{background:rgba(91,122,134,.08);}
+.dash-week-dow{font-size:10px;color:var(--text-muted);margin-bottom:3px;}
+.dash-week-emoji{font-size:16px;line-height:1.2;}
+.dash-week-temp{font-size:12px;color:var(--bark);font-weight:600;margin-top:2px;}
+.dash-week-rain{font-size:9px;color:var(--sea);font-weight:700;min-height:12px;}
+.dash-weather-src{font-size:10px;color:var(--text-muted);text-align:right;margin-top:2px;}
+.dash-nextspray-card .dash-nextspray-date{font-family:'Shippori Mincho',serif;font-size:18px;font-weight:600;color:var(--vine);letter-spacing:.04em;}
+.dash-nextspray-agents{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.dash-nextspray-rain{font-size:12px;color:#3F5A63;background:#ECF0F2;border:1px solid #C5D6DC;border-radius:var(--radius-sm);padding:8px 10px;margin-top:10px;line-height:1.6;}
+.dash-clim-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.dash-clim-item{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;text-align:center;}
+.dash-clim-val{font-family:'Shippori Mincho',serif;font-size:24px;font-weight:600;color:var(--vine);}
+.dash-clim-unit{font-size:12px;color:var(--text-muted);margin-left:2px;}
+.dash-clim-label{font-size:11px;color:var(--text-muted);margin-top:2px;letter-spacing:.04em;}
+.dash-clim-fetch{font-size:13px;color:var(--bark);cursor:pointer;padding:4px;}
+.dash-stage-card{background:var(--cream);border:1px solid var(--line);border-left:3px solid var(--leaf);border-radius:var(--radius);padding:14px 16px;}
+.dash-stage-now{font-family:'Shippori Mincho',serif;font-size:15px;font-weight:600;color:var(--vine);letter-spacing:.04em;}
+.dash-stage-el{font-size:11px;color:var(--cream);background:var(--leaf);border-radius:4px;padding:1px 6px;margin-right:6px;font-family:inherit;}
+.dash-stage-desc{font-size:12px;color:var(--bark);margin-top:6px;line-height:1.6;}
+.dash-stage-next{font-size:12px;color:var(--dusk);margin-top:8px;font-weight:600;}
+.dash-pest-item{display:flex;align-items:center;gap:10px;padding:11px 0;}
+.dash-pest-mark{font-size:16px;}
+.dash-pest-info{flex:1;min-width:0;}
+.dash-pest-text{font-size:13px;color:var(--vine);font-weight:500;}
+.dash-pest-where{font-size:11px;color:var(--text-muted);margin-top:1px;}
+.dash-pest-date{font-size:11px;color:var(--text-muted);}
 .stat-card{background:var(--cream);padding:18px 10px 16px;text-align:center;}
 .stat-val{font-family:'Shippori Mincho',serif;font-size:30px;font-weight:600;line-height:1;color:var(--vine);}
 .stat-unit{font-size:11px;color:var(--text-muted);margin-left:1px;}
@@ -59,7 +100,7 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .qa-label{font-size:11px;font-weight:500;color:var(--bark);margin-top:6px;letter-spacing:.04em;}
 .progress-item{display:flex;align-items:center;gap:12px;padding:11px 0;}
 .progress-item + .progress-item{border-top:1px solid var(--line-soft);}
-.progress-name{font-size:13px;font-weight:500;width:54px;flex-shrink:0;color:var(--vine);}
+.progress-name{font-size:13px;font-weight:500;width:72px;flex-shrink:0;color:var(--vine);}
 .progress-bar-wrap{flex:1;height:6px;background:var(--paper);border-radius:3px;overflow:hidden;}
 .progress-bar-fill{height:100%;border-radius:3px;transition:width .7s ease;}
 .progress-pct{font-family:'Shippori Mincho',serif;font-size:14px;font-weight:600;width:38px;text-align:right;}
@@ -111,6 +152,31 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .save-btn{width:100%;padding:16px;border:none;border-radius:var(--radius);background:var(--vine);color:var(--cream);font-family:'Shippori Mincho',serif;font-size:16px;font-weight:600;cursor:pointer;letter-spacing:.1em;transition:background .15s,transform .12s;display:flex;align-items:center;justify-content:center;gap:8px;}
 .save-btn:active{transform:scale(.99);background:var(--bark);}
 .trellis-header-card{background:var(--cream);border:1px solid var(--line);padding:24px 22px;margin:18px 18px 0;border-radius:var(--radius);position:relative;overflow:hidden;}
+.prog-header{padding:18px 18px 10px;}
+.prog-seg{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:14px;}
+.prog-seg button{flex:1;padding:11px 6px;border:none;background:var(--cream);font-family:inherit;font-size:13px;color:var(--bark);cursor:pointer;transition:background .12s;}
+.prog-seg button.active{background:var(--vine);color:var(--cream);font-weight:700;}
+.prog-overall{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;position:relative;overflow:hidden;}
+.prog-overall::before{content:'';position:absolute;left:0;top:0;width:3px;height:100%;background:var(--dusk);}
+.prog-overall-round{font-family:'Shippori Mincho',serif;font-size:22px;font-weight:600;color:var(--vine);letter-spacing:.05em;}
+.prog-overall-sub{font-size:11px;color:var(--text-muted);margin-top:3px;letter-spacing:.03em;}
+.prog-field-name{font-family:'Shippori Mincho',serif;font-size:14px;font-weight:600;color:var(--vine);margin-bottom:10px;letter-spacing:.08em;}
+.prog-field-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.prog-field-head .prog-field-name{margin-bottom:0;}
+.prog-field-done-btn{font-size:12px;font-weight:700;padding:6px 13px;border-radius:20px;border:1px solid var(--vine);background:var(--vine);color:var(--cream);cursor:pointer;font-family:inherit;letter-spacing:.02em;transition:opacity .12s;white-space:nowrap;}
+.prog-field-done-btn:active{opacity:.7;}
+.prog-plot-card{padding:14px 16px;}
+.prog-plot-name{font-family:'Shippori Mincho',serif;font-size:16px;font-weight:600;color:var(--vine);letter-spacing:.05em;}
+.prog-plot-meta{font-size:11px;color:var(--text-muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.prog-round-badge{font-size:12px;font-weight:700;padding:4px 11px;border-radius:20px;background:var(--paper);border:1px solid var(--line);color:var(--text-muted);white-space:nowrap;}
+.prog-round-badge.r1{background:#F1EFE6;border-color:#C9B88A;color:#9A7A2E;}
+.prog-round-badge.r2{background:#ECEFE6;border-color:#A8B894;color:#5C6B4A;}
+.prog-bar-wrap{height:6px;background:var(--paper);border-radius:3px;overflow:hidden;margin:11px 0 12px;}
+.prog-bar-fill{height:100%;border-radius:3px;transition:width .5s ease;}
+.prog-plot-actions{display:flex;gap:7px;}
+.prog-act-btn{flex:1;padding:9px 6px;border:1px solid var(--vine);border-radius:var(--radius-sm);background:var(--vine);color:var(--cream);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .12s;letter-spacing:.02em;}
+.prog-act-btn:active{opacity:.7;}
+.prog-act-btn.sub{background:var(--cream);color:var(--bark);border-color:var(--line);font-weight:500;}
 .trellis-header-card::after{content:'';position:absolute;left:22px;right:22px;bottom:0;height:1px;background:linear-gradient(90deg,transparent,var(--dusk),transparent);opacity:.3;}
 .trellis-overall-pct{font-family:'Shippori Mincho',serif;font-size:46px;font-weight:600;line-height:1;color:var(--vine);}
 .trellis-overall-label{font-size:12px;color:var(--text-muted);margin-top:6px;letter-spacing:.05em;}
@@ -345,6 +411,39 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .cal-spray-dots{display:flex;flex-wrap:wrap;gap:1px;justify-content:center;margin-top:auto;padding-bottom:1px;}
 .cal-spray-dot{width:5px;height:5px;border-radius:50%;background:var(--leaf);}
 .cal-pest-mark{position:absolute;top:2px;right:3px;font-size:8px;}
+.cal-next-mark{position:absolute;top:1px;left:3px;font-size:8px;font-weight:700;color:var(--cream);background:var(--dusk);border-radius:3px;padding:0 3px;line-height:1.4;}
+.cal-cell.next-plan{box-shadow:inset 0 0 0 2px var(--dusk);}
+.spray-plan{margin:14px 18px 0;background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
+.spray-plan-head{display:flex;justify-content:space-between;align-items:flex-start;padding:16px 18px 12px;background:linear-gradient(180deg,rgba(192,138,86,.06),transparent);}
+.spray-plan-label{font-size:11px;color:var(--dusk);font-weight:700;letter-spacing:.1em;}
+.spray-plan-date{font-family:'Shippori Mincho',serif;font-size:22px;font-weight:600;color:var(--vine);margin-top:4px;letter-spacing:.04em;}
+.spray-plan-base{font-size:11px;color:var(--text-muted);text-align:right;line-height:1.5;}
+.spray-plan-no{font-size:11px;color:var(--dusk);font-weight:700;margin-top:4px;letter-spacing:.02em;}
+.spray-plan-agents{padding:10px 18px 4px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.spray-plan-agents-label{font-size:10px;color:var(--text-muted);font-weight:700;letter-spacing:.08em;margin-right:2px;}
+.spray-agent-chip{font-size:12px;padding:4px 11px;border-radius:20px;background:var(--paper);border:1px solid var(--dusk);color:var(--bark);font-weight:500;}
+.plan-note-schedule{background:#F3EFE3;border:1px solid #D8C99A;color:#8A6D2E;}
+.sched-note{font-size:11px;color:var(--text-muted);padding:0 18px 10px;line-height:1.6;}
+.sched-item{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius-sm);margin-bottom:6px;overflow:hidden;}
+.sched-item.next{border-color:var(--dusk);box-shadow:0 0 0 1px var(--dusk);}
+.sched-item.cur{border-color:var(--line);background:var(--paper);}
+.sched-summary{display:flex;align-items:center;gap:10px;padding:11px 13px;cursor:pointer;list-style:none;}
+.sched-summary::-webkit-details-marker{display:none;}
+.sched-no{width:24px;height:24px;border-radius:50%;background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--bark);flex-shrink:0;font-family:'Shippori Mincho',serif;}
+.sched-item.next .sched-no{background:var(--dusk);color:var(--cream);border-color:var(--dusk);}
+.sched-when{flex:1;font-size:13px;color:var(--vine);font-weight:500;}
+.sched-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;}
+.sched-badge.next{background:var(--dusk);color:var(--cream);}
+.sched-badge.cur{background:var(--paper);border:1px solid var(--line);color:var(--text-muted);}
+.sched-body{padding:0 13px 12px 47px;}
+.sched-row{display:flex;gap:8px;font-size:12px;margin-top:5px;line-height:1.5;}
+.sched-k{color:var(--text-muted);width:32px;flex-shrink:0;font-weight:700;}
+.sched-v{color:var(--bark);flex:1;}
+.spray-plan-notes{padding:0 18px;}
+.plan-note{font-size:13px;line-height:1.7;padding:10px 12px;border-radius:var(--radius-sm);margin-bottom:8px;letter-spacing:.02em;}
+.plan-note-rain{background:#ECF0F2;border:1px solid #C5D6DC;color:#3F5A63;}
+.plan-note-stage{background:#EEF0E4;border:1px solid #C9D2A8;color:#5C6B4A;}
+.spray-plan-foot{font-size:10px;color:var(--text-muted);padding:4px 18px 14px;line-height:1.6;letter-spacing:.02em;}
 .cal-detail{margin:14px 18px 0;}
 .cal-detail-head{font-family:'Shippori Mincho',serif;font-size:15px;font-weight:600;color:var(--vine);margin-bottom:10px;letter-spacing:.05em;}
 .spray-rec{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .12s;}
@@ -381,23 +480,15 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
       <div class="hero-title">今日の畑</div>
       <div class="hero-subtitle" id="hero-subtitle">読み込み中…</div>
     </div>
-    <div class="stat-row">
-      <div class="stat-card"><div><span class="stat-val" id="stat-works">0</span><span class="stat-unit">件</span></div><div class="stat-label">今月の作業</div></div>
-      <div class="stat-card"><div><span class="stat-val" id="stat-spray">0</span><span class="stat-unit">回</span></div><div class="stat-label">今月の防除</div></div>
-      <div class="stat-card"><div><span class="stat-val" id="stat-harvest">0</span><span class="stat-unit">kg</span></div><div class="stat-label">収穫合計</div></div>
-    </div>
+    <div id="dash-weather"></div>
+    <div id="dash-nextspray"></div>
+    <div id="dash-climate"></div>
     <div class="section">
-      <div class="section-header"><span class="section-title"><span class="dot"></span>畑仕事を記す</span></div>
-      <div class="quick-actions" id="quick-actions"></div>
-    </div>
-    <div class="section">
-      <div class="section-header"><span class="section-title"><span class="dot"></span>誘引の進み</span><span class="section-link" onclick="switchTab('trellis')">すべて見る →</span></div>
+      <div class="section-header"><span class="section-title"><span class="dot"></span>作業の巡目</span><span class="section-link" onclick="switchTab('trellis')">すべて見る →</span></div>
       <div class="card"><div style="padding:16px 18px" id="dash-trellis-list"><div class="loading-dots"><span></span><span></span><span></span></div></div></div>
     </div>
-    <div class="section">
-      <div class="section-header"><span class="section-title"><span class="dot"></span>最近の手しごと</span><span class="section-link" onclick="switchTab('work')">すべて見る →</span></div>
-      <div class="card"><div id="recent-work-list" style="padding:0 18px"><div class="loading-dots"><span></span><span></span><span></span></div></div></div>
-    </div>
+    <div id="dash-stage"></div>
+    <div id="dash-pest"></div>
     <div style="height:80px"></div>
   </div>
 
@@ -416,7 +507,7 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
     <button class="nav-item" data-tab="work" onclick="switchTab('work')"><span class="nav-icon">✎</span>作業</button>
     <button class="nav-item" data-tab="compare" onclick="switchTab('compare')"><span class="nav-icon">📊</span>くらべる</button>
     <button class="nav-item" data-tab="spray" onclick="switchTab('spray')"><span class="nav-icon">💧</span>防除暦</button>
-    <button class="nav-item" data-tab="trellis" onclick="switchTab('trellis')"><span class="nav-icon">🪢</span>誘引</button>
+    <button class="nav-item" data-tab="trellis" onclick="switchTab('trellis')"><span class="nav-icon">📈</span>進捗</button>
     <button class="nav-item" data-tab="harvest" onclick="switchTab('harvest')"><span class="nav-icon">🍇</span>収穫</button>
   </nav>
   <button class="fab" id="fab-btn" onclick="onFabClick()">＋</button>
@@ -444,6 +535,14 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
           <div class="form-hint">選ばなければ区画ぜんぶが対象になります。</div>
         </div>
         <div class="form-group"><label class="form-label">作業の種類</label><div class="work-type-grid" id="work-type-grid"></div></div>
+        <div id="work-spray-fields" style="display:none">
+          <div class="form-group"><label class="form-label">薬剤名</label><input class="form-input" type="text" id="work-spray-agent" placeholder="例：ボルドー液、ダントツ"><div class="wx-quick-words" id="work-spray-agent-quick"></div></div>
+          <div class="form-group"><label class="form-label">対象（病気・害虫）</label><input class="form-input" type="text" id="work-spray-target" placeholder="例：べと病、カメムシ"><div class="pest-quick" id="work-spray-target-quick"></div></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">希釈倍率</label><input class="form-input" type="text" id="work-spray-dilution" placeholder="例：600倍"></div>
+            <div class="form-group"><label class="form-label">散布量(L)</label><input class="form-input" type="number" id="work-spray-amount" placeholder="—" step="1"></div>
+          </div>
+        </div>
         <div class="form-group" id="work-stage-group">
           <label class="form-label">生育ステージ（任意）</label>
           <select class="form-select" id="work-stage" onchange="renderStageInfo('work-stage','work-stage-info')"><option value="">記録しない</option></select>
@@ -654,7 +753,7 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 <div class="toast" id="toast"></div>
 
 <script>
-const DB_NAME='VigneDB', DB_VER=5;
+const DB_NAME='VigneDB', DB_VER=6;
 let db;
 
 const WORK_TYPES=[
@@ -939,6 +1038,7 @@ function initDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,
   if(!d.objectStoreNames.contains('harvest')){d.createObjectStore('harvest',{keyPath:'id'}).createIndex('plot_id','plot_id',{unique:false});}
   if(!d.objectStoreNames.contains('meta')){d.createObjectStore('meta',{keyPath:'id'});}
   if(!d.objectStoreNames.contains('spray')){const sp=d.createObjectStore('spray',{keyPath:'id'});sp.createIndex('spray_date','spray_date',{unique:false});sp.createIndex('iso_year','iso_year',{unique:false});}
+  if(!d.objectStoreNames.contains('progress')){d.createObjectStore('progress',{keyPath:'id'});}
 };r.onsuccess=e=>{db=e.target.result;res();};r.onerror=rej;});}
 function dbGetAll(s){return new Promise((res,rej)=>{const q=db.transaction(s,'readonly').objectStore(s).getAll();q.onsuccess=()=>res(q.result);q.onerror=rej;});}
 function dbPut(s,o){return new Promise((res,rej)=>{const q=db.transaction(s,'readwrite').objectStore(s).put(o);q.onsuccess=()=>res(q.result);q.onerror=rej;});}
@@ -1000,8 +1100,8 @@ async function seedRealData(){
 }
 
 const TAB_SCREENS={dashboard:'screen-dashboard',fields:'screen-fields',work:'screen-work',compare:'screen-compare',spray:'screen-spray',trellis:'screen-trellis',harvest:'screen-harvest'};
-const TAB_TITLES={dashboard:'Vigne',fields:'圃場',work:'作業の記録',compare:'去年とくらべる',spray:'防除暦',trellis:'誘引の進み',harvest:'収穫'};
-const TAB_FAB={dashboard:false,fields:true,work:true,compare:false,spray:true,trellis:true,harvest:true};
+const TAB_TITLES={dashboard:'Vigne',fields:'圃場',work:'作業の記録',compare:'去年とくらべる',spray:'防除暦',trellis:'作業の進捗',harvest:'収穫'};
+const TAB_FAB={dashboard:false,fields:true,work:true,compare:false,spray:true,trellis:false,harvest:true};
 const TAB_MARK={dashboard:'余川・磯辺・十二町',fields:'Fields',work:'Work',compare:'Compare',spray:'Spray',trellis:'Trellising',harvest:'Harvest'};
 
 function switchTab(tab){currentTab=tab;screenStack=[];document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));document.getElementById(TAB_SCREENS[tab]).classList.remove('hidden');document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.getElementById('header-title').textContent=TAB_TITLES[tab];document.getElementById('header-mark').textContent=TAB_MARK[tab];document.getElementById('back-btn').classList.add('hidden');document.getElementById('fab-btn').style.display=TAB_FAB[tab]?'flex':'none';renderTab(tab);}
@@ -1063,20 +1163,29 @@ async function addWorkToList(){
   const stage=document.getElementById('work-stage').value||'';
   const pest=document.getElementById('work-pest').value.trim();
   const icon=(WORK_TYPES.find(t=>t.label===selectedWorkType)||{}).icon||'✎';
+  // 防除のときは薬剤情報を読む
+  let spray=null;
+  if(selectedWorkType==='防除'){
+    const agent=document.getElementById('work-spray-agent').value.trim();
+    if(!agent){showToast('薬剤名を入れてください');return;}
+    spray={agent, target:document.getElementById('work-spray-target').value.trim()||null,
+      dilution:document.getElementById('work-spray-dilution').value.trim()||null,
+      amount:parseFloat(document.getElementById('work-spray-amount').value)||null};
+  }
   const fields=await dbGetAll('fields'),plots=await dbGetAll('plots');
   const field=fields.find(f=>f.id===fid);
   if(!selectedPlotIds.length){
     stagedWorks.push({workType:selectedWorkType,workIcon:icon,
-      fieldId:fid,fieldName:field?.name||'',plotId:null,plotName:null,variety:null,scope:'field',stage,pest});
+      fieldId:fid,fieldName:field?.name||'',plotId:null,plotName:null,variety:null,scope:'field',stage,pest,spray});
   }else if(selectedPlotIds.length===1&&selectedWorkVariety){
     const p=plots.find(x=>x.id===selectedPlotIds[0]);
     stagedWorks.push({workType:selectedWorkType,workIcon:icon,
-      fieldId:fid,fieldName:field?.name||'',plotId:p.id,plotName:p.name,variety:selectedWorkVariety,scope:'variety',stage,pest});
+      fieldId:fid,fieldName:field?.name||'',plotId:p.id,plotName:p.name,variety:selectedWorkVariety,scope:'variety',stage,pest,spray});
   }else{
     for(const pid of selectedPlotIds){
       const p=plots.find(x=>x.id===pid);if(!p)continue;
       stagedWorks.push({workType:selectedWorkType,workIcon:icon,
-        fieldId:fid,fieldName:field?.name||'',plotId:p.id,plotName:p.name,variety:null,scope:'plot',stage,pest});
+        fieldId:fid,fieldName:field?.name||'',plotId:p.id,plotName:p.name,variety:null,scope:'plot',stage,pest,spray});
     }
   }
   selectedPlotIds=[];selectedWorkVariety=null;
@@ -1093,7 +1202,7 @@ function renderStagedList(){
   grp.style.display='block';
   box.innerHTML=stagedWorks.map((s,i)=>{
     const tgt=s.scope==='field'?`${s.fieldName} ぜんぶ`:`${s.fieldName} › ${s.plotName}${s.variety?' ／ '+s.variety:''}`;
-    return `<div class="staged-item"><div class="staged-badge">${s.workIcon}</div><div class="staged-info"><div class="staged-target">${tgt}</div><div class="staged-meta">${s.workType}${s.stage?' ・ '+s.stage:''}${s.pest?' ・ 🐛'+s.pest:''}</div></div><div class="staged-del" onclick="removeStaged(${i})">×</div></div>`;
+    return `<div class="staged-item"><div class="staged-badge">${s.workIcon}</div><div class="staged-info"><div class="staged-target">${tgt}</div><div class="staged-meta">${s.workType}${s.spray&&s.spray.agent?' ・ 💧'+s.spray.agent:''}${s.stage?' ・ '+s.stage:''}${s.pest?' ・ 🐛'+s.pest:''}</div></div><div class="staged-del" onclick="removeStaged(${i})">×</div></div>`;
   }).join('');
   updateWorkSaveBtn();
 }
@@ -1110,7 +1219,25 @@ async function onHarvestPlotChange(){const pid=document.getElementById('harvest-
 async function fillPlotSelect(sid,fid){const plots=(await dbGetAll('plots')).filter(p=>p.field_id===fid);document.getElementById(sid).innerHTML='<option value="">区画を選択</option>'+plots.map(p=>`<option value="${p.id}">${p.name}（${(p.varieties||[]).join('・')}）</option>`).join('');}
 
 function buildWorkTypeGrid(){document.getElementById('work-type-grid').innerHTML=WORK_TYPES.map(t=>`<button class="wt-chip ${t.label===selectedWorkType?'active':''}" onclick="selectWorkType('${t.label}',this)"><span class="wt-icon">${t.icon}</span><span class="wt-text">${t.label}</span></button>`).join('');}
-function selectWorkType(t,btn){selectedWorkType=t;document.querySelectorAll('.wt-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');}
+function selectWorkType(t,btn){selectedWorkType=t;document.querySelectorAll('.wt-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');toggleWorkSprayFields();}
+async function toggleWorkSprayFields(){
+  const box=document.getElementById('work-spray-fields');
+  if(!box)return;
+  if(selectedWorkType==='防除'){
+    box.style.display='block';
+    // 対象チップ
+    buildPestQuick('work-spray-target-quick','work-spray-target');
+    // 最近使った薬剤
+    try{
+      const sprays=await dbGetAll('spray');
+      const agents=[...new Set(sprays.map(s=>s.agent).filter(Boolean))].slice(0,8);
+      const wrap=document.getElementById('work-spray-agent-quick');
+      wrap.innerHTML=agents.map(a=>`<button class="wx-word-chip" onclick="document.getElementById('work-spray-agent').value='${a.replace(/'/g,"\\'")}'">${a}</button>`).join('');
+    }catch(e){}
+  }else{
+    box.style.display='none';
+  }
+}
 function buildQuickActions(){const items=WORK_TYPES.slice(0,8);document.getElementById('quick-actions').innerHTML=items.map(t=>`<button class="qa-btn" onclick="openWorkForm('${t.label}')"><div class="qa-icon">${t.icon}</div><div class="qa-label">${t.label}</div></button>`).join('');}
 
 // 生育ステージを選んだら、説明・やること・次までの目安日数を表示
@@ -1144,6 +1271,7 @@ function openWorkForm(t){selectedWorkType=t;buildWorkTypeGrid();document.getElem
   document.getElementById('work-stage').innerHTML=stageOptions('');document.getElementById('work-stage-info')&&(document.getElementById('work-stage-info').innerHTML='');
   document.getElementById('work-plot-multi').innerHTML='';document.getElementById('work-variety-pick').innerHTML='';
   selectedWorkVariety=null;selectedPlotIds=[];stagedWorks=[];renderStagedList();buildWxPick();resetWxForm();buildPestQuick('work-pest-quick','work-pest');document.getElementById('work-pest').value='';
+  ['work-spray-agent','work-spray-target','work-spray-dilution','work-spray-amount'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});toggleWorkSprayFields();
   openModal('modal-work');}
 
 function buildFieldVarietyPick(){fieldFormVarieties=[];document.getElementById('field-variety-pick').innerHTML=VARIETIES.map(v=>`<button class="vp-chip" onclick="toggleFieldVariety('${v.name.replace(/'/g,"\\'")}',this)">${v.name}</button>`).join('');}
@@ -1173,6 +1301,23 @@ async function saveWork(){
     // 誘引なら進捗を連動（区画スコープのときのみ）
     if(s.workType==='誘引'&&s.plotId){
       await applyTrellisProgress(s.plotId, date, trellisPctFromStatus(comment, s.stage));
+    }
+  }
+  // 防除の作業は、防除暦（sprayストア）にも記録する。同じ薬剤・対象・希釈でまとめ、対象圃場を集約。
+  const sprayStaged=stagedWorks.filter(s=>s.workType==='防除'&&s.spray&&s.spray.agent);
+  if(sprayStaged.length){
+    const groups={};
+    for(const s of sprayStaged){
+      const key=[s.spray.agent,s.spray.target||'',s.spray.dilution||''].join('|');
+      if(!groups[key])groups[key]={spray:s.spray, fieldIds:new Set()};
+      groups[key].fieldIds.add(s.fieldId);
+    }
+    for(const key in groups){
+      const g=groups[key];
+      await dbPut('spray',{id:uid(),spray_date:date,agent:g.spray.agent,target:g.spray.target||null,
+        dilution:g.spray.dilution||null,amount:g.spray.amount||null,field_ids:[...g.fieldIds],
+        weather:weather?{...weather}:null,comment:comment||null,
+        iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});
     }
   }
   const n=stagedWorks.length;
@@ -1268,6 +1413,69 @@ function clearForm(t){if(t==='work'){document.getElementById('work-comment').val
 async function renderTab(tab){if(tab==='dashboard')await renderDashboard();if(tab==='fields')await renderFields();if(tab==='work')await renderWork();if(tab==='compare')await renderCompare();if(tab==='spray')await renderSpray();if(tab==='trellis')await renderTrellis();if(tab==='harvest')await renderHarvest();}
 function barColor(p){return p>=80?'var(--leaf)':p>=50?'var(--dusk)':'var(--wine)';}
 
+// ── 巡目・進捗の管理 ──
+// 進捗を追う作業（くらべる/進捗タブで巡目を数える対象）
+const PROGRESS_WORKS=['摘芯','誘引','草刈り'];
+const ROUND_DONE_RATIO=0.9; // 全区画の9割が済んだら1巡完了
+
+// 進捗データのキー：plotId__workType
+function progKey(plotId,workType){return plotId+'__'+workType;}
+
+// 作業記録から、区画×作業ごとの「記録回数」を数える（＝その区画が何巡ぶん進んだか）
+function countRoundsByPlot(works, workType){
+  const cnt={}; // plotId -> 回数
+  for(const w of works){
+    if(w.work_type!==workType||!w.plot_id)continue;
+    cnt[w.plot_id]=(cnt[w.plot_id]||0)+1;
+  }
+  return cnt;
+}
+
+// progressストアの手動データとあわせて、各区画の「現在の巡目」と「その巡の進捗%」を出す
+// 巡目 = max(自動カウント, 手動巡目)。進捗% = 手動があればそれ、なければ自動は100%（記録があれば完了とみなす）
+function buildPlotProgress(works, plots, progressRows, workType){
+  const auto=countRoundsByPlot(works, workType);
+  const manualMap={}; for(const r of progressRows){ if(r.work_type===workType) manualMap[r.plot_id]=r; }
+  const res={}; // plotId -> {round, pct}
+  for(const p of plots){
+    const a=auto[p.id]||0;            // 自動でカウントした完了巡数
+    const m=manualMap[p.id];
+    const manualRound=m&&m.round!=null?m.round:0;
+    const manualPct=m&&m.pct!=null?m.pct:null;
+    const manualDone=m&&m.manualDone; // 手動で100%完了にしたか
+    // 完了巡数：自動カウント。手動で完了(100%)にしていれば手動roundまで完了とみなす
+    let completedRounds=a;
+    if(manualDone && manualRound>a) completedRounds=manualRound;
+    let round=Math.max(a, manualRound);
+    let pct;
+    if(manualPct!=null && manualRound>=a){
+      round=Math.max(round, manualRound);
+      pct=manualPct;
+    }else if(a>0){
+      pct=100;
+    }else{
+      pct=manualPct!=null?manualPct:0;
+    }
+    res[p.id]={completedRounds, round: pct>=100? round : Math.max(round,1), pct};
+  }
+  return res;
+}
+
+// 全区画の9割が「N巡目を完了」しているか → その作業が到達した巡数を返す
+function overallRound(progByPlot, plots){
+  if(!plots.length)return 0;
+  // 各区画の完了巡数
+  const completed=plots.map(p=>progByPlot[p.id]?progByPlot[p.id].completedRounds:0);
+  // 巡Nを完了した区画の割合が9割以上の最大N
+  let maxRound=Math.max(0,...completed);
+  let achieved=0;
+  for(let n=1;n<=maxRound;n++){
+    const doneCount=completed.filter(c=>c>=n).length;
+    if(doneCount/plots.length>=ROUND_DONE_RATIO)achieved=n;
+  }
+  return achieved;
+}
+
 // 作業（誘引）から誘引タブの進捗を連動更新する
 // 状態：完了→100、進行中/途中→50、指定なし→30。ただし手動含む既存値が高ければ保持（高い方を採用）。
 function trellisPctFromStatus(comment, stage){
@@ -1305,20 +1513,130 @@ function workTargetLabel(w, plotMap, fieldMap){
 async function renderDashboard(){
   const now=new Date(),days=['日','月','火','水','木','金','土'];
   document.getElementById('hero-date').textContent=`${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日（${days[now.getDay()]}）`;
-  const [fields,plots,works,trellis,harvest]=await Promise.all([dbGetAll('fields'),dbGetAll('plots'),dbGetAll('work_records'),dbGetAll('trellis'),dbGetAll('harvest')]);
+  const [fields,plots,works,harvest,progressRows,sprays]=await Promise.all([dbGetAll('fields'),dbGetAll('plots'),dbGetAll('work_records'),dbGetAll('harvest'),dbGetAll('progress'),dbGetAll('spray')]);
   document.getElementById('hero-subtitle').textContent=`${fields.length} 圃場 ・ ${plots.length} 区画を見守り中`;
-  const tm=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  document.getElementById('stat-works').textContent=works.filter(w=>w.work_date?.startsWith(tm)).length;
-  document.getElementById('stat-spray').textContent=works.filter(w=>w.work_date?.startsWith(tm)&&w.work_type==='防除').length;
-  document.getElementById('stat-harvest').textContent=Math.round(harvest.reduce((s,h)=>s+(h.weight_kg||0),0)).toLocaleString();
-  const tMap={};for(const t of trellis){if(!tMap[t.plot_id]||tMap[t.plot_id].work_date<t.work_date)tMap[t.plot_id]=t;}
-  const plotMap=Object.fromEntries(plots.map(p=>[p.id,p])),fieldMap=Object.fromEntries(fields.map(f=>[f.id,f])),fieldPlots={};
-  for(const p of plots){(fieldPlots[p.field_id]=fieldPlots[p.field_id]||[]).push(p);}
+  const plotMap=Object.fromEntries(plots.map(p=>[p.id,p])),fieldMap=Object.fromEntries(fields.map(f=>[f.id,f]));
+
+  // ① 作業の巡目
   const tEl=document.getElementById('dash-trellis-list');
-  tEl.innerHTML=fields.length===0?'<div class="empty-state"><div class="empty-icon">🌿</div><div class="empty-text">圃場を加えると<br>誘引の進みが見られます</div></div>':fields.map(f=>{const fps=fieldPlots[f.id]||[],a=fps.map(p=>tMap[p.id]?.progress_pct??0),avg=a.length?Math.round(a.reduce((s,v)=>s+v,0)/a.length):0,c=barColor(avg);return `<div class="progress-item"><span class="progress-name">${f.name}</span><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${avg}%;background:${c}"></div></div><span class="progress-pct" style="color:${c}">${avg}<span style="font-size:10px">%</span></span></div>`;}).join('');
-  const rEl=document.getElementById('recent-work-list'),sorted=[...works].sort((a,b)=>b.work_date?.localeCompare(a.work_date)||0).slice(0,6);
-  if(!sorted.length){rEl.innerHTML='<div class="empty-state"><div class="empty-icon">✎</div><div class="empty-text">まだ記録がありません</div></div>';return;}
-  rEl.innerHTML=sorted.map(w=>{const wt=WORK_TYPES.find(t=>t.label===w.work_type)||{icon:'✎'},d=w.work_date?w.work_date.slice(5).replace('-','/'):'';const tgt=workTargetLabel(w,plotMap,fieldMap);return `<div class="work-item work-item-tap" onclick="openEditWork('${w.id}')"><div class="work-badge">${wt.icon}</div><div class="work-info"><div class="work-name">${w.work_type}</div><div class="work-meta">${tgt}</div>${w.stage?`<span class="work-stage-tag">${w.stage}</span>`:''}</div><div class="work-date">${d}</div></div>`;}).join('<div class="divider"></div>');
+  if(fields.length===0){tEl.innerHTML='<div class="empty-state"><div class="empty-icon">🌿</div><div class="empty-text">圃場を加えると<br>作業の巡目が見られます</div></div>';}
+  else{
+    tEl.innerHTML=PROGRESS_WORKS.map(w=>{
+      const prog=buildPlotProgress(works,plots,progressRows,w);
+      const oround=overallRound(prog,plots);
+      const pcts=plots.map(p=>prog[p.id]?prog[p.id].pct:0);
+      const avg=pcts.length?Math.round(pcts.reduce((s,v)=>s+v,0)/pcts.length):0;
+      const icon=(WORK_TYPES.find(t=>t.label===w)||{}).icon||'';
+      const label=oround>0?`${oround}巡目完了`:'1巡目';
+      const c=barColor(avg);
+      return `<div class="progress-item"><span class="progress-name">${icon} ${w}</span><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${avg}%;background:${c}"></div></div><span class="progress-pct" style="color:${c};font-size:11px;white-space:nowrap">${label}</span></div>`;
+    }).join('');
+  }
+
+  // ② 生育ステージ（直近のステージと次まで）
+  const stage=currentStageFromWorks(works);
+  const stEl=document.getElementById('dash-stage');
+  if(stage&&STAGE_MAP[stage]){
+    const s=STAGE_MAP[stage];const idx=STAGES.indexOf(stage);const nextName=idx>=0&&idx<STAGES.length-1?STAGES[idx+1]:null;
+    stEl.innerHTML=`<div class="section"><div class="dash-stage-card">
+      <div class="dash-stage-now"><span class="dash-stage-el">E-L${s.el}</span> ${stage}</div>
+      <div class="dash-stage-desc">${s.desc}</div>
+      ${nextName&&s.daysToNext?`<div class="dash-stage-next">つぎは「${nextName}」まで、目安 ${s.daysToNext[0]}〜${s.daysToNext[1]}日</div>`:''}
+    </div></div>`;
+  }else{stEl.innerHTML='';}
+
+  // ③ 発生メモ（病害虫）
+  const pestList=works.filter(w=>w.pest&&w.work_date).sort((a,b)=>b.work_date.localeCompare(a.work_date)).slice(0,3);
+  const pEl=document.getElementById('dash-pest');
+  if(pestList.length){
+    pEl.innerHTML=`<div class="section"><div class="section-header"><span class="section-title"><span class="dot"></span>気がかり（病害虫）</span><span class="section-link" onclick="switchTab('spray')">防除暦 →</span></div>
+      <div class="card" style="padding:4px 18px">${pestList.map(w=>{const f=fieldMap[w.field_id];const d=w.work_date.slice(5).replace('-','/');return `<div class="dash-pest-item"><span class="dash-pest-mark">🐛</span><div class="dash-pest-info"><div class="dash-pest-text">${w.pest}</div><div class="dash-pest-where">${f?f.name:''}${w.plot_id&&plotMap[w.plot_id]?' › '+plotMap[w.plot_id].name:''}</div></div><span class="dash-pest-date">${d}</span></div>`;}).join('<div class="divider"></div>')}</div></div>`;
+  }else{pEl.innerHTML='';}
+
+  // ④ 次の防除めやす
+  const plan=buildSprayPlan(sprays, works);
+  const nsEl=document.getElementById('dash-nextspray');
+  if(plan){
+    const si=plan.scheduleInfo;
+    const rainNote=plan.notes.find(n=>n.type==='rain');
+    nsEl.innerHTML=`<div class="section"><div class="dash-card dash-nextspray-card" onclick="switchTab('spray')">
+      <div class="dash-card-head"><span class="dash-card-icon">💧</span><span class="dash-card-title">次の防除のめやす</span><span class="dash-card-go">›</span></div>
+      <div class="dash-nextspray-date">${fmtMD(plan.suggested)}ごろ${si?` ・ 第${si.no}回`:''}</div>
+      ${si?`<div class="dash-nextspray-agents">${si.agents.map(a=>`<span class="spray-agent-chip">${a}</span>`).join('')}</div>`:''}
+      ${rainNote?`<div class="dash-nextspray-rain">🌧 ${rainNote.text}</div>`:''}
+    </div></div>`;
+  }else{nsEl.innerHTML='';}
+
+  // ⑤ 今月の雨量・日照（実測キャッシュから・代表は余川）＋収穫期は収量
+  const climEl=document.getElementById('dash-climate');
+  const yk=fields.find(f=>f.id==='f_yokawa')||fields.find(f=>f.lat!=null);
+  const ym=now.getFullYear()+'_'+(now.getMonth()+1);
+  let climHtml='';
+  if(yk && cmpWxCache[`${yk.id}_${now.getFullYear()}_${now.getMonth()+1}`]){
+    const c=cmpWxCache[`${yk.id}_${now.getFullYear()}_${now.getMonth()+1}`];
+    climHtml=`<div class="dash-clim-item"><div class="dash-clim-val">${c.rain!=null?Math.round(c.rain):'—'}<span class="dash-clim-unit">mm</span></div><div class="dash-clim-label">今月の雨量</div></div>
+      <div class="dash-clim-item"><div class="dash-clim-val">${c.sun!=null?Math.round(c.sun):'—'}<span class="dash-clim-unit">h</span></div><div class="dash-clim-label">今月の日照</div></div>`;
+  }else{
+    climHtml=`<div class="dash-clim-item" style="grid-column:span 2"><div class="dash-clim-fetch" onclick="dashFetchClimate()">📡 今月の雨量・日照をとりこむ</div></div>`;
+  }
+  // 収穫期（9〜11月）は収量も
+  const mon=now.getMonth()+1;
+  let harvestHtml='';
+  if(mon>=9&&mon<=11){
+    const total=harvest.reduce((s,h)=>s+(h.weight_kg||0),0);
+    harvestHtml=`<div class="dash-clim-item"><div class="dash-clim-val">${Math.round(total).toLocaleString()}<span class="dash-clim-unit">kg</span></div><div class="dash-clim-label">収穫合計</div></div>`;
+  }
+  climEl.innerHTML=`<div class="section"><div class="dash-clim-row">${climHtml}${harvestHtml}</div></div>`;
+
+  // ⑥ 天気と数日の予報（最後にDOM確定してから予報取得）
+  renderDashWeather();
+}
+
+// ホームの天気カードを描画（予報キャッシュを使用、無ければ取得）
+function renderDashWeather(){
+  const el=document.getElementById('dash-weather');if(!el)return;
+  const todayStr=new Date().toISOString().split('T')[0];
+  const keys=Object.keys(forecastCache).sort().filter(d=>d>=todayStr).slice(0,5);
+  if(!keys.length){
+    el.innerHTML=`<div class="section"><div class="dash-card"><div class="dash-weather-empty" onclick="dashLoadWeather()">📡 天気予報をよみこむ（圃場のGPSから）</div></div></div>`;
+    // 自動でも一度試す
+    dashLoadWeather(true);
+    return;
+  }
+  const days=['日','月','火','水','木','金','土'];
+  const today=forecastCache[keys[0]];
+  el.innerHTML=`<div class="section"><div class="dash-card dash-weather-card">
+    <div class="dash-weather-today">
+      <div class="dash-weather-emoji">${condEmoji(today)}</div>
+      <div class="dash-weather-today-info">
+        <div class="dash-weather-cond">${today.cond||''}</div>
+        <div class="dash-weather-temp"><span class="dash-temp-hi">${today.tmax!=null?Math.round(today.tmax)+'°':'—'}</span> / <span class="dash-temp-lo">${today.tmin!=null?Math.round(today.tmin)+'°':'—'}</span>${today.rain!=null&&today.rain>=1?` ・ 雨${Math.round(today.rain)}mm`:''}</div>
+      </div>
+    </div>
+    <div class="dash-weather-week">
+      ${keys.slice(1).map(ds=>{const w=forecastCache[ds];const d=new Date(ds+'T00:00:00');const heavy=w.rain!=null&&w.rain>=10;return `<div class="dash-week-day ${heavy?'rain-warn':''}"><div class="dash-week-dow">${days[d.getDay()]}</div><div class="dash-week-emoji">${condEmoji(w)}</div><div class="dash-week-temp">${w.tmax!=null?Math.round(w.tmax):'—'}°</div>${w.rain!=null&&w.rain>=1?`<div class="dash-week-rain">${Math.round(w.rain)}</div>`:'<div class="dash-week-rain">　</div>'}</div>`;}).join('')}
+    </div>
+    <div class="dash-weather-src">📍 余川の予報</div>
+  </div></div>`;
+}
+async function dashLoadWeather(silent){
+  try{
+    const updated=await fetchSprayForecast();
+    if(updated)renderDashWeather();
+  }catch(e){ if(!silent)showToast('予報を取得できませんでした'); }
+}
+// ホームから今月の実測（雨量・日照）を取り込む
+async function dashFetchClimate(){
+  const fields=await dbGetAll('fields');
+  const f=fields.find(x=>x.id==='f_yokawa')||fields.find(x=>x.lat!=null);
+  if(!f||f.lat==null){showToast('GPS登録の圃場がありません');return;}
+  showToast('取り込み中…');
+  try{
+    await cmpFetchYear(f, new Date().getFullYear());
+    await saveCmpCache();
+    showToast('今月の実測を取り込みました');
+    renderDashboard();
+  }catch(e){showToast('取得できませんでした');}
 }
 
 async function renderFields(){
@@ -1346,14 +1664,104 @@ async function renderWork(){
   el.innerHTML=Object.entries(groups).map(([date,ws])=>{const rows=ws.map(w=>{const wt=WORK_TYPES.find(t=>t.label===w.work_type)||{icon:'✎'};const tgt=workTargetLabel(w,plotMap,fieldMap);return `<div class="work-item work-item-tap" onclick="openEditWork('${w.id}')"><div class="work-badge">${wt.icon}</div><div class="work-info"><div class="work-name">${w.work_type}</div><div class="work-meta">${tgt}</div>${w.weather?`<div class="work-meta">${weatherLine(w.weather)}</div>`:''}${w.stage?`<span class="work-stage-tag">${w.stage}</span>`:''}${w.pest?`<span class="work-stage-tag" style="border-color:var(--wine);color:var(--wine)">🐛 ${w.pest}</span>`:''}${w.comment?`<div class="work-meta" style="font-style:italic;color:var(--bark);margin-top:3px">${w.comment}</div>`:''}</div><div class="work-edit-hint">›</div></div>`;}).join('<div class="divider"></div>');const d=new Date(date),label=isNaN(d)?date:`${d.getMonth()+1}月${d.getDate()}日`,iso=isNaN(d)?null:isoWeek(date);return `<div><div class="mincho" style="font-size:14px;font-weight:600;color:var(--bark);padding:0 0 8px;letter-spacing:.08em">${label}${iso?`<span style="font-size:11px;color:var(--text-muted);margin-left:8px">${iso.year}年 第${iso.week}週</span>`:''}</div><div class="card" style="padding:0 18px">${rows}</div></div>`;}).join('');
 }
 
+let progressWorkType='草刈り'; // 進捗タブで表示中の作業
 async function renderTrellis(){
-  const [fields,plots,trellis]=await Promise.all([dbGetAll('fields'),dbGetAll('plots'),dbGetAll('trellis')]),tMap={};
-  for(const t of trellis){if(!tMap[t.plot_id]||tMap[t.plot_id].work_date<t.work_date)tMap[t.plot_id]=t;}
-  const allP=plots.map(p=>tMap[p.id]?.progress_pct??0),avg=allP.length?Math.round(allP.reduce((s,v)=>s+v,0)/allP.length):0;
-  let html=`<div class="trellis-header-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="hero-eyebrow">Trellising</div><div class="trellis-overall-pct">${avg}<span style="font-size:24px">%</span></div><div class="trellis-overall-label">${plots.length} 区画ぜんたい</div></div><div style="text-align:right"><div style="font-size:11px;color:var(--text-muted)">遅れ気味</div><div class="mincho" style="font-size:28px;font-weight:600;color:var(--wine)">${allP.filter(p=>p<50).length}</div><div style="font-size:11px;color:var(--text-muted)">50%未満</div></div></div><div class="trellis-overall-bar"><div class="trellis-overall-fill" style="width:${avg}%"></div></div></div><div style="height:16px"></div>`;
-  if(!fields.length){html+='<div class="empty-state"><div class="empty-icon">🪢</div><div class="empty-text">圃場を加えると<br>誘引の進みを記録できます</div></div>';}
-  else{for(const f of fields){const fps=plots.filter(p=>p.field_id===f.id);html+=`<div style="padding:0 18px 10px"><div class="mincho" style="font-size:14px;font-weight:600;color:var(--vine);margin-bottom:10px;letter-spacing:.08em">📍 ${f.name}</div><div class="card">`;html+=fps.map(p=>{const pct=tMap[p.id]?.progress_pct??null,dp=pct??0,c=barColor(dp),vlabel=(p.varieties||[]).join('・'),ds=tMap[p.id]?.work_date?tMap[p.id].work_date.slice(5).replace('-','/'):'未記録';return `<div class="trellis-plot-card"><div style="display:flex;justify-content:space-between;align-items:center"><div style="flex:1;min-width:0"><div class="trellis-plot-name">${p.name}</div><div class="trellis-plot-meta" style="margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${vlabel}</div></div><div style="text-align:right;flex-shrink:0;margin-left:10px"><div class="trellis-plot-pct" style="color:${c}">${pct!==null?dp+'%':'—'}</div><div class="trellis-plot-meta">更新 ${ds}</div></div></div><div class="trellis-plot-bar-wrap"><div class="trellis-plot-fill" style="width:${dp}%;background:${c}"></div></div></div>`;}).join('<div class="divider"></div>');html+=`</div></div>`;}}
-  document.getElementById('trellis-content').innerHTML=html;document.getElementById('trellis-date').value=new Date().toISOString().split('T')[0];
+  const [fields,plots,works,progressRows]=await Promise.all([dbGetAll('fields'),dbGetAll('plots'),dbGetAll('work_records'),dbGetAll('progress')]);
+  const wt=progressWorkType;
+  const prog=buildPlotProgress(works,plots,progressRows,wt);
+  const oround=overallRound(prog,plots);
+
+  // ヘッダー：作業切り替え＋全体巡目
+  let html=`<div class="prog-header">
+    <div class="prog-seg">${PROGRESS_WORKS.map(w=>`<button class="${w===wt?'active':''}" onclick="setProgressWork('${w}')">${(WORK_TYPES.find(t=>t.label===w)||{}).icon||''} ${w}</button>`).join('')}</div>
+    <div class="prog-overall">
+      <div class="prog-overall-round">${oround>0?`${oround}巡目 完了`:'1巡目 進行中'}</div>
+      <div class="prog-overall-sub">全${plots.length}区画の9割が済むと、つぎの巡へ</div>
+    </div>
+  </div>`;
+
+  if(!fields.length){
+    html+='<div class="empty-state"><div class="empty-icon">📈</div><div class="empty-text">圃場を加えると<br>作業の進捗が見られます</div></div>';
+    document.getElementById('trellis-content').innerHTML=html;return;
+  }
+
+  for(const f of fields){
+    const fps=plots.filter(p=>p.field_id===f.id);
+    // 圃場の現在巡目（その作業の自動カウントの最小〜最大で表現）
+    html+=`<div style="padding:0 18px 10px"><div class="prog-field-head"><div class="prog-field-name">📍 ${f.name}</div><button class="prog-field-done-btn" onclick="setFieldProgress('${f.id}','${wt}')">圃場ぜんぶ完了</button></div><div class="card">`;
+    html+=fps.map(p=>{
+      const pr=prog[p.id]||{completedRounds:0,round:1,pct:0};
+      const c=barColor(pr.pct);
+      const vlabel=(p.varieties||[]).join('・');
+      // 巡目バッジ：完了巡数。進行中ならその次の巡が「進行中」
+      const roundLabel = pr.completedRounds>0
+        ? (pr.pct>=100 ? `${pr.completedRounds}巡目 完了` : `${pr.completedRounds+1}巡目 ${pr.pct}%`)
+        : (pr.pct>0 ? `1巡目 ${pr.pct}%` : '未着手');
+      const roundClass = pr.completedRounds>=2?'r2':(pr.completedRounds>=1?'r1':'');
+      return `<div class="prog-plot-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+          <div style="flex:1;min-width:0">
+            <div class="prog-plot-name">${p.name}</div>
+            <div class="prog-plot-meta">${vlabel}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div class="prog-round-badge ${roundClass}">${roundLabel}</div>
+          </div>
+        </div>
+        <div class="prog-bar-wrap"><div class="prog-bar-fill" style="width:${pr.pct}%;background:${c}"></div></div>
+        <div class="prog-plot-actions">
+          <button class="prog-act-btn" onclick="setPlotProgress('${p.id}','${wt}',100)">この巡を完了(100%)</button>
+          <button class="prog-act-btn sub" onclick="setPlotProgress('${p.id}','${wt}',50)">半分(50%)</button>
+          <button class="prog-act-btn sub" onclick="setPlotProgress('${p.id}','${wt}',0)">戻す</button>
+        </div>
+      </div>`;
+    }).join('<div class="divider"></div>');
+    html+=`</div></div>`;
+  }
+  document.getElementById('trellis-content').innerHTML=html;
+}
+function setProgressWork(w){progressWorkType=w;renderTrellis();}
+
+// 圃場の全区画をまとめて完了(100%)にする
+async function setFieldProgress(fieldId, workType){
+  const plots=(await dbGetAll('plots')).filter(p=>p.field_id===fieldId);
+  if(!plots.length){showToast('区画がありません');return;}
+  const all=await dbGetAll('progress');
+  const works=await dbGetAll('work_records');
+  const autoMap=countRoundsByPlot(works, workType);
+  for(const p of plots){
+    const auto=autoMap[p.id]||0;
+    const id=progKey(p.id,workType);
+    const ex=all.find(r=>r.id===id);
+    const curRound=Math.max(auto, ex&&ex.round!=null?ex.round:0);
+    await dbPut('progress',{id, plot_id:p.id, work_type:workType, round:curRound+1, pct:100, manualDone:true, updated_at:new Date().toISOString()});
+  }
+  showToast(`${plots.length}区画を完了にしました`);
+  renderTrellis();
+}
+
+// 手動で区画の進捗を設定する。100%にしたら「巡目を1つ進める」意味になる。
+async function setPlotProgress(plotId, workType, pct){
+  const all=await dbGetAll('progress');
+  const works=await dbGetAll('work_records');
+  const auto=countRoundsByPlot(works, workType)[plotId]||0;
+  const id=progKey(plotId,workType);
+  const ex=all.find(r=>r.id===id);
+  let round;
+  if(pct>=100){
+    // 現在の完了巡（自動・手動の高い方）＋1を完了にする
+    const curRound=Math.max(auto, ex&&ex.round!=null?ex.round:0);
+    round=curRound+1;
+    pct=100;
+    // 完了として記録（次に開いたとき completedRounds に反映させるため、roundに完了巡数を持たせる）
+    await dbPut('progress',{id, plot_id:plotId, work_type:workType, round, pct:100, manualDone:true, updated_at:new Date().toISOString()});
+    showToast(`${round}巡目を完了にしました`);
+  }else{
+    round=Math.max(auto, ex&&ex.round!=null?ex.round:0);
+    await dbPut('progress',{id, plot_id:plotId, work_type:workType, round, pct, manualDone:false, updated_at:new Date().toISOString()});
+    showToast(pct>0?`進捗を${pct}%にしました`:'進捗を戻しました');
+  }
+  renderTrellis();
 }
 
 async function renderHarvest(){
@@ -1396,7 +1804,127 @@ async function fetchSprayForecast(){
   forecastCache=cache;forecastFetchedAt=Date.now();
   return true;
 }
+
+// 次回防除の予定日とアドバイスを組み立てる
+const SPRAY_INTERVAL_DAYS=10; // 基本間隔（日）
+// 感受性が高く間隔を詰めたい生育ステージ（病気が出やすい時期）
+const SENSITIVE_STAGES=['開花前','開花開始','開花初期','満開期','開花後期','結実期','果粒肥大期','着色成熟開始（ヴェレゾン）'];
+
+function fmtMD(dateStr){const d=new Date(dateStr+'T00:00:00');if(isNaN(d))return dateStr;const days=['日','月','火','水','木','金','土'];return `${d.getMonth()+1}月${d.getDate()}日(${days[d.getDay()]})`;}
+function addDays(dateStr,n){const d=new Date(dateStr+'T00:00:00');d.setDate(d.getDate()+n);return d.toISOString().split('T')[0];}
+
+// 直近の作業記録から、いまの生育ステージを推定（最後にステージが記録された作業）
+function currentStageFromWorks(works){
+  const withStage=works.filter(w=>w.stage&&w.work_date).sort((a,b)=>b.work_date.localeCompare(a.work_date));
+  return withStage.length?withStage[0].stage:null;
+}
+
+// 次回予定とアドバイスを返す
+function buildSprayPlan(sprays, works){
+  const year=new Date().getFullYear();
+  const nextItem=nextScheduleItem(year);
+  const curItem=currentScheduleItem(year);
+
+  // 防除暦ベースの次回（予定日と推奨薬剤）
+  let scheduleInfo=null;
+  if(nextItem){
+    scheduleInfo={no:nextItem.no, label:nextItem.label, date:scheduleDate(year,nextItem),
+      agents:nextItem.agents, target:nextItem.target};
+  }
+
+  if(!sprays.length){
+    // まだ防除実績がなくても、防除暦から次回を出す
+    if(!scheduleInfo)return null;
+    const stage=currentStageFromWorks(works);
+    const notes=[];
+    if(curItem)notes.push({type:'schedule', text:`防除暦では前回が第${curItem.no}回「${curItem.label}」です。`});
+    return {scheduleInfo, suggested:scheduleInfo.date, sensitive:false, stage, notes, fromSchedule:true};
+  }
+
+  const last=[...sprays].sort((a,b)=>b.spray_date.localeCompare(a.spray_date))[0];
+  const baseNext=addDays(last.spray_date, SPRAY_INTERVAL_DAYS);
+  const stage=currentStageFromWorks(works);
+  const sensitive=stage&&SENSITIVE_STAGES.includes(stage);
+
+  // 防除暦の次回日と、最終散布＋10日の早い方を「めやす」に
+  let suggested=baseNext;
+  if(scheduleInfo && scheduleInfo.date<suggested) suggested=scheduleInfo.date;
+  const notes=[];
+  // 防除暦の案内
+  if(scheduleInfo){
+    notes.push({type:'schedule', text:`防除暦では次は第${scheduleInfo.no}回「${scheduleInfo.label}」。推奨薬剤：${scheduleInfo.agents.join('、')}。対象：${scheduleInfo.target}。`});
+  }
+  if(sensitive){
+    suggested=minDate(suggested, addDays(last.spray_date, 7));
+    notes.push({type:'stage', text:`いまは「${stage}」で病気が出やすい時期です。間隔をやや詰めるのも手です。`});
+  }else if(stage){
+    notes.push({type:'stage', text:`いまの生育ステージは「${stage}」。`});
+  }
+
+  // 予報の雨を見る
+  const todayStr=new Date().toISOString().split('T')[0];
+  let heavyRainDays=[];
+  Object.keys(forecastCache).sort().forEach(ds=>{
+    if(ds<todayStr) return;
+    const fc=forecastCache[ds];
+    if(fc.rain!=null&&fc.rain>=10){ heavyRainDays.push({date:ds,rain:fc.rain}); }
+  });
+  const rainBefore=heavyRainDays.filter(r=>r.date<=suggested && r.date>todayStr);
+  if(rainBefore.length){
+    const first=rainBefore[0];
+    notes.push({type:'rain', text:`${fmtMD(first.date)}ごろに強い雨（約${Math.round(first.rain)}mm）の予報。薬が流れる前に、${fmtMD(addDays(first.date,-1))}までの散布も検討を。`});
+  }
+  const rainSoon=heavyRainDays.filter(r=>r.date>todayStr).length;
+  if(rainSoon>=2){
+    notes.push({type:'rain', text:`しばらく雨がちの予報です。効果を保つため、晴れ間を選んで散布しましょう。`});
+  }
+
+  return {scheduleInfo, lastDate:last.spray_date, lastAgent:last.agent, baseNext, suggested, sensitive, stage, notes};
+}
+function minDate(a,b){return a<b?a:b;}
 const PEST_QUICK=['ベト病','うどんこ病','灰色かび病','晩腐病','黒とう病','さび病','カメムシ','ハダニ','コガネムシ','スリップス','チャノキイロアザミウマ'];
+
+// 2026年 醸造用ブドウ病害虫防除暦（富山県高岡農林振興センター）を簡潔にデータ化
+// month/ten（旬：上=1,中=2,下=3）で時期。agents=主な薬剤、target=主な対象。展着剤(アグラー)は省略。
+const SPRAY_SCHEDULE=[
+  {no:1,  month:3, ten:3, label:'3月下旬（発芽前）',  agents:['デランフロアブル','トラサイドA乳剤'], target:'黒とう病・晩腐病・つる割病・ブドウトラカミキリ'},
+  {no:2,  month:4, ten:2, label:'4月中旬（発芽直前）',agents:['ベンレート水和剤','石灰硫黄合剤'],   target:'黒とう病・晩腐病・ハダニ・カイガラムシ'},
+  {no:3,  month:4, ten:3, label:'4月下旬（展葉直前）',agents:['オーソサイド水和剤80','コルト顆粒水和剤'], target:'晩腐病・べと病・黒とう病・ツマグロオオカスミカメ'},
+  {no:4,  month:5, ten:1, label:'5月上旬（展葉期）',  agents:['ジマンダイセン水和剤','フルピカフロアブル'], target:'晩腐病・褐斑病・さび病・べと病・うどんこ病'},
+  {no:5,  month:5, ten:2, label:'5月中旬',            agents:['オンリーワンフロアブル','アリエッティC水和剤'], target:'晩腐病・黒とう病・べと病・うどんこ病'},
+  {no:6,  month:5, ten:3, label:'5月下旬（開花前）',  agents:['サンケイ園芸ボルドー','クレフノン'], target:'晩腐病・べと病・うどんこ病・褐斑病'},
+  {no:7,  month:6, ten:1, label:'6月1回目（開花直前）',agents:['セイビアーフロアブル20','チオノックフロアブル'], target:'晩腐病・灰色かび病・白腐病・べと病'},
+  {no:8,  month:6, ten:1, label:'6月2回目（開花期）', agents:['ストロビードライフロアブル','モスピラン顆粒水溶剤'], target:'晩腐病・灰色かび病・べと病・アザミウマ'},
+  {no:9,  month:6, ten:2, label:'6月3回目',           agents:['ミギワ20フロアブル','ベトファイター顆粒水和剤'], target:'晩腐病・灰色かび病・黒とう病・べと病'},
+  {no:10, month:6, ten:3, label:'6月4回目',           agents:['ジマンダイセン水和剤','セイビアーフロアブル20'], target:'晩腐病・褐斑病・さび病・べと病・白腐病'},
+  {no:11, month:7, ten:1, label:'7月上旬',            agents:['サンケイ園芸ボルドー','ダントツ水溶剤'], target:'晩腐病・べと病・さび病・カメムシ'},
+  {no:12, month:7, ten:2, label:'7月中旬',            agents:['サンケイ園芸ボルドー','クレフノン'], target:'晩腐病・黒とう病・さび病'},
+  {no:13, month:7, ten:3, label:'7月下旬',            agents:['サンケイ園芸ボルドー','クレフノン'], target:'晩腐病・黒とう病・さび病'},
+  {no:14, month:8, ten:1, label:'8月初旬',            agents:['サンケイ園芸ボルドー','フェニックス顆粒水和剤'], target:'晩腐病・べと病・ハスモンヨトウ・ケムシ'},
+  {no:15, month:8, ten:2, label:'8月中旬',            agents:['サンケイ園芸ボルドー','ディアナWDG'], target:'晩腐病・べと病・ハスモンヨトウ・アザミウマ'},
+  {no:16, month:8, ten:3, label:'8月下旬（収穫期）',  agents:['エトフィンフロアブル'], target:'べと病'},
+  {no:17, month:10,ten:0, label:'収穫後',             agents:['サンケイ園芸ボルドー'], target:'べと病（落葉処理）'},
+];
+// 旬→月内の基準日
+function tenToDay(ten){return ten===1?5:ten===2?15:ten===3?25:10;}
+function scheduleDate(year, item){return `${year}-${String(item.month).padStart(2,'0')}-${String(tenToDay(item.ten)).padStart(2,'0')}`;}
+// 今日の日付に対して「次にやるべき防除回」を返す
+function nextScheduleItem(year){
+  const today=new Date().toISOString().split('T')[0];
+  for(const item of SPRAY_SCHEDULE){
+    if(scheduleDate(year,item)>=today) return item;
+  }
+  return null;
+}
+// 直近で済ませた回（今日以前で最も近い）
+function currentScheduleItem(year){
+  const today=new Date().toISOString().split('T')[0];
+  let cur=null;
+  for(const item of SPRAY_SCHEDULE){
+    if(scheduleDate(year,item)<=today) cur=item; else break;
+  }
+  return cur;
+}
 
 function openSprayForm(){
   editingSprayId=null;
@@ -1514,6 +2042,27 @@ async function renderSpray(){
     <div class="spray-status-card"><div class="spray-status-val ${pestRecs.length?'warn':''}">${pestRecs.length}</div><div class="spray-status-label">発生メモ</div></div>
   </div>`;
 
+  // 次回散布の予定とアドバイス
+  const plan=buildSprayPlan(sprays, works);
+  if(plan){
+    const notesHtml=plan.notes.map(n=>{const ic=n.type==='rain'?'🌧':n.type==='schedule'?'📋':'🌱';return `<div class="plan-note plan-note-${n.type}">${ic} ${n.text}</div>`;}).join('');
+    const si=plan.scheduleInfo;
+    const baseLabel = plan.fromSchedule ? '防除暦より' : (plan.lastDate?`前回 ${fmtMD(plan.lastDate)}`:'');
+    html+=`<div class="spray-plan">
+      <div class="spray-plan-head">
+        <div>
+          <div class="spray-plan-label">次の防除のめやす</div>
+          <div class="spray-plan-date">${fmtMD(plan.suggested)}ごろ</div>
+          ${si?`<div class="spray-plan-no">防除暦 第${si.no}回「${si.label}」</div>`:''}
+        </div>
+        <div class="spray-plan-base">${baseLabel}</div>
+      </div>
+      ${si?`<div class="spray-plan-agents"><span class="spray-plan-agents-label">推奨薬剤</span>${si.agents.map(a=>`<span class="spray-agent-chip">${a}</span>`).join('')}</div>`:''}
+      ${notesHtml?`<div class="spray-plan-notes">${notesHtml}</div>`:''}
+      <div class="spray-plan-foot">防除暦（高岡農林振興センター）を目安にしています。薬剤の残効・病害虫・天候で前後します。最終判断はご自身で。</div>
+    </div>`;
+  }
+
   // カレンダー
   const first=new Date(sprayCalYear,sprayCalMonth,1);
   const startDow=first.getDay();
@@ -1536,13 +2085,15 @@ async function renderSpray(){
     let wx=wxByDate[ds]; let isForecast=false;
     if(!wx && forecastCache[ds]){wx=forecastCache[ds];isForecast=true;}
     const hasPest=pestRecs.some(p=>p.date===ds);
+    const isNextPlan=plan&&plan.suggested===ds;
     const dots=sp.slice(0,4).map(()=>`<span class="cal-spray-dot"></span>`).join('');
     const rainStr=(isForecast&&wx&&wx.rain!=null&&wx.rain>=1)?`<div class="cal-rain">${Math.round(wx.rain)}mm</div>`:'';
-    html+=`<div class="cal-cell ${sp.length?'has-spray':''} ${ds===todayStr?'today':''} ${ds===sprayCalSelDate?'sel':''} ${isForecast?'forecast':''} ${dow===0?'sun':''} ${dow===6?'sat':''}" onclick="sprayCalSelect('${ds}')">
+    html+=`<div class="cal-cell ${sp.length?'has-spray':''} ${ds===todayStr?'today':''} ${ds===sprayCalSelDate?'sel':''} ${isForecast?'forecast':''} ${isNextPlan?'next-plan':''} ${dow===0?'sun':''} ${dow===6?'sat':''}" onclick="sprayCalSelect('${ds}')">
       <div class="cal-day-num">${d}</div>
       ${wx?`<div class="cal-wx">${condEmoji(wx)}</div>`:''}
       ${rainStr}
       ${hasPest?`<div class="cal-pest-mark">⚠</div>`:''}
+      ${isNextPlan?`<div class="cal-next-mark">次</div>`:''}
       <div class="cal-spray-dots">${dots}</div>
     </div>`;
   }
@@ -1584,6 +2135,29 @@ async function renderSpray(){
     const f=fieldMap[p.fieldId];const d=new Date(p.date+'T00:00:00');
     return `<div class="pest-rec"><div class="pest-rec-top"><div class="pest-rec-text">${p.text}</div><div class="pest-rec-date">${d.getMonth()+1}/${d.getDate()}</div></div>${f?`<div class="pest-rec-where">${f.name}</div>`:''}</div>`;
   }).join('');}
+  html+=`<div style="height:8px"></div>`;
+
+  // 2026年 防除暦の一覧
+  const year=now.getFullYear();
+  const curItem=currentScheduleItem(year);
+  const nextItem=nextScheduleItem(year);
+  html+=`<div class="spray-section-title"><span class="dot"></span>${year}年 防除暦</div>
+    <div class="sched-note">富山県高岡農林振興センターの標準防除暦です。タップで薬剤・対象が開きます。</div>
+    <div style="padding:0 18px">`;
+  html+=SPRAY_SCHEDULE.map(item=>{
+    const isCur=curItem&&item.no===curItem.no;
+    const isNext=nextItem&&item.no===nextItem.no;
+    const cls=isNext?'next':(isCur?'cur':'');
+    const badge=isNext?'<span class="sched-badge next">次</span>':(isCur?'<span class="sched-badge cur">前回</span>':'');
+    return `<details class="sched-item ${cls}">
+      <summary class="sched-summary"><span class="sched-no">${item.no}</span><span class="sched-when">${item.label}</span>${badge}</summary>
+      <div class="sched-body">
+        <div class="sched-row"><span class="sched-k">薬剤</span><span class="sched-v">${item.agents.join('、')}</span></div>
+        <div class="sched-row"><span class="sched-k">対象</span><span class="sched-v">${item.target}</span></div>
+      </div>
+    </details>`;
+  }).join('');
+  html+=`</div>`;
   html+=`<div style="height:20px"></div>`;
 
   el.innerHTML=html;
@@ -1681,8 +2255,15 @@ function renderCompareWork(works,fields){
   const yA=CMP_STATE.yearA, yB=CMP_STATE.yearB, wt=CMP_STATE.workType;
   const weeksA=new Set(), weeksB=new Set();
   const workDatesByWeek={}; // 'year_week' -> [dateStr,...]
+  // 年×区画ごとの記録回数（巡目の材料）
+  const roundsA={}, roundsB={};
   works.forEach(w=>{
-    if(w.work_type!==wt||!w.iso_week)return;
+    if(w.work_type!==wt)return;
+    if(w.plot_id){
+      if(w.iso_year===yA)roundsA[w.plot_id]=(roundsA[w.plot_id]||0)+1;
+      if(w.iso_year===yB)roundsB[w.plot_id]=(roundsB[w.plot_id]||0)+1;
+    }
+    if(!w.iso_week)return;
     if(w.iso_year===yA)weeksA.add(w.iso_week);
     if(w.iso_year===yB)weeksB.add(w.iso_week);
     if(w.iso_year===yA||w.iso_year===yB){
@@ -1752,7 +2333,7 @@ function renderCompareWork(works,fields){
       <div class="cmp-week-row"><span class="cmp-week-label">${yB}年</span><div class="cmp-week-cells">${cellRow(yB,weeksB,'has-b')}</div></div>
     </div></div>
     <div id="cmp-cell-detail" class="cmp-cell-detail"></div>
-    ${renderWorkSummary(weeksA,weeksB,yA,yB,wt)}
+    ${renderWorkSummary(weeksA,weeksB,yA,yB,wt,roundsA,roundsB,fields,works)}
   </div>`;
 }
 
@@ -1772,7 +2353,7 @@ function showCellDates(el){
   box.classList.add('show');
 }
 
-function renderWorkSummary(weeksA,weeksB,yA,yB,wt){
+function renderWorkSummary(weeksA,weeksB,yA,yB,wt,roundsA,roundsB,fields,works){
   function span(weeks){if(!weeks.size)return null;const a=[...weeks].sort((x,y)=>x-y);return {first:a[0],last:a[a.length-1],count:a.length};}
   const sA=span(weeksA),sB=span(weeksB);
   if(!sA&&!sB)return '';
@@ -1784,10 +2365,23 @@ function renderWorkSummary(weeksA,weeksB,yA,yB,wt){
     else if(d>0)diff=`${yA}年は${yB}年より <b>${d}週おそい</b> 開始です。`;
     else diff=`${yA}年は${yB}年より <b>${-d}週はやい</b> 開始です。`;
   }
+  // 巡目（PROGRESS_WORKS対象のときだけ）
+  let roundHtml='';
+  if(roundsA&&roundsB&&PROGRESS_WORKS.includes(wt)){
+    const maxR=o=>{const v=Object.values(o);return v.length?Math.max(...v):0;};
+    const rA=maxR(roundsA), rB=maxR(roundsB);
+    if(rA||rB){
+      roundHtml=`<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--line-soft);display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;color:var(--text-muted)">最も進んだ区画の巡目</span>
+        <span style="font-size:13px"><span style="color:var(--dusk);font-weight:700;font-family:'Shippori Mincho',serif">${yA}年 ${rA}巡</span>　/　<span style="color:var(--sea);font-weight:700;font-family:'Shippori Mincho',serif">${yB}年 ${rB}巡</span></span>
+      </div>`;
+    }
+  }
   return `<div style="margin-top:14px;background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px">
     <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px"><span style="font-size:12px;color:var(--dusk);font-weight:700">${yA}年</span><span style="font-size:12px;color:var(--vine);font-family:'Shippori Mincho',serif">${fmt(sA)}</span></div>
     <div style="display:flex;justify-content:space-between;align-items:baseline${diff?';border-bottom:1px solid var(--line-soft);padding-bottom:10px;margin-bottom:10px':''}"><span style="font-size:12px;color:var(--sea);font-weight:700">${yB}年</span><span style="font-size:12px;color:var(--vine);font-family:'Shippori Mincho',serif">${fmt(sB)}</span></div>
     ${diff?`<div style="font-size:13px;color:var(--bark);letter-spacing:.02em;line-height:1.6">${diff}</div>`:''}
+    ${roundHtml}
   </div>`;
 }
 
@@ -2109,7 +2703,7 @@ async function commitImport(){
 let toastTimer;
 function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2800);}
 
-async function init(){await initDB();await seedRealData();await loadCmpCache();buildWorkTypeGrid();buildQuickActions();const today=new Date().toISOString().split('T')[0];['work-date','trellis-date','harvest-date'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=today;});await renderDashboard();document.getElementById('fab-btn').style.display='none';}
+async function init(){await initDB();await seedRealData();await loadCmpCache();buildWorkTypeGrid();const today=new Date().toISOString().split('T')[0];['work-date','trellis-date','harvest-date'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=today;});await renderDashboard();document.getElementById('fab-btn').style.display='none';}
 init().catch(console.error);
 </script>
 </body>
