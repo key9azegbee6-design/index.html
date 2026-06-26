@@ -41,7 +41,6 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .hero-date{font-size:13px;color:var(--text-muted);margin-bottom:2px;letter-spacing:.05em;}
 .hero-title{font-family:'Shippori Mincho',serif;font-size:25px;font-weight:600;color:var(--vine);letter-spacing:.04em;}
 .hero-subtitle{font-size:12px;color:var(--text-muted);margin-top:6px;letter-spacing:.05em;}
-.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border-bottom:1px solid var(--line);}
 .dash-card{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;cursor:pointer;}
 .dash-card-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
 .dash-card-icon{font-size:16px;}
@@ -83,21 +82,45 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .dash-pest-text{font-size:13px;color:var(--vine);font-weight:500;}
 .dash-pest-where{font-size:11px;color:var(--text-muted);margin-top:1px;}
 .dash-pest-date{font-size:11px;color:var(--text-muted);}
-.stat-card{background:var(--cream);padding:18px 10px 16px;text-align:center;}
-.stat-val{font-family:'Shippori Mincho',serif;font-size:30px;font-weight:600;line-height:1;color:var(--vine);}
-.stat-unit{font-size:11px;color:var(--text-muted);margin-left:1px;}
-.stat-label{font-size:11px;color:var(--text-muted);margin-top:6px;letter-spacing:.08em;}
 .section{padding:0 18px 18px;}
 .section-header{display:flex;justify-content:space-between;align-items:baseline;padding:22px 0 12px;}
 .section-title{font-family:'Shippori Mincho',serif;font-size:15px;font-weight:600;color:var(--vine);letter-spacing:.1em;display:flex;align-items:center;gap:7px;}
 .section-title .dot{width:5px;height:5px;background:var(--dusk);border-radius:50%;display:inline-block;}
 .section-link{font-size:11px;color:var(--bark);cursor:pointer;letter-spacing:.08em;}
 .section-link:active{opacity:.5;}
-.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
-.qa-btn{background:var(--cream);padding:16px 6px 13px;border:none;cursor:pointer;text-align:center;transition:background .15s;font-family:inherit;}
-.qa-btn:active{background:var(--paper);}
-.qa-icon{font-size:21px;line-height:1.2;opacity:.85;}
-.qa-label{font-size:11px;font-weight:500;color:var(--bark);margin-top:6px;letter-spacing:.04em;}
+.data-mgmt{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:18px;}
+.data-mgmt-title{font-family:'Shippori Mincho',serif;font-size:15px;font-weight:600;color:var(--vine);letter-spacing:.08em;margin-bottom:8px;}
+.data-mgmt-note{font-size:12px;color:var(--text-muted);line-height:1.6;margin-bottom:14px;letter-spacing:.02em;}
+.data-mgmt-btns{display:flex;flex-direction:column;gap:8px;}
+.data-mgmt-btn{display:block;width:100%;box-sizing:border-box;text-align:center;padding:13px;border:1px solid var(--vine);border-radius:var(--radius-sm);background:var(--vine);color:var(--cream);font-family:'Shippori Mincho',serif;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.06em;}
+.data-mgmt-btn:active{opacity:.8;}
+.data-mgmt-btn.sub{background:var(--cream);color:var(--bark);border-color:var(--line);}
+.data-mgmt-divider{height:1px;background:var(--line);margin:16px 0;}
+.clear-records-btn{width:100%;box-sizing:border-box;padding:13px;border:1px solid var(--wine);border-radius:var(--radius-sm);background:var(--cream);color:var(--wine);font-family:'Shippori Mincho',serif;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.04em;transition:all .15s;}
+.clear-records-btn:active{opacity:.8;}
+.clear-records-btn.danger{background:var(--wine);color:var(--cream);}
+.restore-box{margin-top:14px;background:var(--paper);border:1px solid var(--dusk);border-radius:var(--radius-sm);padding:14px;}
+.restore-when{font-size:13px;font-weight:700;color:var(--vine);}
+.restore-summary{font-size:12px;color:var(--text-muted);margin-top:5px;line-height:1.6;}
+.restore-actions{display:flex;flex-direction:column;gap:7px;margin-top:12px;}
+.restore-btn{padding:11px;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--vine);}
+.restore-btn.over{background:var(--wine);color:var(--cream);border-color:var(--wine);}
+.restore-btn.add{background:var(--vine);color:var(--cream);}
+.restore-cancel{padding:9px;background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;font-family:inherit;}
+.backup-text{width:100%;box-sizing:border-box;height:90px;margin:10px 0;font-size:10px;font-family:monospace;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--cream);color:var(--text-muted);resize:vertical;}
+.work-filter{background:var(--cream);border-bottom:1px solid var(--line);padding:12px 14px;display:flex;flex-direction:column;gap:9px;}
+.wf-search{position:relative;display:flex;align-items:center;}
+.wf-search-icon{position:absolute;left:11px;font-size:13px;opacity:.6;}
+.wf-search input{width:100%;box-sizing:border-box;padding:10px 30px 10px 32px;border:1px solid var(--line);border-radius:20px;background:var(--paper);font-family:inherit;font-size:13px;color:var(--vine);}
+.wf-search input:focus{outline:none;border-color:var(--bark);}
+.wf-clear{position:absolute;right:10px;width:20px;height:20px;border-radius:50%;background:var(--line);color:var(--cream);display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;}
+.wf-row{display:flex;gap:8px;}
+.wf-select{flex:1;min-width:0;padding:9px 10px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--paper);font-family:inherit;font-size:12px;color:var(--vine);}
+.wf-periods{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.wf-period{padding:6px 13px;border:1px solid var(--line);border-radius:20px;background:var(--paper);font-family:inherit;font-size:12px;color:var(--bark);cursor:pointer;}
+.wf-period.active{background:var(--vine);border-color:var(--vine);color:var(--cream);font-weight:700;}
+.wf-reset{margin-left:auto;padding:6px 12px;border:none;background:none;color:var(--wine);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;}
+.filter-count{font-size:12px;color:var(--text-muted);padding:2px 2px 0;letter-spacing:.04em;}
 .progress-item{display:flex;align-items:center;gap:12px;padding:11px 0;}
 .progress-item + .progress-item{border-top:1px solid var(--line-soft);}
 .progress-name{font-size:13px;font-weight:500;width:72px;flex-shrink:0;color:var(--vine);}
@@ -151,7 +174,6 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .slider-input::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--cream);border:2px solid var(--vine);cursor:pointer;}
 .save-btn{width:100%;padding:16px;border:none;border-radius:var(--radius);background:var(--vine);color:var(--cream);font-family:'Shippori Mincho',serif;font-size:16px;font-weight:600;cursor:pointer;letter-spacing:.1em;transition:background .15s,transform .12s;display:flex;align-items:center;justify-content:center;gap:8px;}
 .save-btn:active{transform:scale(.99);background:var(--bark);}
-.trellis-header-card{background:var(--cream);border:1px solid var(--line);padding:24px 22px;margin:18px 18px 0;border-radius:var(--radius);position:relative;overflow:hidden;}
 .prog-header{padding:18px 18px 10px;}
 .prog-seg{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:14px;}
 .prog-seg button{flex:1;padding:11px 6px;border:none;background:var(--cream);font-family:inherit;font-size:13px;color:var(--bark);cursor:pointer;transition:background .12s;}
@@ -177,17 +199,6 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .prog-act-btn{flex:1;padding:9px 6px;border:1px solid var(--vine);border-radius:var(--radius-sm);background:var(--vine);color:var(--cream);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .12s;letter-spacing:.02em;}
 .prog-act-btn:active{opacity:.7;}
 .prog-act-btn.sub{background:var(--cream);color:var(--bark);border-color:var(--line);font-weight:500;}
-.trellis-header-card::after{content:'';position:absolute;left:22px;right:22px;bottom:0;height:1px;background:linear-gradient(90deg,transparent,var(--dusk),transparent);opacity:.3;}
-.trellis-overall-pct{font-family:'Shippori Mincho',serif;font-size:46px;font-weight:600;line-height:1;color:var(--vine);}
-.trellis-overall-label{font-size:12px;color:var(--text-muted);margin-top:6px;letter-spacing:.05em;}
-.trellis-overall-bar{height:5px;background:var(--paper);border-radius:3px;margin-top:16px;overflow:hidden;}
-.trellis-overall-fill{height:100%;background:var(--leaf);border-radius:3px;transition:width .8s ease;}
-.trellis-plot-card{padding:16px 18px;}
-.trellis-plot-name{font-family:'Shippori Mincho',serif;font-size:16px;font-weight:600;color:var(--vine);letter-spacing:.05em;}
-.trellis-plot-pct{font-family:'Shippori Mincho',serif;font-size:22px;font-weight:600;}
-.trellis-plot-bar-wrap{height:6px;background:var(--paper);border-radius:3px;overflow:hidden;margin:8px 0;}
-.trellis-plot-fill{height:100%;border-radius:3px;transition:width .6s;}
-.trellis-plot-meta{font-size:11px;color:var(--text-muted);letter-spacing:.04em;}
 .harvest-summary{display:grid;grid-template-columns:1.1fr 1fr;gap:12px;padding:18px;}
 .harvest-big{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;}
 .harvest-big::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--dusk);opacity:.5;}
@@ -252,7 +263,7 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .imp-head-item span{font-size:11px;color:var(--text-muted);margin-right:4px;}
 .imp-head-warn{font-size:12px;color:var(--wine);width:100%;}
 .imp-count{font-size:12px;color:var(--bark);font-weight:700;margin:16px 0 8px;letter-spacing:.04em;}
-.imp-row{display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--cream);border:1px solid var(--line);border-radius:var(--radius-sm);margin-bottom:6px;}
+.imp-row{display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--cream);border:1px solid var(--line);border-radius:var(--radius-sm);margin-bottom:6px;flex-wrap:wrap;}
 .imp-row.unknown{border-left:3px solid var(--dusk);}
 .imp-row-badge{width:30px;height:30px;border-radius:var(--radius-sm);background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
 .imp-row-info{flex:1;min-width:0;}
@@ -261,9 +272,52 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .imp-row-del{font-size:18px;color:var(--text-muted);cursor:pointer;padding:0 4px;flex-shrink:0;}
 .imp-row-del:active{color:var(--wine);}
 .imp-empty-note{font-size:13px;color:var(--text-muted);text-align:center;padding:20px;line-height:1.7;}
+.imp-multiday{font-size:13px;font-weight:700;color:var(--bark);background:var(--cream);border:1px solid var(--dusk);border-radius:var(--radius-sm);padding:11px 14px;margin-top:14px;letter-spacing:.03em;}
+.imp-day-block{margin-top:12px;padding-top:4px;border-top:1px dashed var(--line);}
+.imp-day-block:first-of-type{border-top:none;}
+.imp-edit-hint{font-size:11px;color:var(--text-muted);padding:8px 2px 2px;letter-spacing:.03em;}
+.imp-row{position:relative;}
+.imp-row-tap{display:flex;align-items:center;gap:10px;flex:1;cursor:pointer;padding-right:26px;}
+.imp-row-edit{position:absolute;right:30px;top:14px;font-size:13px;color:var(--bark);opacity:.5;}
+.imp-row.editing{background:var(--cream);border:1px solid var(--dusk);border-radius:var(--radius-sm);}
+.imp-editor{flex-basis:100%;width:100%;padding:10px 4px 4px;display:flex;flex-direction:column;gap:4px;}
+.imp-ed-label{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.06em;margin-top:5px;}
+.imp-ed-sel{padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-family:inherit;font-size:13px;color:var(--vine);}
+.imp-ed-done{margin-top:9px;padding:9px;border:1px solid var(--vine);border-radius:8px;background:var(--vine);color:var(--cream);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;}
 .import-link{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px;font-size:13px;color:var(--bark);font-weight:700;text-align:center;cursor:pointer;letter-spacing:.04em;transition:background .12s;}
 .import-link:active{background:var(--line-soft);}
 .edit-delete-btn{text-align:center;font-size:13px;color:var(--wine);padding:14px;cursor:pointer;letter-spacing:.04em;margin-top:4px;}
+.copy-new-btn{width:100%;margin-top:9px;padding:13px;border:1px solid var(--bark);border-radius:var(--radius-sm);background:var(--cream);color:var(--bark);font-family:'Shippori Mincho',serif;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.04em;}
+.copy-new-btn:active{background:var(--paper);}
+.tpl-section{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:4px;}
+.tpl-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+.tpl-title{font-size:11px;font-weight:700;color:var(--bark);letter-spacing:.08em;}
+.tpl-save-btn{font-size:11px;padding:5px 11px;border:1px solid var(--bark);border-radius:14px;background:var(--cream);color:var(--bark);cursor:pointer;font-family:inherit;font-weight:700;}
+.tpl-save-btn:active{background:var(--line-soft);}
+.tpl-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.tpl-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:7px 11px;border-radius:16px;background:var(--cream);border:1px solid var(--line);color:var(--vine);cursor:pointer;}
+.tpl-chip:active{background:var(--line-soft);}
+.tpl-chip-del{width:16px;height:16px;border-radius:50%;background:var(--line);color:var(--cream);display:flex;align-items:center;justify-content:center;font-size:11px;}
+.tpl-empty{font-size:11px;color:var(--text-muted);line-height:1.6;letter-spacing:.02em;}
+.harvest-section-title{font-family:'Shippori Mincho',serif;font-size:14px;font-weight:600;color:var(--vine);letter-spacing:.08em;padding:0 18px 10px;}
+.hv-variety-row{margin-bottom:13px;}
+.hv-variety-row:last-child{margin-bottom:0;}
+.hv-variety-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.hv-variety-nums{font-size:12px;color:var(--text-muted);}
+.hv-variety-nums b{font-family:'Shippori Mincho',serif;font-size:15px;color:var(--vine);font-weight:600;}
+.hv-variety-bar{height:7px;background:var(--paper);border-radius:4px;overflow:hidden;}
+.hv-variety-fill{height:100%;border-radius:4px;transition:width .6s;opacity:.85;}
+.hv-year-row{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+.hv-year-row:last-child{margin-bottom:0;}
+.hv-year-label{font-size:12px;color:var(--bark);font-weight:700;width:46px;flex-shrink:0;font-family:'Shippori Mincho',serif;}
+.hv-year-bar{flex:1;height:9px;background:var(--paper);border-radius:5px;overflow:hidden;}
+.hv-year-fill{height:100%;background:var(--dusk);border-radius:5px;transition:width .6s;}
+.hv-year-val{font-size:11px;color:var(--text-muted);white-space:nowrap;flex-shrink:0;}
+.hv-bloom{display:flex;align-items:center;gap:13px;}
+.hv-bloom-icon{font-size:20px;}
+.hv-bloom-days{font-size:14px;color:var(--vine);}
+.hv-bloom-days b{font-family:'Shippori Mincho',serif;font-size:18px;font-weight:600;color:var(--dusk);}
+.hv-bloom-sub{font-size:11px;color:var(--text-muted);margin-top:2px;}
 .edit-delete-btn:active{opacity:.6;}
 .edit-target-box{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-sm);padding:11px 13px;font-size:13px;color:var(--bark);letter-spacing:.03em;}
 .stage-info{background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--leaf);border-radius:var(--radius-sm);padding:12px 14px;margin-top:8px;}
@@ -293,6 +347,27 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .staged-meta{font-size:11px;color:var(--text-muted);margin-top:1px;}
 .staged-del{font-size:18px;color:var(--text-muted);cursor:pointer;padding:0 4px;flex-shrink:0;}
 .staged-del:active{color:var(--wine);}
+.photo-add-row{margin-bottom:10px;}
+.photo-add-btn{display:inline-flex;align-items:center;gap:6px;padding:11px 18px;border:1px dashed var(--bark);border-radius:var(--radius-sm);background:var(--cream);color:var(--bark);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:.04em;}
+.photo-add-btn:active{background:var(--paper);}
+.photo-thumbs{display:flex;flex-wrap:wrap;gap:8px;}
+.photo-card{display:flex;flex-direction:column;gap:5px;width:88px;}
+.photo-note-input{width:88px;font-size:11px;padding:5px 7px;border:1px solid var(--line);border-radius:8px;background:var(--cream);font-family:inherit;color:var(--vine);box-sizing:border-box;}
+.photo-note-input:focus{outline:none;border-color:var(--bark);}
+.photo-viewer-note{color:#fff;font-size:14px;text-align:center;max-width:90%;line-height:1.6;background:rgba(0,0,0,.4);padding:8px 14px;border-radius:var(--radius-sm);}
+.photo-thumb{position:relative;width:72px;height:72px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--line);background:var(--paper);}
+.photo-card .photo-thumb{width:88px;height:88px;}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.photo-thumb-del{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:none;font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.work-thumb{width:46px;height:46px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid var(--line);}
+.work-thumb-wrap{position:relative;flex-shrink:0;}
+.work-thumb-count{position:absolute;bottom:-4px;right:-4px;background:var(--vine);color:var(--cream);font-size:9px;font-weight:700;border-radius:8px;padding:1px 5px;border:1.5px solid var(--cream);}
+.photo-viewer{position:fixed;inset:0;background:rgba(20,16,12,.92);z-index:200;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:20px;}
+.photo-viewer img{max-width:100%;max-height:80vh;border-radius:var(--radius-sm);object-fit:contain;}
+.photo-viewer-close{position:absolute;top:18px;right:20px;color:#fff;font-size:30px;cursor:pointer;line-height:1;}
+.photo-viewer-nav{display:flex;gap:20px;align-items:center;}
+.photo-viewer-nav button{background:rgba(255,255,255,.15);color:#fff;border:none;width:44px;height:44px;border-radius:50%;font-size:20px;cursor:pointer;}
+.photo-viewer-count{color:#fff;font-size:13px;}
 .wx-quick-words{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
 .pest-quick{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
 .pest-quick-chip{font-size:12px;padding:5px 11px;border-radius:20px;border:1px solid var(--line);background:var(--cream);color:var(--bark);cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap;}
@@ -494,7 +569,7 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 
   <div class="screen hidden" id="screen-fields"><div id="field-list-content" style="padding:18px;display:flex;flex-direction:column;gap:14px"><div class="loading-dots"><span></span><span></span><span></span></div></div><div style="height:80px"></div></div>
   <div class="screen hidden" id="screen-field-detail"><div id="field-detail-content"></div></div>
-  <div class="screen hidden" id="screen-work"><div id="work-list-content" style="padding:18px;display:flex;flex-direction:column;gap:18px"><div class="loading-dots"><span></span><span></span><span></span></div></div><div style="height:80px"></div></div>
+  <div class="screen hidden" id="screen-work"><div id="work-filter-bar"></div><div id="work-list-content" style="padding:18px;display:flex;flex-direction:column;gap:18px"><div class="loading-dots"><span></span><span></span><span></span></div></div><div style="height:80px"></div></div>
   <div class="screen hidden" id="screen-trellis"><div id="trellis-content"><div class="loading-dots"><span></span><span></span><span></span></div></div><div style="height:80px"></div></div>
   <div class="screen hidden" id="screen-harvest"><div id="harvest-content"><div class="loading-dots"><span></span><span></span><span></span></div></div><div style="height:80px"></div></div>
   <div class="screen hidden" id="screen-compare"><div id="compare-content"><div class="loading-dots"><span></span><span></span><span></span></div></div><div style="height:80px"></div></div>
@@ -519,6 +594,10 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
     <div class="modal-title" id="modal-work-title">作業を記す</div>
     <div class="form-body">
       <div class="import-link" onclick="closeModal('modal-work');openImport()">📋 日報からまとめて取り込む</div>
+      <div class="tpl-section">
+        <div class="tpl-head"><span class="tpl-title">よく使う組み合わせ</span><button class="tpl-save-btn" onclick="saveAsTemplate()">⊕ テンプレ保存</button></div>
+        <div class="tpl-chips" id="work-template-chips"></div>
+      </div>
       <div class="form-group"><label class="form-label">作業日</label><input class="form-input" type="date" id="work-date"></div>
 
       <div class="add-block">
@@ -552,7 +631,7 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
           <label class="form-label">気づいた病気・害虫（任意）</label>
           <input class="form-input" type="text" id="work-pest" placeholder="例：べと病、カメムシ、晩腐病">
           <div class="pest-quick" id="work-pest-quick"></div>
-          <div class="form-hint">書いておくと、防除タブの「気がかり」に出ます。防除したら防除タブから記録できます。</div>
+          <div class="form-hint">書いておくと、防除暦の「発生メモ」と「気がかり」に残ります。</div>
         </div>
         <button class="add-to-list-btn" onclick="addWorkToList()">＋ この作業をリストに足す</button>
       </div>
@@ -583,31 +662,15 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
           <span class="wx-auto-btn" id="wx-auto-btn" onclick="tryFetchWorkWeather()">📡 自動でひく</span>
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">病気・害虫の発見（任意）</label>
-        <input class="form-input" type="text" id="work-pest" placeholder="例：ベト病の初期斑点、カメムシを確認">
-        <div class="form-hint">気づいたことを書いておくと、防除暦に「発生メモ」として残ります。</div>
-      </div>
       <div class="form-group"><label class="form-label">覚え書き（任意・全部に共通）</label><textarea class="form-textarea" id="work-comment" placeholder="畑の様子など"></textarea></div>
-      <button class="save-btn" onclick="saveWork()" id="work-save-btn">記録する</button>
-      <div style="height:8px"></div>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modal-trellis">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title">誘引の進みを記す</div>
-    <div class="form-body">
-      <div class="form-group"><label class="form-label">作業日</label><input class="form-input" type="date" id="trellis-date"></div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">圃場</label><select class="form-select" id="trellis-field" onchange="updateTrellisPlotSelect()"><option value="">選択</option></select></div>
-        <div class="form-group"><label class="form-label">区画</label><select class="form-select" id="trellis-plot"><option value="">選択</option></select></div>
+      <div class="form-group">
+        <label class="form-label">写真（任意・全部に共通）</label>
+        <div class="photo-add-row">
+          <label class="photo-add-btn">📷 写真をえらぶ<input type="file" accept="image/*" multiple style="display:none" onchange="onWorkPhotoPick(event)"></label>
+        </div>
+        <div class="photo-thumbs" id="work-photo-thumbs"></div>
       </div>
-      <div class="form-group"><label class="form-label">完了率</label><div class="slider-group"><div class="slider-header"><span class="slider-cap">進み</span><span class="slider-val"><span id="trellis-pct-val">50</span>%</span></div><input class="slider-input" type="range" min="0" max="100" step="5" value="50" id="trellis-pct" oninput="document.getElementById('trellis-pct-val').textContent=this.value"></div></div>
-      <div class="form-group"><label class="form-label">覚え書き</label><textarea class="form-textarea" id="trellis-comment" placeholder="状況メモなど"></textarea></div>
-      <button class="save-btn" onclick="saveTrellis()">記録する</button>
+      <button class="save-btn" onclick="saveWork()" id="work-save-btn">記録する</button>
       <div style="height:8px"></div>
     </div>
   </div>
@@ -726,8 +789,14 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
         </div>
       </div>
       <div class="form-group"><label class="form-label">気づいた病気・害虫（任意）</label><input class="form-input" type="text" id="edit-work-pest" placeholder="例：べと病、カメムシ"></div>
+      <div class="form-group">
+        <label class="form-label">写真</label>
+        <div class="photo-add-row"><label class="photo-add-btn">📷 写真をたす<input type="file" accept="image/*" multiple style="display:none" onchange="onEditPhotoPick(event)"></label></div>
+        <div class="photo-thumbs" id="edit-photo-thumbs"></div>
+      </div>
       <div class="form-group"><label class="form-label">覚え書き</label><textarea class="form-textarea" id="edit-work-comment" placeholder="畑の様子など"></textarea></div>
       <button class="save-btn" onclick="saveEditWork()">この内容に直す</button>
+      <button class="copy-new-btn" onclick="copyWorkAsNew()">📋 これをコピーして新規作成</button>
       <div class="edit-delete-btn" onclick="deleteEditWork()">この記録を削除する</div>
       <div style="height:8px"></div>
     </div>
@@ -739,7 +808,7 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
     <div class="modal-handle"></div>
     <div class="modal-title">日報からとりこむ</div>
     <div class="form-body">
-      <div class="info-note">LINE WORKSの農園日報の本文をまるごとコピーして、下に貼り付けてください。日付・天気・作業を読み取って、区画ごとに記録します。「A1〜4」のような範囲もばらして取り込みます。</div>
+      <div class="info-note">LINE WORKSの農園日報の本文をコピーして貼り付けてください。<b>何日分まとめて貼ってもOK</b>です。日付ごとに切り分けて、天気・作業を区画ごとに記録します。「A1〜4」のような範囲もばらして取り込みます。</div>
       <div class="form-group">
         <label class="form-label">日報の本文</label>
         <textarea class="form-textarea" id="import-text" style="min-height:160px" placeholder="例：&#10;農園日報&#10;2026.6.5 (金)&#10;晴れ、26〜17℃&#10;・余川A1〜4、B2、B6〜10、C1、C2、あらや、果樹 防除 完了&#10;・B4、B5 誘引 完了"></textarea>
@@ -1041,6 +1110,135 @@ function initDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,
   if(!d.objectStoreNames.contains('progress')){d.createObjectStore('progress',{keyPath:'id'});}
 };r.onsuccess=e=>{db=e.target.result;res();};r.onerror=rej;});}
 function dbGetAll(s){return new Promise((res,rej)=>{const q=db.transaction(s,'readonly').objectStore(s).getAll();q.onsuccess=()=>res(q.result);q.onerror=rej;});}
+
+// ── データのバックアップ（書き出し・読み込み）──
+const BACKUP_STORES=['fields','plots','work_records','trellis','harvest','spray','progress','meta'];
+async function exportBackup(){
+  try{
+    showToast('書き出し中…');
+    const data={app:'Vigne', version:1, exported_at:new Date().toISOString(), stores:{}};
+    for(const s of BACKUP_STORES){
+      try{data.stores[s]=await dbGetAll(s);}catch(e){data.stores[s]=[];}
+    }
+    const json=JSON.stringify(data);
+    const sizeMB=(json.length/1048576).toFixed(1);
+    const d=new Date();const stamp=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+    const filename=`vigne-backup-${stamp}.json`;
+    const blob=new Blob([json],{type:'application/json'});
+    const file=new File([blob],filename,{type:'application/json'});
+
+    // ① ファイル共有（PWAでも動く・共有シートから「ファイルに保存」等が選べる）
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      try{
+        await navigator.share({files:[file], title:'Vigne バックアップ', text:`Vigneのバックアップ（${stamp}・約${sizeMB}MB）`});
+        showToast('共有メニューから保存先を選べます');
+        return;
+      }catch(e){ if(e&&e.name==='AbortError'){return;} /* それ以外は次へ */ }
+    }
+    // ② ダウンロード（ブラウザ）
+    try{
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=url;a.download=filename;
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
+      showToast(`バックアップを書き出しました（約${sizeMB}MB）`);
+      return;
+    }catch(e){}
+    // ③ 最終手段：コピー用に表示
+    showBackupText(json, sizeMB);
+  }catch(e){showToast('書き出しに失敗しました');}
+}
+
+// 共有もダウンロードもできない端末向け：テキストで表示してコピーしてもらう
+function showBackupText(json, sizeMB){
+  const box=document.getElementById('backup-restore-info');
+  box.innerHTML=`<div class="restore-box"><div class="restore-when">コピーして保存してください（約${sizeMB}MB）</div><div class="restore-summary">下の文字を全部コピーして、メモやメールに貼り付けて保管してください。読み込みのときは、この文字を貼り付けます。</div><textarea class="backup-text" readonly onclick="this.select()">${json.replace(/</g,'&lt;')}</textarea><button class="restore-btn add" onclick="copyBackupText(this)">文字をコピー</button><button class="restore-cancel" onclick="document.getElementById('backup-restore-info').innerHTML=''">とじる</button></div>`;
+}
+function copyBackupText(btn){
+  const ta=btn.parentElement.querySelector('.backup-text');
+  ta.select();
+  try{
+    if(navigator.clipboard){navigator.clipboard.writeText(ta.value).then(()=>showToast('コピーしました')).catch(()=>{document.execCommand('copy');showToast('コピーしました');});}
+    else{document.execCommand('copy');showToast('コピーしました');}
+  }catch(e){showToast('長押しでコピーしてください');}
+}
+
+let pendingBackup=null; // 読み込んだデータを一時保持
+function onBackupFilePick(ev){
+  const file=ev.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{ loadBackupFromText(e.target.result); };
+  reader.onerror=()=>showToast('ファイルを読めませんでした');
+  reader.readAsText(file);
+  ev.target.value='';
+}
+// テキスト（ファイル内容 or 貼り付け）からバックアップを読み込んで確認画面を出す
+function loadBackupFromText(text){
+  try{
+    const data=JSON.parse(text);
+    if(!data.stores||data.app!=='Vigne'){showToast('Vigneのバックアップではないようです');return;}
+    pendingBackup=data;
+    const counts=BACKUP_STORES.map(s=>({s,n:(data.stores[s]||[]).length})).filter(x=>x.n>0);
+    const summary=counts.map(x=>`${storeLabel(x.s)} ${x.n}件`).join(' ・ ');
+    const when=data.exported_at?new Date(data.exported_at).toLocaleString('ja-JP'):'不明';
+    document.getElementById('backup-restore-info').innerHTML=`<div class="restore-box"><div class="restore-when">${when} のバックアップ</div><div class="restore-summary">${summary}</div><div class="restore-actions"><button class="restore-btn over" onclick="doRestore('over')">いまのデータを置き換える</button><button class="restore-btn add" onclick="doRestore('add')">いまのデータに足す</button><button class="restore-cancel" onclick="cancelRestore()">やめる</button></div></div>`;
+  }catch(err){showToast('うまく読めませんでした。文字が全部そろっているか確認してください');}
+}
+// 貼り付け欄を表示
+function showPasteRestore(){
+  const box=document.getElementById('backup-restore-info');
+  box.innerHTML=`<div class="restore-box"><div class="restore-when">バックアップの文字を貼り付け</div><div class="restore-summary">保管しておいたバックアップの文字を、下に貼り付けてください。</div><textarea class="backup-text" id="paste-restore-text" placeholder="ここにバックアップの文字を貼り付け"></textarea><button class="restore-btn add" onclick="loadBackupFromText(document.getElementById('paste-restore-text').value)">この内容を読み込む</button><button class="restore-cancel" onclick="document.getElementById('backup-restore-info').innerHTML=''">とじる</button></div>`;
+}
+function storeLabel(s){return {fields:'圃場',plots:'区画',work_records:'作業',trellis:'誘引',harvest:'収穫',spray:'防除',progress:'進捗',meta:'設定'}[s]||s;}
+function cancelRestore(){pendingBackup=null;document.getElementById('backup-restore-info').innerHTML='';}
+
+async function doRestore(mode){
+  if(!pendingBackup){return;}
+  try{
+    showToast('復元中…');
+    for(const s of BACKUP_STORES){
+      const rows=pendingBackup.stores[s]||[];
+      if(mode==='over'){
+        // 置き換え：そのストアを空にしてから入れる
+        await dbClear(s);
+      }
+      for(const row of rows){
+        try{await dbPut(s,row);}catch(e){}
+      }
+    }
+    pendingBackup=null;
+    document.getElementById('backup-restore-info').innerHTML='';
+    await loadCmpCache();
+    showToast(mode==='over'?'データを置き換えました':'データを足しました');
+    renderTab(currentTab);
+  }catch(e){showToast('復元に失敗しました');}
+}
+
+// 記録だけ消す（圃場・区画・品種は残す）。二段階確認。
+let pendingClearAt=0;
+async function clearRecords(){
+  const btn=document.getElementById('clear-records-btn');
+  if(Date.now()-pendingClearAt>4000){
+    // 1回目：警告
+    pendingClearAt=Date.now();
+    if(btn){btn.textContent='⚠ もう一度押すと消えます（圃場・区画は残ります）';btn.classList.add('danger');}
+    setTimeout(()=>{if(btn&&Date.now()-pendingClearAt>=4000){btn.textContent='🗑 記録をまっさらにする';btn.classList.remove('danger');}},4000);
+    return;
+  }
+  // 2回目：実行。作業・防除・進捗・誘引・収穫・気候キャッシュを消す。fields/plotsは残す。
+  try{
+    showToast('消去中…');
+    for(const s of ['work_records','spray','progress','trellis','harvest']){await dbClear(s);}
+    // 気候キャッシュ（meta内のcmpWxCache）も消す。テンプレは残す。
+    try{const all=await dbGetAll('meta');for(const m of all){if(m.id==='cmpWxCache')await new Promise((res,rej)=>{const q=db.transaction('meta','readwrite').objectStore('meta').delete('cmpWxCache');q.onsuccess=()=>res();q.onerror=rej;});}}catch(e){}
+    cmpWxCache={};forecastCache={};forecastFetchedAt=0;
+    pendingClearAt=0;
+    if(btn){btn.textContent='🗑 記録をまっさらにする';btn.classList.remove('danger');}
+    showToast('記録をまっさらにしました');
+    renderTab(currentTab);
+  }catch(e){showToast('消去に失敗しました');}
+}
 function dbPut(s,o){return new Promise((res,rej)=>{const q=db.transaction(s,'readwrite').objectStore(s).put(o);q.onsuccess=()=>res(q.result);q.onerror=rej;});}
 function dbClear(s){return new Promise((res,rej)=>{const q=db.transaction(s,'readwrite').objectStore(s).clear();q.onsuccess=()=>res();q.onerror=rej;});}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
@@ -1050,53 +1248,13 @@ async function seedRealData(){
   const existing=await dbGetAll('fields');
   const needReset = existing.length===0 || !existing.find(f=>f.id==='f_yokawa');
   if(!needReset) return;
-  await dbClear('fields'); await dbClear('plots'); await dbClear('work_records'); await dbClear('trellis'); await dbClear('harvest');
+  // 圃場・区画（実際の畑の登録情報）だけを投入。お試しのサンプル記録は入れない。
   for(const f of FIELD_DATA){
     await dbPut('fields',{id:f.id,name:f.name,lat:f.lat,lng:f.lng,created_at:new Date().toISOString()});
     for(const p of f.plots){
       await dbPut('plots',{id:uid(),field_id:f.id,name:p.name,varieties:p.v,area:null,tree_count:null,tree_age:null,rootstock:''});
     }
   }
-  const plots=await dbGetAll('plots');
-  const pid=(fid,nm)=>plots.find(p=>p.field_id===fid&&p.name===nm)?.id;
-  const t=new Date();
-  const mk=(plotName,fid,type,off,extra={})=>{const date=fmtDate(t,off);const iso=isoWeek(date);return {id:uid(),field_id:fid,plot_id:pid(fid,plotName),work_date:date,work_type:type,scope:'plot',variety:null,stage:extra.stage||'',weather:extra.weather||null,comment:extra.cm||'',iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()};};
-  // 絶対日付で作る版（年比較サンプル用）
-  const mkD=(plotName,fid,type,dateStr,extra={})=>{const iso=isoWeek(dateStr);return {id:uid(),field_id:fid,plot_id:pid(fid,plotName),work_date:dateStr,work_type:type,scope:extra.scope||'plot',variety:null,stage:extra.stage||'',weather:extra.weather||null,comment:extra.cm||'',iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()};};
-  const Y=t.getFullYear(), LY=Y-1;
-  const samples=[
-    mk('A1','f_yokawa','防除',0,{cm:'ベト病予防、薬剤散布',stage:'葉5〜6枚展葉'}),
-    mk('B4','f_yokawa','誘引',0,{cm:'新梢を傷めないよう丁寧に',stage:'葉5〜6枚展葉'}),
-    mk('B5','f_yokawa','誘引',0,{stage:'葉5〜6枚展葉'}),
-    mk('B7','f_yokawa','草刈り',-2,{}),
-    mk('アルバリーニョ','f_isobe','防除',-1,{cm:'ベト病予防',stage:'葉5〜6枚展葉'}),
-    mk('A','f_juni','誘引',-3,{stage:'葉5〜6枚展葉'}),
-    // ── 今年の草刈り（5月中旬〜6月上旬）──
-    mkD('A1','f_yokawa','草刈り',`${Y}-05-12`,{cm:'1回目 開始'}),
-    mkD('B2','f_yokawa','草刈り',`${Y}-05-19`,{}),
-    mkD('C1','f_yokawa','草刈り',`${Y}-05-27`,{}),
-    mkD('アルバリーニョ','f_isobe','草刈り',`${Y}-06-03`,{cm:'1回目 完了'}),
-    // ── 去年の草刈り（少し早め）──
-    mkD('A1','f_yokawa','草刈り',`${LY}-05-06`,{cm:'1回目 開始'}),
-    mkD('B2','f_yokawa','草刈り',`${LY}-05-13`,{}),
-    mkD('C1','f_yokawa','草刈り',`${LY}-05-21`,{}),
-    mkD('アルバリーニョ','f_isobe','草刈り',`${LY}-05-28`,{cm:'1回目 完了'}),
-    // ── カメムシ防除（ダントツ）今年/去年 ──
-    mkD('A1','f_yokawa','防除',`${Y}-06-18`,{cm:'カメムシ対策 ダントツ'}),
-    mkD('A1','f_yokawa','防除',`${LY}-06-12`,{cm:'カメムシ対策 ダントツ'}),
-  ].filter(s=>s.plot_id);
-  for(const s of samples) await dbPut('work_records',s);
-  const tr=[['A1',80],['A2',65],['A3',40],['A4',30],['B2',90],['B3',55],['B4',100],['B5',100]];
-  for(const [nm,pct] of tr){const id=pid('f_yokawa',nm);if(id)await dbPut('trellis',{id:uid(),plot_id:id,work_date:fmtDate(t,0),progress_pct:pct,comment:''});}
-  // 防除サンプル
-  const Y2=t.getFullYear();
-  const mkSpray=(dateStr,agent,target,dil,fids,extra={})=>({id:uid(),spray_date:dateStr,agent,target:target||null,dilution:dil||null,amount:extra.amount||null,field_ids:fids||[],weather:extra.weather||null,comment:extra.cm||null,iso_year:isoWeek(dateStr).year,iso_week:isoWeek(dateStr).week,created_at:new Date().toISOString()});
-  const sprays=[
-    mkSpray(fmtDate(t,0),'ボルドー液','べと病予防','—',['f_yokawa'],{weather:{code:null,cond:'晴れ',tmax:26,tmin:17,manual:true,source:'手入力'},cm:'展葉期の予防散布'}),
-    mkSpray(fmtDate(t,-7),'ジマンダイセン','べと病・黒とう病','600倍',['f_yokawa','f_isobe'],{cm:'雨の前に'}),
-    mkSpray(fmtDate(t,-18),'ダントツ','カメムシ','2000倍',['f_yokawa']),
-  ];
-  for(const s of sprays) await dbPut('spray',s);
 }
 
 const TAB_SCREENS={dashboard:'screen-dashboard',fields:'screen-fields',work:'screen-work',compare:'screen-compare',spray:'screen-spray',trellis:'screen-trellis',harvest:'screen-harvest'};
@@ -1107,13 +1265,13 @@ const TAB_MARK={dashboard:'余川・磯辺・十二町',fields:'Fields',work:'Wo
 function switchTab(tab){currentTab=tab;screenStack=[];document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));document.getElementById(TAB_SCREENS[tab]).classList.remove('hidden');document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.getElementById('header-title').textContent=TAB_TITLES[tab];document.getElementById('header-mark').textContent=TAB_MARK[tab];document.getElementById('back-btn').classList.add('hidden');document.getElementById('fab-btn').style.display=TAB_FAB[tab]?'flex':'none';renderTab(tab);}
 function pushScreen(id,title){screenStack.push({screenId:TAB_SCREENS[currentTab],title:TAB_TITLES[currentTab],mark:TAB_MARK[currentTab]});document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.getElementById('header-title').textContent=title;document.getElementById('header-mark').textContent='';document.getElementById('back-btn').classList.remove('hidden');document.getElementById('fab-btn').style.display='none';}
 function goBack(){if(!screenStack.length)return;const p=screenStack.pop();document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));document.getElementById(p.screenId).classList.remove('hidden');document.getElementById('header-title').textContent=p.title;document.getElementById('header-mark').textContent=p.mark;if(!screenStack.length){document.getElementById('back-btn').classList.add('hidden');document.getElementById('fab-btn').style.display=TAB_FAB[currentTab]?'flex':'none';}}
-function onFabClick(){if(currentTab==='fields')openModal('modal-field');if(currentTab==='work')openWorkForm(selectedWorkType||'芽かき');if(currentTab==='spray')openSprayForm();if(currentTab==='trellis')openModal('modal-trellis');if(currentTab==='harvest')openModal('modal-harvest');}
+function onFabClick(){if(currentTab==='fields')openModal('modal-field');if(currentTab==='work')openWorkForm(selectedWorkType||'芽かき');if(currentTab==='spray')openSprayForm();if(currentTab==='harvest')openModal('modal-harvest');}
 
 function openModal(id){document.getElementById(id).classList.add('open');populateFieldSelects();if(id==='modal-field')buildFieldVarietyPick();}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
 
-async function populateFieldSelects(){const fields=await dbGetAll('fields');['work-field','trellis-field','harvest-field'].forEach(id=>{const sel=document.getElementById(id);if(!sel)return;const cur=sel.value;sel.innerHTML='<option value="">圃場を選択</option>'+fields.map(f=>`<option value="${f.id}">${f.name}</option>`).join('');if(cur)sel.value=cur;});}
+async function populateFieldSelects(){const fields=await dbGetAll('fields');['work-field','harvest-field'].forEach(id=>{const sel=document.getElementById(id);if(!sel)return;const cur=sel.value;sel.innerHTML='<option value="">圃場を選択</option>'+fields.map(f=>`<option value="${f.id}">${f.name}</option>`).join('');if(cur)sel.value=cur;});}
 
 let selectedPlotIds=[];   // 複数選択した区画ID
 let stagedWorks=[];        // その日に積んだ作業リスト
@@ -1213,7 +1371,6 @@ function updateWorkSaveBtn(){
   btn.textContent=stagedWorks.length?`${stagedWorks.length}件をまとめて記録する`:'記録する';
 }
 
-async function updateTrellisPlotSelect(){await fillPlotSelect('trellis-plot',document.getElementById('trellis-field').value);}
 async function onHarvestFieldChange(){await fillPlotSelect('harvest-plot',document.getElementById('harvest-field').value);document.getElementById('harvest-variety-group').style.display='none';}
 async function onHarvestPlotChange(){const pid=document.getElementById('harvest-plot').value;const plots=await dbGetAll('plots');const plot=plots.find(p=>p.id===pid);const grp=document.getElementById('harvest-variety-group');if(plot&&plot.varieties&&plot.varieties.length>1){grp.style.display='flex';document.getElementById('harvest-variety').innerHTML='<option value="">区画ぜんぶ</option>'+plot.varieties.map(v=>`<option value="${v}">${v}</option>`).join('');}else{grp.style.display='none';}}
 async function fillPlotSelect(sid,fid){const plots=(await dbGetAll('plots')).filter(p=>p.field_id===fid);document.getElementById(sid).innerHTML='<option value="">区画を選択</option>'+plots.map(p=>`<option value="${p.id}">${p.name}（${(p.varieties||[]).join('・')}）</option>`).join('');}
@@ -1238,7 +1395,6 @@ async function toggleWorkSprayFields(){
     box.style.display='none';
   }
 }
-function buildQuickActions(){const items=WORK_TYPES.slice(0,8);document.getElementById('quick-actions').innerHTML=items.map(t=>`<button class="qa-btn" onclick="openWorkForm('${t.label}')"><div class="qa-icon">${t.icon}</div><div class="qa-label">${t.label}</div></button>`).join('');}
 
 // 生育ステージを選んだら、説明・やること・次までの目安日数を表示
 function stageOptions(selected){
@@ -1272,6 +1428,8 @@ function openWorkForm(t){selectedWorkType=t;buildWorkTypeGrid();document.getElem
   document.getElementById('work-plot-multi').innerHTML='';document.getElementById('work-variety-pick').innerHTML='';
   selectedWorkVariety=null;selectedPlotIds=[];stagedWorks=[];renderStagedList();buildWxPick();resetWxForm();buildPestQuick('work-pest-quick','work-pest');document.getElementById('work-pest').value='';
   ['work-spray-agent','work-spray-target','work-spray-dilution','work-spray-amount'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});toggleWorkSprayFields();
+  workPhotos=[];renderWorkPhotoThumbs();
+  renderTemplateChips();
   openModal('modal-work');}
 
 function buildFieldVarietyPick(){fieldFormVarieties=[];document.getElementById('field-variety-pick').innerHTML=VARIETIES.map(v=>`<button class="vp-chip" onclick="toggleFieldVariety('${v.name.replace(/'/g,"\\'")}',this)">${v.name}</button>`).join('');}
@@ -1295,7 +1453,7 @@ async function saveWork(){
     const rec={id:uid(),field_id:s.fieldId,plot_id:s.plotId||null,scope:s.scope,variety:s.variety||null,
       work_date:date,work_type:s.workType,stage:s.stage||'',
       weather:weather?{...weather}:null,
-      comment, pest:s.pest||'',
+      comment, pest:s.pest||'', photos:workPhotos.length?[...workPhotos]:null,
       iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()};
     await dbPut('work_records',rec);
     // 誘引なら進捗を連動（区画スコープのときのみ）
@@ -1351,11 +1509,96 @@ async function openEditWork(id){
   document.getElementById('edit-wx-tmin').value=wx.tmin!=null?Math.round(wx.tmin):'';
   document.getElementById('edit-work-comment').value=w.comment||'';
   document.getElementById('edit-work-pest').value=w.pest||'';
+  editPhotos=w.photos?normPhotos(w.photos):[];renderEditPhotoThumbs();
   pendingDeleteId=null;const delBtn=document.querySelector('#modal-edit-work .edit-delete-btn');if(delBtn){delBtn.textContent='この記録を削除する';delBtn.style.color='var(--wine)';delBtn.style.background='none';}
   openModalNoFill('modal-edit-work');
 }
 let editSelectedType=null;
 function selectEditWorkType(t,btn){editSelectedType=t;document.querySelectorAll('#edit-work-type-grid .wt-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');}
+
+// ── 作業テンプレート（よく使う組み合わせ）──
+let workTemplates=[];
+async function loadWorkTemplates(){try{const all=await dbGetAll('meta');const m=all.find(x=>x.id==='workTemplates');workTemplates=m?m.data||[]:[];}catch(e){workTemplates=[];}}
+async function saveWorkTemplatesStore(){try{await dbPut('meta',{id:'workTemplates',data:workTemplates});}catch(e){}}
+
+// いまの入力（圃場・区画・品種・作業）をテンプレに保存
+async function saveAsTemplate(){
+  const fid=document.getElementById('work-field').value;
+  if(!fid){showToast('圃場と作業を選んでから保存してください');return;}
+  const fields=await dbGetAll('fields'),plots=await dbGetAll('plots');
+  const field=fields.find(f=>f.id===fid);
+  const plotNames=selectedPlotIds.map(pid=>plots.find(p=>p.id===pid)?.name).filter(Boolean);
+  const tpl={id:uid(), work_type:selectedWorkType, field_id:fid, field_name:field?.name||'',
+    plot_ids:[...selectedPlotIds], plot_names:plotNames, variety:selectedWorkVariety||null};
+  // ラベル
+  const icon=(WORK_TYPES.find(t=>t.label===selectedWorkType)||{}).icon||'';
+  tpl.label=`${icon} ${selectedWorkType}・${field?.name||''}${plotNames.length?' '+plotNames.join('/'):' ぜんぶ'}${selectedWorkVariety?' '+selectedWorkVariety:''}`;
+  workTemplates.unshift(tpl);
+  if(workTemplates.length>12)workTemplates=workTemplates.slice(0,12); // 上限
+  await saveWorkTemplatesStore();
+  renderTemplateChips();
+  showToast('テンプレに保存しました');
+}
+function renderTemplateChips(){
+  const box=document.getElementById('work-template-chips');if(!box)return;
+  if(!workTemplates.length){box.innerHTML='<div class="tpl-empty">下の内容を選んで「⊕ テンプレ保存」を押すと、次回からここにボタンが出ます。</div>';return;}
+  box.innerHTML=workTemplates.map(t=>`<div class="tpl-chip" onclick="applyTemplate('${t.id}')">${t.label}<span class="tpl-chip-del" onclick="event.stopPropagation();deleteTemplate('${t.id}')">×</span></div>`).join('');
+}
+async function applyTemplate(id){
+  const t=workTemplates.find(x=>x.id===id);if(!t)return;
+  // 作業種別
+  selectWorkTypeByLabel(t.work_type);
+  // 圃場→区画→品種
+  const fsel=document.getElementById('work-field');
+  fsel.value=t.field_id;
+  await onWorkFieldChange();
+  if(t.plot_ids&&t.plot_ids.length){
+    selectedPlotIds=[...t.plot_ids];
+    t.plot_ids.forEach(pid=>{const chip=document.querySelector(`#work-plot-multi .plot-multi-chip[data-pid="${pid}"]`);if(chip)chip.classList.add('active');});
+    await refreshVarietyPickAvailability();
+    if(t.variety){selectedWorkVariety=t.variety;document.querySelectorAll('#work-variety-pick .vp-chip').forEach(c=>{if(c.textContent===t.variety)c.classList.add('active');});}
+  }
+  showToast('テンプレを呼び出しました');
+}
+function selectWorkTypeByLabel(label){
+  selectedWorkType=label;
+  document.querySelectorAll('#work-type-grid .wt-chip').forEach(c=>{c.classList.toggle('active', c.querySelector('.wt-text')?.textContent===label);});
+  toggleWorkSprayFields();
+}
+async function deleteTemplate(id){
+  workTemplates=workTemplates.filter(t=>t.id!==id);
+  await saveWorkTemplatesStore();
+  renderTemplateChips();
+}
+async function copyWorkAsNew(){
+  if(!editingWorkId)return;
+  const works=await dbGetAll('work_records');
+  const w=works.find(x=>x.id===editingWorkId);
+  if(!w){showToast('記録が見つかりません');return;}
+  closeModal('modal-edit-work');
+  // 新規フォームを開いて作業種別をセット
+  openWorkForm(w.work_type);
+  // 圃場をセット → 区画チップ生成 → 区画選択 → 品種、の順で復元
+  if(w.field_id){
+    const fsel=document.getElementById('work-field');
+    fsel.value=w.field_id;
+    await onWorkFieldChange();
+    if(w.plot_id){
+      selectedPlotIds=[w.plot_id];
+      // 区画チップをアクティブ表示
+      const chip=document.querySelector(`#work-plot-multi .plot-multi-chip[data-pid="${w.plot_id}"]`);
+      if(chip)chip.classList.add('active');
+      await refreshVarietyPickAvailability();
+      if(w.variety){
+        selectedWorkVariety=w.variety;
+        document.querySelectorAll('#work-variety-pick .vp-chip').forEach(c=>{if(c.textContent===w.variety)c.classList.add('active');});
+      }
+    }
+  }
+  // ステージ・病害虫を引き継ぐ（日付は今日のまま、天気・写真は引き継がない）
+  if(w.stage){document.getElementById('work-stage').value=w.stage;renderStageInfo('work-stage','work-stage-info');}
+  showToast('コピーしました。対象を確かめて「リストに足す」へ');
+}
 async function saveEditWork(){
   if(!editingWorkId)return;
   const works=await dbGetAll('work_records');
@@ -1381,6 +1624,7 @@ async function saveEditWork(){
   }else{w.weather=null;}
   w.comment=document.getElementById('edit-work-comment').value;
   w.pest=document.getElementById('edit-work-pest').value.trim();
+  w.photos=editPhotos.length?[...editPhotos]:null;
   await dbPut('work_records',w);
   editingWorkId=null;
   closeModal('modal-edit-work');showToast('記録を直しました');renderTab(currentTab);
@@ -1405,10 +1649,9 @@ async function deleteEditWork(){
 // 圃場セレクト等を再構築しないモーダル開閉（編集用）
 function openModalNoFill(id){document.getElementById(id).classList.add('open');}
 
-async function saveTrellis(){const plotId=document.getElementById('trellis-plot').value,date=document.getElementById('trellis-date').value;if(!plotId||!date){showToast('圃場・区画・日付を入れてください');return;}const all=await dbGetAll('trellis'),ex=all.find(t=>t.plot_id===plotId);await dbPut('trellis',{id:ex?ex.id:uid(),plot_id:plotId,work_date:date,progress_pct:parseInt(document.getElementById('trellis-pct').value),comment:document.getElementById('trellis-comment').value,auto:false});closeModal('modal-trellis');showToast('進みを記録しました');renderTab(currentTab);}
 async function saveHarvest(){const plotId=document.getElementById('harvest-plot').value,date=document.getElementById('harvest-date').value,w=document.getElementById('harvest-weight').value;if(!plotId||!date||!w){showToast('圃場・区画・収穫量を入れてください');return;}const iso=isoWeek(date);await dbPut('harvest',{id:uid(),plot_id:plotId,variety:document.getElementById('harvest-variety').value||null,harvest_date:date,weight_kg:parseFloat(w),container_count:parseInt(document.getElementById('harvest-containers').value)||null,brix:parseFloat(document.getElementById('harvest-brix').value)||null,acidity:parseFloat(document.getElementById('harvest-acidity').value)||null,ph:parseFloat(document.getElementById('harvest-ph').value)||null,comment:document.getElementById('harvest-comment').value,iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});closeModal('modal-harvest');showToast('収穫を記録しました');clearForm('harvest');renderTab(currentTab);}
 async function saveField(){const fn=document.getElementById('field-name').value.trim(),pn=document.getElementById('plot-name').value.trim();if(!fn||!pn){showToast('圃場名と区画名を入れてください');return;}const vs=fieldFormVarieties.length?fieldFormVarieties.slice():['未定'];const fields=await dbGetAll('fields');let field=fields.find(f=>f.name===fn);if(!field){field={id:uid(),name:fn,lat:null,lng:null,created_at:new Date().toISOString()};await dbPut('fields',field);}await dbPut('plots',{id:uid(),field_id:field.id,name:pn,varieties:vs,area:parseFloat(document.getElementById('plot-area').value)||null,tree_count:parseInt(document.getElementById('plot-trees').value)||null,tree_age:parseInt(document.getElementById('plot-age').value)||null,rootstock:document.getElementById('plot-rootstock').value});closeModal('modal-field');showToast('圃場・区画を加えました');clearForm('field');renderTab(currentTab);}
-function clearForm(t){if(t==='work'){document.getElementById('work-comment').value='';document.getElementById('work-pest').value='';resetWxForm();stagedWorks=[];selectedPlotIds=[];renderStagedList();}if(t==='harvest'){['harvest-weight','harvest-containers','harvest-brix','harvest-acidity','harvest-ph','harvest-comment'].forEach(id=>document.getElementById(id).value='');}if(t==='field'){['field-name','plot-name','plot-area','plot-trees','plot-age','plot-rootstock'].forEach(id=>document.getElementById(id).value='');fieldFormVarieties=[];}}
+function clearForm(t){if(t==='work'){document.getElementById('work-comment').value='';document.getElementById('work-pest').value='';resetWxForm();stagedWorks=[];selectedPlotIds=[];renderStagedList();workPhotos=[];renderWorkPhotoThumbs();}if(t==='harvest'){['harvest-weight','harvest-containers','harvest-brix','harvest-acidity','harvest-ph','harvest-comment'].forEach(id=>document.getElementById(id).value='');}if(t==='field'){['field-name','plot-name','plot-area','plot-trees','plot-age','plot-rootstock'].forEach(id=>document.getElementById(id).value='');fieldFormVarieties=[];}}
 
 async function renderTab(tab){if(tab==='dashboard')await renderDashboard();if(tab==='fields')await renderFields();if(tab==='work')await renderWork();if(tab==='compare')await renderCompare();if(tab==='spray')await renderSpray();if(tab==='trellis')await renderTrellis();if(tab==='harvest')await renderHarvest();}
 function barColor(p){return p>=80?'var(--leaf)':p>=50?'var(--dusk)':'var(--wine)';}
@@ -1641,11 +1884,24 @@ async function dashFetchClimate(){
 
 async function renderFields(){
   const [fields,plots]=await Promise.all([dbGetAll('fields'),dbGetAll('plots')]),el=document.getElementById('field-list-content');
-  if(!fields.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">🌿</div><div class="empty-text">まだ圃場がありません<br>右下の ＋ から加えましょう</div></div>';return;}
+  const dataMgmt=`<div class="section" style="padding-top:8px"><div class="data-mgmt">
+    <div class="data-mgmt-title">データの管理</div>
+    <div class="data-mgmt-note">記録と写真は端末の中だけに保存されています。ときどき書き出して保管しておくと安心です。</div>
+    <div class="data-mgmt-btns">
+      <button class="data-mgmt-btn" onclick="exportBackup()">⬇ バックアップを書き出す</button>
+      <label class="data-mgmt-btn sub">⬆ ファイルから読み込む<input type="file" accept="application/json,.json" style="display:none" onchange="onBackupFilePick(event)"></label>
+      <button class="data-mgmt-btn sub" onclick="showPasteRestore()">📋 貼り付けで読み込む</button>
+    </div>
+    <div id="backup-restore-info"></div>
+    <div class="data-mgmt-divider"></div>
+    <button class="clear-records-btn" id="clear-records-btn" onclick="clearRecords()">🗑 記録をまっさらにする</button>
+    <div class="data-mgmt-note" style="margin:8px 0 0">作業・防除・進捗・収穫の記録を消します。圃場・区画・品種は残ります。消す前にバックアップをおすすめします。</div>
+  </div></div>`;
+  if(!fields.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">🌿</div><div class="empty-text">まだ圃場がありません<br>右下の ＋ から加えましょう</div></div>'+dataMgmt;return;}
   el.innerHTML=fields.map(f=>{const fps=plots.filter(p=>p.field_id===f.id);
     const vset=[...new Set(fps.flatMap(p=>p.varieties||[]))];
     const chips=vset.map(v=>`<span class="plot-chip" style="${varietyStyle(v)}">${v}</span>`).join('');
-    return `<div class="card card-tap" onclick="openFieldDetail('${f.id}')"><div class="field-card-inner"><div class="field-name">${f.name}</div><div class="field-sub">${fps.length} 区画 ・ ${vset.length} 品種</div><div class="plot-chips">${chips||'<span style="font-size:13px;color:var(--text-muted)">区画はまだありません</span>'}</div></div><div class="field-footer"><span class="field-stat-mini">区画 <strong>${fps.length}</strong></span><span class="field-stat-mini">${f.lat?'📍 GPS登録済':'GPS未登録'}</span><span style="font-size:12px;color:var(--bark)">詳しく →</span></div></div>`;}).join('');
+    return `<div class="card card-tap" onclick="openFieldDetail('${f.id}')"><div class="field-card-inner"><div class="field-name">${f.name}</div><div class="field-sub">${fps.length} 区画 ・ ${vset.length} 品種</div><div class="plot-chips">${chips||'<span style="font-size:13px;color:var(--text-muted)">区画はまだありません</span>'}</div></div><div class="field-footer"><span class="field-stat-mini">区画 <strong>${fps.length}</strong></span><span class="field-stat-mini">${f.lat?'📍 GPS登録済':'GPS未登録'}</span><span style="font-size:12px;color:var(--bark)">詳しく →</span></div></div>`;}).join('')+dataMgmt;
 }
 
 async function openFieldDetail(fid){
@@ -1657,12 +1913,69 @@ async function openFieldDetail(fid){
   pushScreen('screen-field-detail',field.name);
 }
 
-async function renderWork(){
-  const [works,plots,fields]=await Promise.all([dbGetAll('work_records'),dbGetAll('plots'),dbGetAll('fields')]),plotMap=Object.fromEntries(plots.map(p=>[p.id,p])),fieldMap=Object.fromEntries(fields.map(f=>[f.id,f])),sorted=[...works].sort((a,b)=>b.work_date?.localeCompare(a.work_date)||0),el=document.getElementById('work-list-content');
-  if(!sorted.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">✎</div><div class="empty-text">まだ記録がありません<br>右下の ＋ から加えましょう</div></div>';return;}
+const WORK_FILTER={field:'', type:'', period:'all', keyword:''};
+async function renderWork(skipBar){
+  const [works,plots,fields]=await Promise.all([dbGetAll('work_records'),dbGetAll('plots'),dbGetAll('fields')]);
+  const plotMap=Object.fromEntries(plots.map(p=>[p.id,p])),fieldMap=Object.fromEntries(fields.map(f=>[f.id,f]));
+  if(!skipBar) renderWorkFilterBar(fields, works);
+  const el=document.getElementById('work-list-content');
+
+  // 絞り込み
+  const now=new Date();
+  let filtered=works.filter(w=>{
+    if(WORK_FILTER.field && w.field_id!==WORK_FILTER.field) return false;
+    if(WORK_FILTER.type && w.work_type!==WORK_FILTER.type) return false;
+    if(WORK_FILTER.period!=='all' && w.work_date){
+      const wd=new Date(w.work_date+'T00:00:00');
+      const diff=(now-wd)/86400000;
+      if(WORK_FILTER.period==='30' && diff>30) return false;
+      if(WORK_FILTER.period==='90' && diff>90) return false;
+      if(WORK_FILTER.period==='year' && wd.getFullYear()!==now.getFullYear()) return false;
+    }
+    if(WORK_FILTER.keyword){
+      const k=WORK_FILTER.keyword.toLowerCase();
+      const hay=[w.work_type,w.comment,w.pest,w.stage,w.variety,fieldMap[w.field_id]?.name,plotMap[w.plot_id]?.name].filter(Boolean).join(' ').toLowerCase();
+      if(!hay.includes(k)) return false;
+    }
+    return true;
+  });
+  const sorted=filtered.sort((a,b)=>b.work_date?.localeCompare(a.work_date)||0);
+  const hasFilter=WORK_FILTER.field||WORK_FILTER.type||WORK_FILTER.period!=='all'||WORK_FILTER.keyword;
+
+  if(!works.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">✎</div><div class="empty-text">まだ記録がありません<br>右下の ＋ から加えましょう</div></div>';return;}
+  if(!sorted.length){el.innerHTML=`<div class="filter-count">${hasFilter?'条件に合う記録はありません':''}</div><div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">見つかりませんでした<br>条件を変えてみてください</div></div>`;return;}
+
+  const countLine=hasFilter?`<div class="filter-count">${sorted.length}件 見つかりました</div>`:'';
   const groups={};for(const w of sorted){(groups[w.work_date||'未定']=groups[w.work_date||'未定']||[]).push(w);}
-  el.innerHTML=Object.entries(groups).map(([date,ws])=>{const rows=ws.map(w=>{const wt=WORK_TYPES.find(t=>t.label===w.work_type)||{icon:'✎'};const tgt=workTargetLabel(w,plotMap,fieldMap);return `<div class="work-item work-item-tap" onclick="openEditWork('${w.id}')"><div class="work-badge">${wt.icon}</div><div class="work-info"><div class="work-name">${w.work_type}</div><div class="work-meta">${tgt}</div>${w.weather?`<div class="work-meta">${weatherLine(w.weather)}</div>`:''}${w.stage?`<span class="work-stage-tag">${w.stage}</span>`:''}${w.pest?`<span class="work-stage-tag" style="border-color:var(--wine);color:var(--wine)">🐛 ${w.pest}</span>`:''}${w.comment?`<div class="work-meta" style="font-style:italic;color:var(--bark);margin-top:3px">${w.comment}</div>`:''}</div><div class="work-edit-hint">›</div></div>`;}).join('<div class="divider"></div>');const d=new Date(date),label=isNaN(d)?date:`${d.getMonth()+1}月${d.getDate()}日`,iso=isNaN(d)?null:isoWeek(date);return `<div><div class="mincho" style="font-size:14px;font-weight:600;color:var(--bark);padding:0 0 8px;letter-spacing:.08em">${label}${iso?`<span style="font-size:11px;color:var(--text-muted);margin-left:8px">${iso.year}年 第${iso.week}週</span>`:''}</div><div class="card" style="padding:0 18px">${rows}</div></div>`;}).join('');
+  el.innerHTML=countLine+Object.entries(groups).map(([date,ws])=>{const rows=ws.map(w=>{const wt=WORK_TYPES.find(t=>t.label===w.work_type)||{icon:'✎'};const tgt=workTargetLabel(w,plotMap,fieldMap);return `<div class="work-item work-item-tap" onclick="openEditWork('${w.id}')"><div class="work-badge">${wt.icon}</div><div class="work-info"><div class="work-name">${w.work_type}</div><div class="work-meta">${tgt}</div>${w.weather?`<div class="work-meta">${weatherLine(w.weather)}</div>`:''}${w.stage?`<span class="work-stage-tag">${w.stage}</span>`:''}${w.pest?`<span class="work-stage-tag" style="border-color:var(--wine);color:var(--wine)">🐛 ${w.pest}</span>`:''}${w.comment?`<div class="work-meta" style="font-style:italic;color:var(--bark);margin-top:3px">${w.comment}</div>`:''}</div>${w.photos&&w.photos.length?`<div class="work-thumb-wrap" onclick="event.stopPropagation();openWorkPhotos('${w.id}')"><img class="work-thumb" src="${normPhoto(w.photos[0]).url}">${w.photos.length>1?`<span class="work-thumb-count">${w.photos.length}</span>`:''}</div>`:''}<div class="work-edit-hint">›</div></div>`;}).join('<div class="divider"></div>');const d=new Date(date),label=isNaN(d)?date:`${d.getMonth()+1}月${d.getDate()}日`,iso=isNaN(d)?null:isoWeek(date);return `<div><div class="mincho" style="font-size:14px;font-weight:600;color:var(--bark);padding:0 0 8px;letter-spacing:.08em">${label}${iso?`<span style="font-size:11px;color:var(--text-muted);margin-left:8px">${iso.year}年 第${iso.week}週</span>`:''}</div><div class="card" style="padding:0 18px">${rows}</div></div>`;}).join('');
 }
+
+function renderWorkFilterBar(fields, works){
+  const bar=document.getElementById('work-filter-bar');if(!bar)return;
+  const usedTypes=[...new Set(works.map(w=>w.work_type))];
+  const typeOptions=WORK_TYPES.filter(t=>usedTypes.includes(t.label));
+  const hasFilter=WORK_FILTER.field||WORK_FILTER.type||WORK_FILTER.period!=='all'||WORK_FILTER.keyword;
+  bar.innerHTML=`<div class="work-filter">
+    <div class="wf-search"><span class="wf-search-icon">🔍</span><input type="text" id="wf-keyword" placeholder="ことばで探す（薬剤・メモ・病害虫など）" value="${(WORK_FILTER.keyword||'').replace(/"/g,'&quot;')}" oninput="WORK_FILTER.keyword=this.value;debouncedWorkRender()">${WORK_FILTER.keyword?`<span class="wf-clear" onclick="WORK_FILTER.keyword='';renderWork()">×</span>`:''}</div>
+    <div class="wf-row">
+      <select class="wf-select" onchange="WORK_FILTER.field=this.value;renderWork()">
+        <option value="">すべての圃場</option>
+        ${fields.map(f=>`<option value="${f.id}" ${WORK_FILTER.field===f.id?'selected':''}>${f.name}</option>`).join('')}
+      </select>
+      <select class="wf-select" onchange="WORK_FILTER.type=this.value;renderWork()">
+        <option value="">すべての作業</option>
+        ${typeOptions.map(t=>`<option value="${t.label}" ${WORK_FILTER.type===t.label?'selected':''}>${t.icon} ${t.label}</option>`).join('')}
+      </select>
+    </div>
+    <div class="wf-periods">
+      ${[['all','すべて'],['30','30日'],['90','90日'],['year','今年']].map(([v,l])=>`<button class="wf-period ${WORK_FILTER.period===v?'active':''}" onclick="WORK_FILTER.period='${v}';renderWork()">${l}</button>`).join('')}
+      ${hasFilter?`<button class="wf-reset" onclick="resetWorkFilter()">クリア</button>`:''}
+    </div>
+  </div>`;
+}
+let wfTimer=null;
+function debouncedWorkRender(){clearTimeout(wfTimer);wfTimer=setTimeout(()=>renderWork(true),300);}
+function resetWorkFilter(){WORK_FILTER.field='';WORK_FILTER.type='';WORK_FILTER.period='all';WORK_FILTER.keyword='';renderWork();}
 
 let progressWorkType='草刈り'; // 進捗タブで表示中の作業
 async function renderTrellis(){
@@ -1765,12 +2078,82 @@ async function setPlotProgress(plotId, workType, pct){
 }
 
 async function renderHarvest(){
-  const [harvest,plots,fields]=await Promise.all([dbGetAll('harvest'),dbGetAll('plots'),dbGetAll('fields')]),plotMap=Object.fromEntries(plots.map(p=>[p.id,p])),fieldMap=Object.fromEntries(fields.map(f=>[f.id,f])),sorted=[...harvest].sort((a,b)=>b.harvest_date?.localeCompare(a.harvest_date)||0);
+  const [harvest,plots,fields,works]=await Promise.all([dbGetAll('harvest'),dbGetAll('plots'),dbGetAll('fields'),dbGetAll('work_records')]);
+  const plotMap=Object.fromEntries(plots.map(p=>[p.id,p])),fieldMap=Object.fromEntries(fields.map(f=>[f.id,f])),sorted=[...harvest].sort((a,b)=>b.harvest_date?.localeCompare(a.harvest_date)||0);
   const total=harvest.reduce((s,h)=>s+(h.weight_kg||0),0),bx=harvest.filter(h=>h.brix),avgB=bx.length?(bx.reduce((s,h)=>s+h.brix,0)/bx.length).toFixed(1):'—',mx=harvest.length?Math.max(...harvest.map(h=>h.weight_kg||0)).toFixed(0):'—';
   let html=`<div class="harvest-summary"><div class="harvest-big"><div class="hero-eyebrow">Harvest</div><div class="harvest-big-val">${Math.round(total).toLocaleString()}<span class="harvest-big-unit"> kg</span></div><div class="harvest-big-label">総収穫量</div></div><div class="harvest-sub"><div class="harvest-sub-row"><span class="harvest-sub-label">平均糖度</span><span class="harvest-sub-val">${avgB}°</span></div><div class="harvest-sub-row"><span class="harvest-sub-label">記録</span><span class="harvest-sub-val">${harvest.length} 件</span></div><div class="harvest-sub-row"><span class="harvest-sub-label">最多収量</span><span class="harvest-sub-val">${mx} kg</span></div></div></div>`;
+
+  if(harvest.length){
+    html+=renderHarvestAnalysis(harvest, plotMap, works);
+  }
+
   if(!sorted.length){html+='<div class="empty-state"><div class="empty-icon">🍇</div><div class="empty-text">まだ収穫の記録がありません<br>右下の ＋ から加えましょう</div></div>';}
-  else{html+='<div class="card" style="margin:0 18px 18px">';html+=sorted.map(h=>{const p=plotMap[h.plot_id],f=p?fieldMap[p.field_id]:null,d=new Date(h.harvest_date),m=isNaN(d)?'':`${d.getMonth()+1}月`,day=isNaN(d)?h.harvest_date:`${d.getDate()}`,vname=h.variety||(p?.varieties||[]).join('・')||'不明',q=[];if(h.brix)q.push(`糖度 ${h.brix}°`);if(h.acidity)q.push(`酸度 ${h.acidity}`);if(h.ph)q.push(`pH ${h.ph}`);return `<div class="harvest-record"><div class="harvest-date-badge"><div class="harvest-date-d">${day}</div><div class="harvest-date-m">${m}</div></div><div class="harvest-divider-v"></div><div class="harvest-info"><div class="harvest-plot">${f?.name||''}${p?' ・ '+p.name:''}</div><span class="plot-chip" style="${varietyStyle(h.variety||(p?.varieties||[])[0])};display:inline-block;margin:4px 0;font-size:10px">${vname}</span>${q.length?`<div class="harvest-details">${q.join(' ・ ')}</div>`:''}${h.comment?`<div class="harvest-details" style="font-style:italic">${h.comment}</div>`:''}</div><div class="harvest-kg">${h.weight_kg} kg</div></div>`;}).join('<div class="divider"></div>');html+='</div>';}
+  else{html+='<div class="harvest-section-title">収穫の記録</div><div class="card" style="margin:0 18px 18px">';html+=sorted.map(h=>{const p=plotMap[h.plot_id],f=p?fieldMap[p.field_id]:null,d=new Date(h.harvest_date),m=isNaN(d)?'':`${d.getMonth()+1}月`,day=isNaN(d)?h.harvest_date:`${d.getDate()}`,vname=h.variety||(p?.varieties||[]).join('・')||'不明',q=[];if(h.brix)q.push(`糖度 ${h.brix}°`);if(h.acidity)q.push(`酸度 ${h.acidity}`);if(h.ph)q.push(`pH ${h.ph}`);return `<div class="harvest-record"><div class="harvest-date-badge"><div class="harvest-date-d">${day}</div><div class="harvest-date-m">${m}</div></div><div class="harvest-divider-v"></div><div class="harvest-info"><div class="harvest-plot">${f?.name||''}${p?' ・ '+p.name:''}</div><span class="plot-chip" style="${varietyStyle(h.variety||(p?.varieties||[])[0])};display:inline-block;margin:4px 0;font-size:10px">${vname}</span>${q.length?`<div class="harvest-details">${q.join(' ・ ')}</div>`:''}${h.comment?`<div class="harvest-details" style="font-style:italic">${h.comment}</div>`:''}</div><div class="harvest-kg">${h.weight_kg} kg</div></div>`;}).join('<div class="divider"></div>');html+='</div>';}
   document.getElementById('harvest-content').innerHTML=html;document.getElementById('harvest-date').value=new Date().toISOString().split('T')[0];
+}
+
+// 収穫の分析（品種別・年別・開花から収穫までの日数）
+function renderHarvestAnalysis(harvest, plotMap, works){
+  let html='';
+  // 年を集める
+  const yearOf=h=>h.harvest_date?new Date(h.harvest_date+'T00:00:00').getFullYear():null;
+  const years=[...new Set(harvest.map(yearOf).filter(Boolean))].sort((a,b)=>b-a);
+
+  // ① 品種別（最新年）の収量・平均糖度
+  const latestYear=years[0];
+  const vmap={}; // variety -> {kg, brixSum, brixN}
+  for(const h of harvest){
+    if(yearOf(h)!==latestYear)continue;
+    const p=plotMap[h.plot_id];
+    const v=h.variety||(p?.varieties||[])[0]||'不明';
+    if(!vmap[v])vmap[v]={kg:0,brixSum:0,brixN:0};
+    vmap[v].kg+=h.weight_kg||0;
+    if(h.brix){vmap[v].brixSum+=h.brix;vmap[v].brixN++;}
+  }
+  const vrows=Object.entries(vmap).sort((a,b)=>b[1].kg-a[1].kg);
+  if(vrows.length){
+    const maxKg=Math.max(...vrows.map(r=>r[1].kg));
+    html+=`<div class="harvest-section-title">${latestYear}年 品種ごと</div><div class="card" style="margin:0 18px 18px;padding:16px 18px">`;
+    html+=vrows.map(([v,d])=>{
+      const pct=maxKg?Math.round(d.kg/maxKg*100):0;
+      const avgb=d.brixN?(d.brixSum/d.brixN).toFixed(1):'—';
+      return `<div class="hv-variety-row"><div class="hv-variety-head"><span class="plot-chip" style="${varietyStyle(v)};font-size:10px">${v}</span><span class="hv-variety-nums"><b>${Math.round(d.kg).toLocaleString()}</b>kg ・ 糖度 ${avgb}°</span></div><div class="hv-variety-bar"><div class="hv-variety-fill" style="width:${pct}%;${varietyStyle(v)}"></div></div></div>`;
+    }).join('');
+    html+=`</div>`;
+  }
+
+  // ② 年ごとの比較（収量・平均糖度）
+  if(years.length>=2){
+    const byYear=years.map(y=>{
+      const hs=harvest.filter(h=>yearOf(h)===y);
+      const kg=hs.reduce((s,h)=>s+(h.weight_kg||0),0);
+      const bx=hs.filter(h=>h.brix);
+      const avgb=bx.length?(bx.reduce((s,h)=>s+h.brix,0)/bx.length):null;
+      return {y,kg,avgb};
+    });
+    const maxKg=Math.max(...byYear.map(x=>x.kg));
+    html+=`<div class="harvest-section-title">年ごとのくらべ</div><div class="card" style="margin:0 18px 18px;padding:16px 18px">`;
+    html+=byYear.map(x=>{
+      const pct=maxKg?Math.round(x.kg/maxKg*100):0;
+      return `<div class="hv-year-row"><div class="hv-year-label">${x.y}年</div><div class="hv-year-bar"><div class="hv-year-fill" style="width:${pct}%"></div></div><div class="hv-year-val">${Math.round(x.kg).toLocaleString()}kg${x.avgb!=null?` ・ ${x.avgb.toFixed(1)}°`:''}</div></div>`;
+    }).join('');
+    html+=`</div>`;
+  }
+
+  // ③ 開花から収穫までの日数（最新年・作業記録の開花ステージを基準）
+  const BLOOM_STAGES=['開花開始','開花初期','満開期','開花後期'];
+  const bloomWorks=works.filter(w=>w.stage&&BLOOM_STAGES.includes(w.stage)&&w.work_date).sort((a,b)=>a.work_date.localeCompare(b.work_date));
+  if(bloomWorks.length && harvest.length){
+    const firstBloom=bloomWorks[0].work_date;
+    const latestHarvest=harvest.filter(h=>yearOf(h)===latestYear).sort((a,b)=>a.harvest_date.localeCompare(b.harvest_date))[0];
+    if(latestHarvest && new Date(firstBloom).getFullYear()===latestYear){
+      const days=Math.round((new Date(latestHarvest.harvest_date)-new Date(firstBloom))/86400000);
+      if(days>0&&days<250){
+        html+=`<div class="card" style="margin:0 18px 18px;padding:14px 18px;background:var(--cream)"><div class="hv-bloom"><span class="hv-bloom-icon">🌸→🍇</span><div><div class="hv-bloom-days">開花から収穫まで <b>約${days}日</b></div><div class="hv-bloom-sub">${latestYear}年・最初の開花記録から最初の収穫まで</div></div></div></div>`;
+      }
+    }
+  }
+  return html;
 }
 
 // ── 防除暦タブ ──
@@ -2493,7 +2876,7 @@ async function saveCmpCache(){try{await dbPut('meta',{id:'cmpWxCache',data:cmpWx
 async function loadCmpCache(){try{const all=await dbGetAll('meta');const c=all.find(x=>x.id==='cmpWxCache');if(c)cmpWxCache=c.data||{};}catch(e){}}
 
 // ── 日報からの取り込み ──
-let importParsed=null; // {date, weather, rows:[{fieldId,fieldName,plotName,plotId,workType,status,known}]}
+let importParsedDays=null; // [{date, weather, rows:[...]}, ...] 複数日対応
 
 function openImport(){document.getElementById('import-text').value='';document.getElementById('import-preview').innerHTML='';openModal('modal-import');}
 
@@ -2524,34 +2907,47 @@ function normalizePlotName(name){
   return map[name]||name;
 }
 
-// 1行を解析して作業レコード候補を返す
+// 1行を解析して作業レコード候補を返す（圃場・区画・作業の順番は問わない）
 function parseReportLine(line, ctx, fields, plots){
-  // 先頭の「・」「-」記号を除去
   let s=normLine(line).replace(/^[・\-•※*\s]+/,'');
   if(!s)return [];
-  // 作業種別を探す（行内に含まれるキーワード）
+  // 作業種別を探す（行内のどこにあってもよい）
   const wt=WORK_TYPES.find(t=>s.includes(t.label));
-  if(!wt)return []; // 作業が特定できない行はスキップ（所見など）
+  if(!wt)return [];
   // 状態（完了/進行中など）
   let status='';
   const stm=s.match(/(完了|進行中|途中|開始|終了)/);
   if(stm)status=stm[1];
-  // 作業キーワード以降を削ぎ落として、区画部分だけにする
-  let head=s.split(wt.label)[0];
-  // 圃場名の検出（行頭に圃場名があれば文脈を更新）
-  let fieldName=ctx.fieldName, fieldId=ctx.fieldId;
+  // 作業名・状態の語を行から取り除いた「残り」を、対象の手がかりにする
+  let rest=s.split(wt.label).join(' ');
+  ['完了','進行中','途中','開始','終了','区画','畑'].forEach(w=>{rest=rest.split(w).join(' ');});
+
+  // 圃場名を残りから検出（位置はどこでもよい）
+  let fieldName=null, fieldId=null;
   for(const f of fields){
-    if(head.startsWith(f.name)){fieldName=f.name;fieldId=f.id;head=head.slice(f.name.length);break;}
-    if(head.includes(f.name)){fieldName=f.name;fieldId=f.id;head=head.replace(f.name,'');}
+    if(rest.includes(f.name)){fieldName=f.name;fieldId=f.id;rest=rest.split(f.name).join(' ');break;}
   }
-  ctx.fieldName=fieldName;ctx.fieldId=fieldId;
-  // 区画トークンに分割（読点・空白区切り）
-  const tokens=head.split(/[、\s]+/).map(t=>t.trim()).filter(Boolean);
+  // 圃場が書かれていなければ、直前の行の圃場を引き継ぐ（後で区画から上書きされることもある）
+  if(!fieldId && ctx.fieldId){fieldName=ctx.fieldName;fieldId=ctx.fieldId;}
+
+  // 残りを区画トークンに分割
+  const tokens=rest.split(/[、\s]+/).map(t=>t.trim()).filter(Boolean);
   const rows=[];
+  let usedFieldId=fieldId, usedFieldName=fieldName;
   for(const tk of tokens){
     for(let raw of expandPlotToken(tk)){
-      const matched=matchPlot(raw, fieldId, plots);
-      rows.push({fieldId,fieldName,
+      // まず現在の圃場で照合
+      let matched=matchPlot(raw, usedFieldId, plots);
+      // 圃場未確定 or 照合できないとき、区画名から圃場を推測
+      if(!matched.plotId){
+        const guess=guessFieldByPlot(raw, plots, fields);
+        if(guess){
+          usedFieldId=guess.fieldId; usedFieldName=guess.fieldName;
+          matched=matchPlot(raw, usedFieldId, plots);
+        }
+      }
+      if(matched.plotId){usedFieldId=matched.fieldId||usedFieldId; usedFieldName=matched.fieldName||usedFieldName;}
+      rows.push({fieldId:usedFieldId, fieldName:usedFieldName,
         plotName: matched.plotName || normalizePlotName(raw),
         plotId: matched.plotId,
         variety: matched.variety||null,
@@ -2560,61 +2956,73 @@ function parseReportLine(line, ctx, fields, plots){
         workType:wt.label,workIcon:wt.icon,status,known:!!matched.plotId});
     }
   }
+  // 文脈を更新（次の行が圃場省略でも引き継げるよう）
+  if(usedFieldId){ctx.fieldName=usedFieldName;ctx.fieldId=usedFieldId;}
   return rows;
 }
 
+// 区画名から、その区画を持つ圃場を推測（候補が1つだけのとき確定）
+function guessFieldByPlot(token, plots, fields){
+  const t=normalizePlotName(token.trim());
+  const norm=s=>String(s).toUpperCase().replace(/\s/g,'');
+  const tn=norm(t);
+  if(tn.length<1)return null;
+  // 区画名が完全一致する区画を集める
+  const hits=plots.filter(p=>norm(p.name)===tn);
+  const fieldIds=[...new Set(hits.map(p=>p.field_id))];
+  if(fieldIds.length===1){
+    const f=fields.find(x=>x.id===fieldIds[0]);
+    if(f)return {fieldId:f.id, fieldName:f.name};
+  }
+  return null;
+}
+
 // トークンを登録済みの区画・品種にあいまい照合する（品種優先）
+// fieldId が null のときは全区画から探す
 function matchPlot(token, fieldId, plots){
   const t=normalizePlotName(token.trim());
-  if(!fieldId) return {plotId:null,plotName:t,variety:null};
-  const fieldPlots=plots.filter(p=>p.field_id===fieldId);
+  const fieldPlots=fieldId?plots.filter(p=>p.field_id===fieldId):plots;
   // 比較用：英大文字化・空白除去
   const norm=s=>String(s).toUpperCase().replace(/\s/g,'');
   const tn=norm(t);
 
-  // 1) 品種優先：トークンが品種名と一致 → その品種を持つ区画にひもづけ
-  //    （十二町「シャルドネ」→ 品種シャルドネ区画。複数あれば区画名が品種名と同じものを最優先）
-  const VNAMES=VARIETIES.map(v=>v.name);
-  const vHit=VNAMES.find(v=>norm(v)===tn);
-  if(vHit){
-    // その圃場で、その品種を含む区画
-    const cands=fieldPlots.filter(p=>(p.varieties||[]).some(v=>norm(v)===norm(vHit)));
-    if(cands.length){
-      // 区画名が品種名と同じものを優先（十二町のシャルドネ区画など）
-      const exact=cands.find(p=>norm(p.name)===tn)||cands[0];
-      return {plotId:exact.id, plotName:exact.name, variety:vHit};
+  // 1) 品種優先：トークンが品種名と一致 → その品種を持つ区画にひもづけ（圃場が決まっているときだけ）
+  if(fieldId){
+    const VNAMES=VARIETIES.map(v=>v.name);
+    const vHit=VNAMES.find(v=>norm(v)===tn);
+    if(vHit){
+      const cands=fieldPlots.filter(p=>(p.varieties||[]).some(v=>norm(v)===norm(vHit)));
+      if(cands.length){
+        const exact=cands.find(p=>norm(p.name)===tn)||cands[0];
+        return {plotId:exact.id, plotName:exact.name, variety:vHit, fieldId:exact.field_id};
+      }
     }
   }
   // 2) 区画名の完全一致
   let p=fieldPlots.find(p=>norm(p.name)===tn);
-  if(p) return {plotId:p.id, plotName:p.name, variety:null};
-  // 3) 区画名の前後空白・記号ゆらぎ込みの一致（normalizePlotName後）
+  if(p) return {plotId:p.id, plotName:p.name, variety:null, fieldId:p.field_id};
+  // 3) 区画名の前後空白・記号ゆらぎ込みの一致
   p=fieldPlots.find(p=>norm(normalizePlotName(p.name))===tn);
-  if(p) return {plotId:p.id, plotName:p.name, variety:null};
-  // 4) 部分一致（トークンが区画名を含む or 区画名がトークンを含む。短すぎる1字は除外）
-  if(tn.length>=2){
+  if(p) return {plotId:p.id, plotName:p.name, variety:null, fieldId:p.field_id};
+  // 4) 部分一致（圃場が決まっているときだけ。全区画だと誤マッチしやすいため）
+  if(fieldId && tn.length>=2){
     p=fieldPlots.find(p=>{const pn=norm(p.name);return pn.length>=2&&(pn.includes(tn)||tn.includes(pn));});
-    if(p) return {plotId:p.id, plotName:p.name, variety:null};
+    if(p) return {plotId:p.id, plotName:p.name, variety:null, fieldId:p.field_id};
   }
   // 見つからない
   return {plotId:null, plotName:t, variety:null};
 }
 
-async function parseImport(){
-  const raw=document.getElementById('import-text').value;
-  if(!raw.trim()){showToast('日報を貼り付けてください');return;}
-  const [fields,plots]=await Promise.all([dbGetAll('fields'),dbGetAll('plots')]);
-  const lines=raw.split(/\r?\n/);
-
-  // 日付の抽出（2026.6.5 / 2026/6/5 / 6.5 など）
+// 1ブロック（1日分のテキスト行配列）から日付・天気・作業を解析
+function parseOneReport(lines, fields, plots){
+  // 日付
   let dateStr=null;
   for(const ln of lines){
     const m=normLine(ln).match(/(20\d{2})[.\/\-](\d{1,2})[.\/\-](\d{1,2})/);
     if(m){dateStr=`${m[1]}-${String(m[2]).padStart(2,'0')}-${String(m[3]).padStart(2,'0')}`;break;}
   }
   if(!dateStr)dateStr=new Date().toISOString().split('T')[0];
-
-  // 天候の抽出（晴れ、26〜17℃ など）
+  // 天気
   let weather=null;
   for(const ln of lines){
     const n=normLine(ln);
@@ -2628,82 +3036,267 @@ async function parseImport(){
       if(cond||tmax!=null){weather={code:null,cond:cond||null,tmax,tmin,rain:null,sun:null,manual:true,source:'日報',fetched_at:new Date().toISOString()};break;}
     }
   }
-
-  // 作業行の解析（圃場は直前を引き継ぐ）
+  // 作業
   const ctx={fieldName:null,fieldId:null};
   let rows=[];
-  for(const ln of lines){
-    rows=rows.concat(parseReportLine(ln, ctx, fields, plots));
-  }
-
-  importParsed={date:dateStr, weather, rows};
-  renderImportPreview(fields);
+  for(const ln of lines){rows=rows.concat(parseReportLine(ln, ctx, fields, plots));}
+  return {date:dateStr, weather, rows};
 }
 
-function renderImportPreview(fields){
+// 行が日付を含むか
+function lineHasDate(ln){return /(20\d{2})[.\/\-](\d{1,2})[.\/\-](\d{1,2})/.test(normLine(ln));}
+
+async function parseImport(){
+  const raw=document.getElementById('import-text').value;
+  if(!raw.trim()){showToast('日報を貼り付けてください');return;}
+  const [fields,plots]=await Promise.all([dbGetAll('fields'),dbGetAll('plots')]);
+  const lines=raw.split(/\r?\n/);
+
+  // 日付行を区切りに、複数日のブロックに分割
+  const blocks=[]; let cur=[];
+  for(const ln of lines){
+    if(lineHasDate(ln) && cur.some(l=>l.trim()) && cur.some(l=>lineHasDate(l))){
+      // すでに「日付＋中身」が溜まっている状態で次の日付が来たら、ブロックを切る
+      blocks.push(cur); cur=[ln];
+    }else{
+      cur.push(ln);
+    }
+  }
+  if(cur.some(l=>l.trim()))blocks.push(cur);
+
+  // 各ブロックを解析
+  const reports=blocks.map(b=>parseOneReport(b, fields, plots)).filter(r=>r.rows.length);
+  if(!reports.length){
+    // 日付で切れなかった場合は全体を1ブロックとして解析
+    const one=parseOneReport(lines, fields, plots);
+    importParsedDays=one.rows.length?[one]:[];
+  }else{
+    importParsedDays=reports;
+  }
+  impEditKey=null;
+  renderImportPreview();
+}
+
+let impEditKey=null; // 'di-i' 編集中の行
+async function renderImportPreview(){
   const box=document.getElementById('import-preview');
-  if(!importParsed||!importParsed.rows.length){
+  const days=(importParsedDays||[]).filter(d=>d.rows.length);
+  if(!days.length){
     box.innerHTML=`<div class="imp-empty-note">作業を読み取れませんでした。<br>「区画 作業 状態」の形（例：B4、B5 誘引 完了）になっているか確認してください。</div>`;
     return;
   }
-  const w=importParsed.weather;
-  const d=new Date(importParsed.date+'T00:00:00');
-  const dateLabel=`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
-  const unknownCount=importParsed.rows.filter(r=>!r.known).length;
+  const [fields,plots]=await Promise.all([dbGetAll('fields'),dbGetAll('plots')]);
+  const totalRows=days.reduce((s,d)=>s+d.rows.length,0);
+  const totalUnknown=days.reduce((s,d)=>s+d.rows.filter(r=>!r.known).length,0);
 
-  let head=`<div class="imp-head">
-    <div class="imp-head-item"><span>日付</span>${dateLabel}</div>
-    ${w?`<div class="imp-head-item"><span>天気</span>${w.cond||'—'}${w.tmax!=null?` ${w.tmax}〜${w.tmin}℃`:''}</div>`:'<div class="imp-head-item"><span>天気</span>読み取れず</div>'}
-    ${unknownCount?`<div class="imp-head-warn">⚠ 未登録の区画が ${unknownCount} 件あります（「その他」として取り込みます。あとで作業タブから直せます）</div>`:''}
-  </div>`;
-
-  const rowsHtml=importParsed.rows.map((r,i)=>{
-    const target=`${r.fieldName||'圃場不明'} ${r.plotName}`+(r.variety?` ／ ${r.variety}`:'');
-    return `<div class="imp-row ${r.known?'':'unknown'}">
-      <div class="imp-row-badge">${r.workIcon}</div>
-      <div class="imp-row-info">
-        <div class="imp-row-target">${target}${r.known?'':' <span style="font-size:10px;color:var(--dusk)">(未登録)</span>'}</div>
-        <div class="imp-row-meta">${r.workType}${r.status?' ・ '+r.status:''}</div>
-      </div>
-      <div class="imp-row-del" onclick="removeImportRow(${i})">×</div>
+  let html='';
+  if(days.length>1){
+    html+=`<div class="imp-multiday">📅 ${days.length}日分・あわせて ${totalRows}件 を読み取りました</div>`;
+  }
+  html+=`<div class="imp-edit-hint">行をタップすると圃場・区画・作業を直せます</div>`;
+  days.forEach((day,di)=>{
+    const w=day.weather;
+    const d=new Date(day.date+'T00:00:00');
+    const dateLabel=`${d.getMonth()+1}月${d.getDate()}日`;
+    html+=`<div class="imp-day-block"><div class="imp-head">
+      <div class="imp-head-item"><span>日付</span>${dateLabel}</div>
+      ${w?`<div class="imp-head-item"><span>天気</span>${w.cond||'—'}${w.tmax!=null?` ${w.tmax}〜${w.tmin}℃`:''}</div>`:'<div class="imp-head-item"><span>天気</span>読み取れず</div>'}
     </div>`;
-  }).join('');
-
-  box.innerHTML=head+`<div class="imp-count">取り込む作業 ${importParsed.rows.length} 件</div>`+rowsHtml+
-    `<button class="save-btn" onclick="commitImport()" style="margin-top:14px">この内容で記録する</button><div style="height:8px"></div>`;
+    html+=day.rows.map((r,i)=>{
+      const key=`${di}-${i}`;
+      const target=`${r.fieldName||'圃場不明'} ${r.plotName}`+(r.variety?` ／ ${r.variety}`:'');
+      const editing=impEditKey===key;
+      let editor='';
+      if(editing){
+        const fps=plots.filter(p=>p.field_id===r.fieldId);
+        editor=`<div class="imp-editor">
+          <label class="imp-ed-label">圃場</label>
+          <select class="imp-ed-sel" onchange="impEditField(${di},${i},this.value)">
+            <option value="">— 圃場 —</option>
+            ${fields.map(f=>`<option value="${f.id}" ${r.fieldId===f.id?'selected':''}>${f.name}</option>`).join('')}
+          </select>
+          <label class="imp-ed-label">区画</label>
+          <select class="imp-ed-sel" onchange="impEditPlot(${di},${i},this.value)">
+            <option value="">— 区画（未登録のまま）—</option>
+            ${fps.map(p=>`<option value="${p.id}" ${r.plotId===p.id?'selected':''}>${p.name}（${(p.varieties||[]).join('・')}）</option>`).join('')}
+          </select>
+          <label class="imp-ed-label">作業</label>
+          <select class="imp-ed-sel" onchange="impEditWork(${di},${i},this.value)">
+            ${WORK_TYPES.map(t=>`<option value="${t.label}" ${r.workType===t.label?'selected':''}>${t.icon} ${t.label}</option>`).join('')}
+          </select>
+          <button class="imp-ed-done" onclick="impEditClose()">この行をとじる</button>
+        </div>`;
+      }
+      return `<div class="imp-row ${r.known?'':'unknown'} ${editing?'editing':''}">
+        <div class="imp-row-tap" onclick="impEditOpen('${key}')">
+          <div class="imp-row-badge">${r.workIcon}</div>
+          <div class="imp-row-info">
+            <div class="imp-row-target">${target}${r.known?'':' <span style="font-size:10px;color:var(--dusk)">(未登録)</span>'}</div>
+            <div class="imp-row-meta">${r.workType}${r.status?' ・ '+r.status:''}</div>
+          </div>
+          <div class="imp-row-edit">✎</div>
+        </div>
+        <div class="imp-row-del" onclick="removeImportRow(${di},${i})">×</div>
+        ${editor}
+      </div>`;
+    }).join('');
+    html+=`</div>`;
+  });
+  if(totalUnknown){
+    html+=`<div class="imp-head-warn" style="margin:10px 0">⚠ 未登録の区画が ${totalUnknown} 件あります。行をタップして区画を選ぶと、ちゃんと結びつきます（このままでも「その他」として取り込めます）</div>`;
+  }
+  box.innerHTML=html+`<div class="imp-count">あわせて ${totalRows} 件を取り込みます</div>`+
+    `<button class="save-btn" onclick="commitImport()" style="margin-top:8px">この内容で記録する</button><div style="height:8px"></div>`;
 }
 
-function removeImportRow(i){importParsed.rows.splice(i,1);renderImportPreview();}
+function impEditOpen(key){impEditKey=impEditKey===key?null:key;renderImportPreview();}
+function impEditClose(){impEditKey=null;renderImportPreview();}
+async function impEditField(di,i,fieldId){
+  const fields=await dbGetAll('fields');
+  const r=importParsedDays[di].rows[i];
+  r.fieldId=fieldId||null;
+  r.fieldName=fields.find(f=>f.id===fieldId)?.name||null;
+  // 圃場を変えたら区画はいったん未登録に戻す
+  r.plotId=null;r.known=false;r.variety=null;r.scope='field';
+  renderImportPreview();
+}
+async function impEditPlot(di,i,plotId){
+  const plots=await dbGetAll('plots');
+  const r=importParsedDays[di].rows[i];
+  if(!plotId){r.plotId=null;r.known=false;r.variety=null;r.scope='field';}
+  else{
+    const p=plots.find(x=>x.id===plotId);
+    if(p){r.plotId=p.id;r.plotName=p.name;r.fieldId=p.field_id;r.known=true;r.scope='plot';
+      const fields=await dbGetAll('fields');r.fieldName=fields.find(f=>f.id===p.field_id)?.name||r.fieldName;}
+  }
+  renderImportPreview();
+}
+function impEditWork(di,i,label){
+  const r=importParsedDays[di].rows[i];
+  const wt=WORK_TYPES.find(t=>t.label===label);
+  if(wt){r.workType=wt.label;r.workIcon=wt.icon;}
+  renderImportPreview();
+}
+
+function removeImportRow(di,i){importParsedDays[di].rows.splice(i,1);impEditKey=null;renderImportPreview();}
 
 async function commitImport(){
-  if(!importParsed||!importParsed.rows.length){showToast('取り込む作業がありません');return;}
-  const iso=isoWeek(importParsed.date);
-  const w=importParsed.weather;
-  for(const r of importParsed.rows){
-    const rec={id:uid(),field_id:r.fieldId||null,plot_id:r.plotId||null,
-      scope:r.scope||(r.plotId?'plot':'field'), variety:r.variety||null,
-      work_date:importParsed.date, work_type:r.workType,
-      stage:'', weather:w?{...w}:null,
-      comment:(r.known?'':`日報取込：${r.fieldName||''}${r.plotName}`)+(r.status?(r.known?'日報取込 ・ ':' ・ ')+r.status:''),
-      import_plot_name:r.known?null:r.plotName,
-      iso_year:iso.year, iso_week:iso.week, created_at:new Date().toISOString()};
-    await dbPut('work_records',rec);
-    // 誘引の取込なら進捗連動（登録済み区画のみ）
-    if(r.workType==='誘引'&&r.plotId){
-      await applyTrellisProgress(r.plotId, importParsed.date, trellisPctFromStatus(r.status, ''));
+  const days=(importParsedDays||[]).filter(d=>d.rows.length);
+  if(!days.length){showToast('取り込む作業がありません');return;}
+  let total=0;
+  for(const day of days){
+    const iso=isoWeek(day.date);
+    const w=day.weather;
+    for(const r of day.rows){
+      const rec={id:uid(),field_id:r.fieldId||null,plot_id:r.plotId||null,
+        scope:r.scope||(r.plotId?'plot':'field'), variety:r.variety||null,
+        work_date:day.date, work_type:r.workType,
+        stage:'', weather:w?{...w}:null,
+        comment:(r.known?'':`日報取込：${r.fieldName||''}${r.plotName}`)+(r.status?(r.known?'日報取込 ・ ':' ・ ')+r.status:''),
+        import_plot_name:r.known?null:r.plotName,
+        iso_year:iso.year, iso_week:iso.week, created_at:new Date().toISOString()};
+      await dbPut('work_records',rec);
+      if(r.workType==='誘引'&&r.plotId){
+        await applyTrellisProgress(r.plotId, day.date, trellisPctFromStatus(r.status, ''));
+      }
+      total++;
     }
   }
-  const n=importParsed.rows.length;
-  importParsed=null;
+  importParsedDays=null;
   closeModal('modal-import');
-  showToast(`${n}件の作業を取り込みました`);
+  showToast(`${total}件の作業を取り込みました`);
   renderTab(currentTab);
 }
+
+// ── 写真 ──
+// 写真データの正規化：文字列(旧形式)も {url, note} に揃える
+function normPhoto(p){return typeof p==='string'?{url:p,note:''}:{url:p.url,note:p.note||''};}
+function normPhotos(arr){return (arr||[]).map(normPhoto);}
+function photoUrls(arr){return normPhotos(arr).map(p=>p.url);}
+
+let workPhotos=[]; // 作業フォームで選択中の写真 [{url, note}]
+
+// 画像をリサイズしてJPEGのdataURLにする（長辺1000px・品質0.7）
+function resizeImage(file, maxSize=1000, quality=0.7){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        let {width,height}=img;
+        if(width>height){if(width>maxSize){height=Math.round(height*maxSize/width);width=maxSize;}}
+        else{if(height>maxSize){width=Math.round(width*maxSize/height);height=maxSize;}}
+        const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
+        canvas.getContext('2d').drawImage(img,0,0,width,height);
+        resolve(canvas.toDataURL('image/jpeg',quality));
+      };
+      img.onerror=reject;img.src=e.target.result;
+    };
+    reader.onerror=reject;reader.readAsDataURL(file);
+  });
+}
+
+async function onWorkPhotoPick(ev){
+  const files=[...ev.target.files];
+  if(!files.length)return;
+  showToast('写真を読み込み中…');
+  for(const f of files){
+    try{const url=await resizeImage(f);workPhotos.push({url,note:''});}catch(e){}
+  }
+  ev.target.value='';
+  renderWorkPhotoThumbs();
+}
+function renderWorkPhotoThumbs(){
+  const box=document.getElementById('work-photo-thumbs');if(!box)return;
+  box.innerHTML=workPhotos.map((p,i)=>`<div class="photo-card"><div class="photo-thumb"><img src="${p.url}" onclick="openPhotoViewer(workPhotos,${i})"><button class="photo-thumb-del" onclick="removeWorkPhoto(${i})">×</button></div><input class="photo-note-input" type="text" placeholder="ひとことメモ" value="${(p.note||'').replace(/"/g,'&quot;')}" oninput="workPhotos[${i}].note=this.value"></div>`).join('');
+}
+function removeWorkPhoto(i){workPhotos.splice(i,1);renderWorkPhotoThumbs();}
+
+// 写真ビューア（拡大表示）
+let viewerPhotos=[], viewerIdx=0;
+function openPhotoViewer(photos, idx){
+  viewerPhotos=normPhotos(photos);viewerIdx=idx||0;
+  let v=document.getElementById('photo-viewer');
+  if(!v){v=document.createElement('div');v.id='photo-viewer';v.className='photo-viewer';document.body.appendChild(v);
+    v.addEventListener('click',e=>{if(e.target===v)closePhotoViewer();});}
+  renderPhotoViewer();
+  v.style.display='flex';
+}
+function renderPhotoViewer(){
+  const v=document.getElementById('photo-viewer');if(!v)return;
+  const multi=viewerPhotos.length>1;
+  const cur=viewerPhotos[viewerIdx]||{};
+  v.innerHTML=`<div class="photo-viewer-close" onclick="closePhotoViewer()">×</div>
+    <img src="${cur.url}">
+    ${cur.note?`<div class="photo-viewer-note">${cur.note}</div>`:''}
+    ${multi?`<div class="photo-viewer-nav"><button onclick="photoViewerMove(-1)">‹</button><span class="photo-viewer-count">${viewerIdx+1} / ${viewerPhotos.length}</span><button onclick="photoViewerMove(1)">›</button></div>`:''}`;
+}
+function photoViewerMove(d){viewerIdx=(viewerIdx+d+viewerPhotos.length)%viewerPhotos.length;renderPhotoViewer();}
+function closePhotoViewer(){const v=document.getElementById('photo-viewer');if(v)v.style.display='none';}
+async function openWorkPhotos(id){
+  const works=await dbGetAll('work_records');
+  const w=works.find(x=>x.id===id);
+  if(w&&w.photos&&w.photos.length)openPhotoViewer(w.photos,0);
+}
+
+// 編集モーダルの写真
+let editPhotos=[];
+async function onEditPhotoPick(ev){
+  const files=[...ev.target.files];if(!files.length)return;
+  showToast('写真を読み込み中…');
+  for(const f of files){try{const url=await resizeImage(f);editPhotos.push({url,note:''});}catch(e){}}
+  ev.target.value='';renderEditPhotoThumbs();
+}
+function renderEditPhotoThumbs(){
+  const box=document.getElementById('edit-photo-thumbs');if(!box)return;
+  box.innerHTML=editPhotos.map((p,i)=>`<div class="photo-card"><div class="photo-thumb"><img src="${p.url}" onclick="openPhotoViewer(editPhotos,${i})"><button class="photo-thumb-del" onclick="removeEditPhoto(${i})">×</button></div><input class="photo-note-input" type="text" placeholder="ひとことメモ" value="${(p.note||'').replace(/"/g,'&quot;')}" oninput="editPhotos[${i}].note=this.value"></div>`).join('');
+}
+function removeEditPhoto(i){editPhotos.splice(i,1);renderEditPhotoThumbs();}
 
 let toastTimer;
 function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2800);}
 
-async function init(){await initDB();await seedRealData();await loadCmpCache();buildWorkTypeGrid();const today=new Date().toISOString().split('T')[0];['work-date','trellis-date','harvest-date'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=today;});await renderDashboard();document.getElementById('fab-btn').style.display='none';}
+async function init(){await initDB();await seedRealData();await loadCmpCache();await loadWorkTemplates();buildWorkTypeGrid();const today=new Date().toISOString().split('T')[0];['work-date','harvest-date'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=today;});await renderDashboard();document.getElementById('fab-btn').style.display='none';}
 init().catch(console.error);
 </script>
 </body>
