@@ -295,6 +295,18 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .imp-ed-label{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.06em;margin-top:5px;}
 .imp-ed-sel{padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-family:inherit;font-size:13px;color:var(--vine);}
 .imp-ed-done{margin-top:9px;padding:9px;border:1px solid var(--vine);border-radius:8px;background:var(--vine);color:var(--cream);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;}
+.imp-plot-chips{display:flex;flex-wrap:wrap;gap:5px;margin:5px 0;}
+.imp-plot-chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:4px 8px;border-radius:12px;background:var(--paper);border:1px solid var(--line);color:var(--vine);}
+.imp-plot-chip.unknown{border-color:var(--dusk);border-style:dashed;color:var(--dusk);}
+.imp-plot-chip-del{width:15px;height:15px;border-radius:50%;background:var(--line);color:var(--cream);display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;}
+.imp-plot-chip.unknown .imp-plot-chip-del{background:var(--dusk);}
+.work-plot-tags{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 2px;}
+.work-plot-tag{font-size:11px;padding:2px 8px;border-radius:10px;background:var(--paper);border:1px solid var(--line);color:var(--vine);}
+.work-merge-count{font-size:10px;color:var(--text-muted);align-self:flex-start;margin-top:3px;white-space:nowrap;}
+.edit-plot-picker{display:flex;flex-wrap:wrap;gap:6px;}
+.edit-plot-chip{padding:8px 14px;border:1px solid var(--line);border-radius:18px;background:var(--paper);font-family:inherit;font-size:13px;color:var(--bark);cursor:pointer;transition:all .12s;}
+.edit-plot-chip.active{background:var(--vine);border-color:var(--vine);color:var(--cream);font-weight:700;}
+.edit-plot-chip:active{opacity:.7;}
 .import-link{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px;font-size:13px;color:var(--bark);font-weight:700;text-align:center;cursor:pointer;letter-spacing:.04em;transition:background .12s;}
 .import-link:active{background:var(--line-soft);}
 .edit-delete-btn{text-align:center;font-size:13px;color:var(--wine);padding:14px;cursor:pointer;letter-spacing:.04em;margin-top:4px;}
@@ -1126,7 +1138,7 @@ function initDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,
   if(!d.objectStoreNames.contains('spray')){const sp=d.createObjectStore('spray',{keyPath:'id'});sp.createIndex('spray_date','spray_date',{unique:false});sp.createIndex('iso_year','iso_year',{unique:false});}
   if(!d.objectStoreNames.contains('progress')){d.createObjectStore('progress',{keyPath:'id'});}
 };r.onsuccess=e=>{db=e.target.result;res();};r.onerror=rej;});}
-function dbGetAll(s){return new Promise((res,rej)=>{const q=db.transaction(s,'readonly').objectStore(s).getAll();q.onsuccess=()=>res(q.result);q.onerror=rej;});}
+function dbGetAll(s){return new Promise((res)=>{try{if(!db||!db.objectStoreNames.contains(s)){res([]);return;}const q=db.transaction(s,'readonly').objectStore(s).getAll();q.onsuccess=()=>res(q.result||[]);q.onerror=()=>res([]);}catch(e){res([]);}});}
 
 // ── データのバックアップ（書き出し・読み込み）──
 const BACKUP_STORES=['fields','plots','work_records','trellis','harvest','spray','progress','meta'];
@@ -1258,6 +1270,7 @@ async function clearRecords(){
 }
 function dbPut(s,o){return new Promise((res,rej)=>{const q=db.transaction(s,'readwrite').objectStore(s).put(o);q.onsuccess=()=>res(q.result);q.onerror=rej;});}
 function dbClear(s){return new Promise((res,rej)=>{const q=db.transaction(s,'readwrite').objectStore(s).clear();q.onsuccess=()=>res();q.onerror=rej;});}
+function dbDelete(s,key){return new Promise((res,rej)=>{const q=db.transaction(s,'readwrite').objectStore(s).delete(key);q.onsuccess=()=>res();q.onerror=rej;});}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 function fmtDate(b,o){const d=new Date(b);d.setDate(d.getDate()+o);return d.toISOString().split('T')[0];}
 
@@ -1507,6 +1520,7 @@ async function openEditWork(id){
   const w=works.find(x=>x.id===id);
   if(!w){showToast('記録が見つかりません');return;}
   editingWorkId=id;
+  editGroupIds=null; // 単独編集
   // 作業種別グリッド
   document.getElementById('edit-work-type-grid').innerHTML=WORK_TYPES.map(t=>`<button class="wt-chip ${t.label===w.work_type?'active':''}" onclick="selectEditWorkType('${t.label}',this)"><span class="wt-icon">${t.icon}</span><span class="wt-text">${t.label}</span></button>`).join('');
   editSelectedType=w.work_type;
@@ -1532,6 +1546,58 @@ async function openEditWork(id){
 }
 let editSelectedType=null;
 function selectEditWorkType(t,btn){editSelectedType=t;document.querySelectorAll('#edit-work-type-grid .wt-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');}
+
+// まとめた複数記録（同じ圃場・作業の複数区画）をまとめて編集
+let editGroupIds=null;         // [記録id,...] まとめ編集中はここに入る。単独編集時はnull
+let editGroupFieldId=null;     // まとめの圃場
+let editGroupSelectedPlots=[]; // 選択中の区画id
+async function openEditMergedWork(idsStr){
+  const ids=idsStr.split(',').filter(Boolean);
+  const works=await dbGetAll('work_records');
+  const items=ids.map(id=>works.find(w=>w.id===id)).filter(Boolean);
+  if(!items.length){showToast('記録が見つかりません');return;}
+  const base=items[0];
+  // 単独編集の枠組みを流用しつつ、グループ用の状態をセット
+  editingWorkId=base.id;
+  editGroupIds=ids;
+  editGroupFieldId=base.field_id;
+  editGroupSelectedPlots=items.map(w=>w.plot_id).filter(Boolean);
+
+  const [fields,plots]=await Promise.all([dbGetAll('fields'),dbGetAll('plots')]);
+  const fieldMap=Object.fromEntries(fields.map(f=>[f.id,f]));
+  // フォーム共通項目
+  document.getElementById('edit-work-type-grid').innerHTML=WORK_TYPES.map(t=>`<button class="wt-chip ${t.label===base.work_type?'active':''}" onclick="selectEditWorkType('${t.label}',this)"><span class="wt-icon">${t.icon}</span><span class="wt-text">${t.label}</span></button>`).join('');
+  editSelectedType=base.work_type;
+  document.getElementById('edit-work-date').value=base.work_date||'';
+  // 対象：圃場名＋区画チップ（足す・外す）
+  renderEditPlotPicker(fieldMap[base.field_id]?.name||'圃場', plots);
+  document.getElementById('edit-work-stage').innerHTML=stageOptions(base.stage);
+  renderStageInfo('edit-work-stage','edit-work-stage-info');
+  const wx=base.weather||{};
+  document.getElementById('edit-wx-text').value=wx.cond||'';
+  document.getElementById('edit-wx-tmax').value=wx.tmax!=null?Math.round(wx.tmax):'';
+  document.getElementById('edit-wx-tmin').value=wx.tmin!=null?Math.round(wx.tmin):'';
+  document.getElementById('edit-work-comment').value=base.comment||'';
+  document.getElementById('edit-work-pest').value=base.pest||'';
+  editPhotos=base.photos?normPhotos(base.photos):[];renderEditPhotoThumbs();
+  pendingDeleteId=null;const delBtn=document.querySelector('#modal-edit-work .edit-delete-btn');if(delBtn){delBtn.textContent='このまとまりを全部削除する';delBtn.style.color='var(--wine)';delBtn.style.background='none';}
+  openModalNoFill('modal-edit-work');
+}
+// 区画チップ（編集画面の対象選択）
+function renderEditPlotPicker(fieldName, plots){
+  const fps=plots.filter(p=>p.field_id===editGroupFieldId);
+  const chips=fps.map(p=>{
+    const on=editGroupSelectedPlots.includes(p.id);
+    return `<button class="edit-plot-chip ${on?'active':''}" onclick="toggleEditPlot('${p.id}')">${p.name}</button>`;
+  }).join('');
+  document.getElementById('edit-target-info').innerHTML=`<label class="form-label">対象（${fieldName}・区画を足す/外す）</label><div class="edit-plot-picker">${chips}</div>`;
+}
+async function toggleEditPlot(pid){
+  const i=editGroupSelectedPlots.indexOf(pid);
+  if(i>=0)editGroupSelectedPlots.splice(i,1);else editGroupSelectedPlots.push(pid);
+  const plots=await dbGetAll('plots');const fields=await dbGetAll('fields');
+  renderEditPlotPicker(fields.find(f=>f.id===editGroupFieldId)?.name||'圃場', plots);
+}
 
 // ── 作業テンプレート（よく使う組み合わせ）──
 let workTemplates=[];
@@ -1623,25 +1689,62 @@ async function saveEditWork(){
   if(!w){showToast('記録が見つかりません');return;}
   const date=document.getElementById('edit-work-date').value;
   if(!date){showToast('作業日を入れてください');return;}
-  w.work_type=editSelectedType||w.work_type;
-  w.work_date=date;
-  const iso=isoWeek(date);w.iso_year=iso.year;w.iso_week=iso.week;
-  w.stage=document.getElementById('edit-work-stage').value||'';
-  // 天気
+  const iso=isoWeek(date);
+  const stage=document.getElementById('edit-work-stage').value||'';
   const cond=document.getElementById('edit-wx-text').value.trim();
   const tmax=document.getElementById('edit-wx-tmax').value;
   const tmin=document.getElementById('edit-wx-tmin').value;
-  if(cond||tmax!==''||tmin!==''||(w.weather&&(w.weather.rain!=null||w.weather.sun!=null))){
-    const base=w.weather||{};
-    w.weather={code:base.code!=null?base.code:null,cond:cond||base.cond||null,
-      tmax:tmax!==''?parseFloat(tmax):(base.tmax!=null?base.tmax:null),
-      tmin:tmin!==''?parseFloat(tmin):(base.tmin!=null?base.tmin:null),
-      rain:base.rain!=null?base.rain:null,sun:base.sun!=null?base.sun:null,
-      manual:true,source:base.source||'手入力',fetched_at:base.fetched_at||new Date().toISOString()};
-  }else{w.weather=null;}
-  w.comment=document.getElementById('edit-work-comment').value;
-  w.pest=document.getElementById('edit-work-pest').value.trim();
-  w.photos=editPhotos.length?[...editPhotos]:null;
+  const workType=editSelectedType||w.work_type;
+  const comment=document.getElementById('edit-work-comment').value;
+  const pest=document.getElementById('edit-work-pest').value.trim();
+  const photos=editPhotos.length?[...editPhotos]:null;
+  // 天気オブジェクトを組む共通関数
+  const buildWx=(base)=>{
+    if(cond||tmax!==''||tmin!==''||(base&&(base.rain!=null||base.sun!=null))){
+      const b=base||{};
+      return {code:b.code!=null?b.code:null,cond:cond||b.cond||null,
+        tmax:tmax!==''?parseFloat(tmax):(b.tmax!=null?b.tmax:null),
+        tmin:tmin!==''?parseFloat(tmin):(b.tmin!=null?b.tmin:null),
+        rain:b.rain!=null?b.rain:null,sun:b.sun!=null?b.sun:null,
+        manual:true,source:b.source||'手入力',fetched_at:b.fetched_at||new Date().toISOString()};
+    }
+    return null;
+  };
+
+  // ── まとめ編集（複数区画）──
+  if(editGroupIds){
+    const plots=await dbGetAll('plots');
+    const groupRecords=editGroupIds.map(id=>works.find(x=>x.id===id)).filter(Boolean);
+    const selected=editGroupSelectedPlots;
+    if(!selected.length){showToast('区画を1つ以上えらんでください');return;}
+    // 既存記録の区画→記録の対応
+    const byPlot={};for(const r of groupRecords){if(r.plot_id)byPlot[r.plot_id]=r;}
+    // 1) 外された区画の記録を削除
+    for(const r of groupRecords){
+      if(r.plot_id && !selected.includes(r.plot_id)){await dbDelete('work_records',r.id);}
+    }
+    // 2) 残った・足された区画を更新/新規
+    for(const pid of selected){
+      const p=plots.find(x=>x.id===pid);
+      const ex=byPlot[pid];
+      if(ex){
+        ex.work_type=workType;ex.work_date=date;ex.iso_year=iso.year;ex.iso_week=iso.week;
+        ex.stage=stage;ex.weather=buildWx(ex.weather);ex.comment=comment;ex.pest=pest;ex.photos=photos;
+        await dbPut('work_records',ex);
+      }else{
+        await dbPut('work_records',{id:uid(),field_id:editGroupFieldId,plot_id:pid,scope:'plot',
+          variety:null,work_date:date,work_type:workType,stage,weather:buildWx(null),
+          comment,pest,photos,iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});
+      }
+    }
+    editingWorkId=null;editGroupIds=null;
+    closeModal('modal-edit-work');showToast('まとまりを直しました');renderTab(currentTab);
+    return;
+  }
+
+  // ── 単独編集 ──
+  w.work_type=workType;w.work_date=date;w.iso_year=iso.year;w.iso_week=iso.week;
+  w.stage=stage;w.weather=buildWx(w.weather);w.comment=comment;w.pest=pest;w.photos=photos;
   await dbPut('work_records',w);
   editingWorkId=null;
   closeModal('modal-edit-work');showToast('記録を直しました');renderTab(currentTab);
@@ -1658,7 +1761,13 @@ async function deleteEditWork(){
     return;
   }
   const id=editingWorkId;
-  await new Promise((res,rej)=>{const q=db.transaction('work_records','readwrite').objectStore('work_records').delete(id);q.onsuccess=()=>res();q.onerror=rej;});
+  if(editGroupIds){
+    // まとまり全部を削除
+    for(const gid of editGroupIds){await dbDelete('work_records',gid);}
+    editGroupIds=null;
+  }else{
+    await dbDelete('work_records',id);
+  }
   editingWorkId=null;pendingDeleteId=null;
   if(btn){btn.textContent='この記録を削除する';btn.style.color='var(--wine)';btn.style.background='none';}
   closeModal('modal-edit-work');showToast('記録を削除しました');renderTab(currentTab);
@@ -1964,7 +2073,34 @@ async function renderWork(skipBar){
 
   const countLine=hasFilter?`<div class="filter-count">${sorted.length}件 見つかりました</div>`:'';
   const groups={};for(const w of sorted){(groups[w.work_date||'未定']=groups[w.work_date||'未定']||[]).push(w);}
-  el.innerHTML=countLine+Object.entries(groups).map(([date,ws])=>{const rows=ws.map(w=>{const wt=WORK_TYPES.find(t=>t.label===w.work_type)||{icon:'✎'};const tgt=workTargetLabel(w,plotMap,fieldMap);return `<div class="work-item work-item-tap" onclick="openEditWork('${w.id}')"><div class="work-badge">${wt.icon}</div><div class="work-info"><div class="work-name">${w.work_type}</div><div class="work-meta">${tgt}</div>${w.weather?`<div class="work-meta">${weatherLine(w.weather)}</div>`:''}${w.stage?`<span class="work-stage-tag">${w.stage}</span>`:''}${w.pest?`<span class="work-stage-tag" style="border-color:var(--wine);color:var(--wine)">🐛 ${w.pest}</span>`:''}${w.comment?`<div class="work-meta" style="font-style:italic;color:var(--bark);margin-top:3px">${w.comment}</div>`:''}</div>${w.photos&&w.photos.length?`<div class="work-thumb-wrap" onclick="event.stopPropagation();openWorkPhotos('${w.id}')"><img class="work-thumb" src="${normPhoto(w.photos[0]).url}">${w.photos.length>1?`<span class="work-thumb-count">${w.photos.length}</span>`:''}</div>`:''}<div class="work-edit-hint">›</div></div>`;}).join('<div class="divider"></div>');const d=new Date(date),label=isNaN(d)?date:`${d.getMonth()+1}月${d.getDate()}日`,iso=isNaN(d)?null:isoWeek(date);return `<div><div class="mincho" style="font-size:14px;font-weight:600;color:var(--bark);padding:0 0 8px;letter-spacing:.08em">${label}${iso?`<span style="font-size:11px;color:var(--text-muted);margin-left:8px">${iso.year}年 第${iso.week}週</span>`:''}</div><div class="card" style="padding:0 18px">${rows}</div></div>`;}).join('');
+  el.innerHTML=countLine+Object.entries(groups).map(([date,ws])=>{
+    // 同じ圃場×作業×ステージ×病害虫×コメントで、区画指定のあるものをまとめる
+    const merged=[]; const mergeMap={};
+    for(const w of ws){
+      const sameKey=`${w.field_id}__${w.work_type}__${w.stage||''}__${w.pest||''}__${w.comment||''}`;
+      const hasPhoto=w.photos&&w.photos.length;
+      // 区画スコープで写真なしのものだけまとめる（写真や個別事情があるものは単独表示）
+      if(w.plot_id && !hasPhoto){
+        if(!mergeMap[sameKey]){mergeMap[sameKey]={type:'merge', items:[w], base:w};merged.push(mergeMap[sameKey]);}
+        else mergeMap[sameKey].items.push(w);
+      }else{
+        merged.push({type:'single', base:w});
+      }
+    }
+    const rows=merged.map(m=>{
+      const w=m.base;const wt=WORK_TYPES.find(t=>t.label===w.work_type)||{icon:'✎'};
+      if(m.type==='merge' && m.items.length>1){
+        const f=fieldMap[w.field_id];
+        const plotNames=m.items.map(x=>plotMap[x.plot_id]?.name).filter(Boolean);
+        const ids=m.items.map(x=>x.id).join(',');
+        return `<div class="work-item work-item-tap" onclick="openEditMergedWork('${ids}')"><div class="work-badge">${wt.icon}</div><div class="work-info"><div class="work-name">${w.work_type}</div><div class="work-meta">${f?f.name:''}</div><div class="work-plot-tags">${plotNames.map(n=>`<span class="work-plot-tag">${n}</span>`).join('')}</div>${w.weather?`<div class="work-meta">${weatherLine(w.weather)}</div>`:''}${w.stage?`<span class="work-stage-tag">${w.stage}</span>`:''}${w.pest?`<span class="work-stage-tag" style="border-color:var(--wine);color:var(--wine)">🐛 ${w.pest}</span>`:''}${w.comment?`<div class="work-meta" style="font-style:italic;color:var(--bark);margin-top:3px">${w.comment}</div>`:''}</div><span class="work-merge-count">${m.items.length}区画</span><div class="work-edit-hint">›</div></div>`;
+      }
+      const tgt=workTargetLabel(w,plotMap,fieldMap);
+      return `<div class="work-item work-item-tap" onclick="openEditWork('${w.id}')"><div class="work-badge">${wt.icon}</div><div class="work-info"><div class="work-name">${w.work_type}</div><div class="work-meta">${tgt}</div>${w.weather?`<div class="work-meta">${weatherLine(w.weather)}</div>`:''}${w.stage?`<span class="work-stage-tag">${w.stage}</span>`:''}${w.pest?`<span class="work-stage-tag" style="border-color:var(--wine);color:var(--wine)">🐛 ${w.pest}</span>`:''}${w.comment?`<div class="work-meta" style="font-style:italic;color:var(--bark);margin-top:3px">${w.comment}</div>`:''}</div>${w.photos&&w.photos.length?`<div class="work-thumb-wrap" onclick="event.stopPropagation();openWorkPhotos('${w.id}')"><img class="work-thumb" src="${normPhoto(w.photos[0]).url}">${w.photos.length>1?`<span class="work-thumb-count">${w.photos.length}</span>`:''}</div>`:''}<div class="work-edit-hint">›</div></div>`;
+    }).join('<div class="divider"></div>');
+    const d=new Date(date),label=isNaN(d)?date:`${d.getMonth()+1}月${d.getDate()}日`,iso=isNaN(d)?null:isoWeek(date);
+    return `<div><div class="mincho" style="font-size:14px;font-weight:600;color:var(--bark);padding:0 0 8px;letter-spacing:.08em">${label}${iso?`<span style="font-size:11px;color:var(--text-muted);margin-left:8px">${iso.year}年 第${iso.week}週</span>`:''}</div><div class="card" style="padding:0 18px">${rows}</div></div>`;
+  }).join('');
 }
 
 function renderWorkFilterBar(fields, works){
@@ -3163,7 +3299,7 @@ async function renderImportPreview(){
   if(days.length>1){
     html+=`<div class="imp-multiday">📅 ${days.length}日分・あわせて ${totalRows}件 を読み取りました</div>`;
   }
-  html+=`<div class="imp-edit-hint">行をタップすると圃場・区画・作業を直せます</div>`;
+  html+=`<div class="imp-edit-hint">同じ圃場・作業はまとめています。区画の×で個別に外せます。作業名をタップで直せます。</div>`;
   days.forEach((day,di)=>{
     const w=day.weather;
     const d=new Date(day.date+'T00:00:00');
@@ -3172,41 +3308,52 @@ async function renderImportPreview(){
       <div class="imp-head-item"><span>日付</span>${dateLabel}</div>
       ${w?`<div class="imp-head-item"><span>天気</span>${w.cond||'—'}${w.tmax!=null?` ${w.tmax}〜${w.tmin}℃`:''}</div>`:'<div class="imp-head-item"><span>天気</span>読み取れず</div>'}
     </div>`;
-    html+=day.rows.map((r,i)=>{
-      const key=`${di}-${i}`;
-      const target=`${r.fieldName||'圃場不明'} ${r.plotName}`+(r.variety?` ／ ${r.variety}`:'');
-      const editing=impEditKey===key;
+
+    // 圃場×作業×状態でグループ化（行の元indexを保持）
+    const groups=[];
+    day.rows.forEach((r,i)=>{
+      const gk=`${r.fieldId||'none'}__${r.workType}__${r.status||''}`;
+      let g=groups.find(x=>x.key===gk);
+      if(!g){g={key:gk, fieldId:r.fieldId, fieldName:r.fieldName, workType:r.workType, workIcon:r.workIcon, status:r.status, items:[]};groups.push(g);}
+      g.items.push({r,i});
+    });
+
+    html+=groups.map((g,gi)=>{
+      const editing=impEditKey===`${di}-g${gi}`;
+      // 区画チップ
+      const chips=g.items.map(({r,i})=>{
+        const label=(r.plotName||'')+(r.variety&&r.variety!==r.plotName?`／${r.variety}`:'');
+        return `<span class="imp-plot-chip ${r.known?'':'unknown'}">${label}<span class="imp-plot-chip-del" onclick="removeImportRow(${di},${i})">×</span></span>`;
+      }).join('');
       let editor='';
       if(editing){
-        const fps=plots.filter(p=>p.field_id===r.fieldId);
+        const firstIdx=g.items[0].i;
+        const fps=plots.filter(p=>p.field_id===g.fieldId);
         editor=`<div class="imp-editor">
-          <label class="imp-ed-label">圃場</label>
-          <select class="imp-ed-sel" onchange="impEditField(${di},${i},this.value)">
+          <label class="imp-ed-label">圃場（このまとまり全部）</label>
+          <select class="imp-ed-sel" onchange="impEditGroupField(${di},${gi},this.value)">
             <option value="">— 圃場 —</option>
-            ${fields.map(f=>`<option value="${f.id}" ${r.fieldId===f.id?'selected':''}>${f.name}</option>`).join('')}
+            ${fields.map(f=>`<option value="${f.id}" ${g.fieldId===f.id?'selected':''}>${f.name}</option>`).join('')}
           </select>
-          <label class="imp-ed-label">区画</label>
-          <select class="imp-ed-sel" onchange="impEditPlot(${di},${i},this.value)">
-            <option value="">— 区画（未登録のまま）—</option>
-            ${fps.map(p=>`<option value="${p.id}" ${r.plotId===p.id?'selected':''}>${p.name}（${(p.varieties||[]).join('・')}）</option>`).join('')}
+          <label class="imp-ed-label">作業（このまとまり全部）</label>
+          <select class="imp-ed-sel" onchange="impEditGroupWork(${di},${gi},this.value)">
+            ${WORK_TYPES.map(t=>`<option value="${t.label}" ${g.workType===t.label?'selected':''}>${t.icon} ${t.label}</option>`).join('')}
           </select>
-          <label class="imp-ed-label">作業</label>
-          <select class="imp-ed-sel" onchange="impEditWork(${di},${i},this.value)">
-            ${WORK_TYPES.map(t=>`<option value="${t.label}" ${r.workType===t.label?'selected':''}>${t.icon} ${t.label}</option>`).join('')}
-          </select>
-          <button class="imp-ed-done" onclick="impEditClose()">この行をとじる</button>
+          <button class="imp-ed-done" onclick="impEditClose()">とじる</button>
         </div>`;
       }
-      return `<div class="imp-row ${r.known?'':'unknown'} ${editing?'editing':''}">
-        <div class="imp-row-tap" onclick="impEditOpen('${key}')">
-          <div class="imp-row-badge">${r.workIcon}</div>
+      // グループのindex配列を埋め込んでおく（編集で使う）
+      impGroupMap[`${di}-g${gi}`]=g.items.map(it=>it.i);
+      return `<div class="imp-row ${editing?'editing':''}">
+        <div class="imp-row-tap" onclick="impEditOpen('${di}-g${gi}')">
+          <div class="imp-row-badge">${g.workIcon}</div>
           <div class="imp-row-info">
-            <div class="imp-row-target">${target}${r.known?'':' <span style="font-size:10px;color:var(--dusk)">(未登録)</span>'}</div>
-            <div class="imp-row-meta">${r.workType}${r.status?' ・ '+r.status:''}</div>
+            <div class="imp-row-target">${g.fieldName||'圃場不明'}</div>
+            <div class="imp-plot-chips">${chips}</div>
+            <div class="imp-row-meta">${g.workType}${g.status?' ・ '+g.status:''}</div>
           </div>
           <div class="imp-row-edit">✎</div>
         </div>
-        <div class="imp-row-del" onclick="removeImportRow(${di},${i})">×</div>
         ${editor}
       </div>`;
     }).join('');
@@ -3221,33 +3368,28 @@ async function renderImportPreview(){
 
 function impEditOpen(key){impEditKey=impEditKey===key?null:key;renderImportPreview();}
 function impEditClose(){impEditKey=null;renderImportPreview();}
-async function impEditField(di,i,fieldId){
+let impGroupMap={}; // 'di-gN' -> [行index,...]
+
+// グループ全体の圃場を変える
+async function impEditGroupField(di,gi,fieldId){
   const fields=await dbGetAll('fields');
-  const r=importParsedDays[di].rows[i];
-  r.fieldId=fieldId||null;
-  r.fieldName=fields.find(f=>f.id===fieldId)?.name||null;
-  // 圃場を変えたら区画はいったん未登録に戻す
-  r.plotId=null;r.known=false;r.variety=null;r.scope='field';
-  renderImportPreview();
-}
-async function impEditPlot(di,i,plotId){
-  const plots=await dbGetAll('plots');
-  const r=importParsedDays[di].rows[i];
-  if(!plotId){r.plotId=null;r.known=false;r.variety=null;r.scope='field';}
-  else{
-    const p=plots.find(x=>x.id===plotId);
-    if(p){r.plotId=p.id;r.plotName=p.name;r.fieldId=p.field_id;r.known=true;r.scope='plot';
-      const fields=await dbGetAll('fields');r.fieldName=fields.find(f=>f.id===p.field_id)?.name||r.fieldName;}
+  const idxs=impGroupMap[`${di}-g${gi}`]||[];
+  const fname=fields.find(f=>f.id===fieldId)?.name||null;
+  for(const i of idxs){
+    const r=importParsedDays[di].rows[i];
+    r.fieldId=fieldId||null; r.fieldName=fname;
+    // 圃場を変えたら区画は未登録に戻す（区画は圃場に属するため）
+    r.plotId=null; r.known=false; r.variety=null; r.scope='field';
   }
   renderImportPreview();
 }
-function impEditWork(di,i,label){
-  const r=importParsedDays[di].rows[i];
-  const wt=WORK_TYPES.find(t=>t.label===label);
-  if(wt){r.workType=wt.label;r.workIcon=wt.icon;}
+// グループ全体の作業を変える
+function impEditGroupWork(di,gi,label){
+  const wt=WORK_TYPES.find(t=>t.label===label);if(!wt)return;
+  const idxs=impGroupMap[`${di}-g${gi}`]||[];
+  for(const i of idxs){const r=importParsedDays[di].rows[i];r.workType=wt.label;r.workIcon=wt.icon;}
   renderImportPreview();
 }
-
 function removeImportRow(di,i){importParsedDays[di].rows.splice(i,1);impEditKey=null;renderImportPreview();}
 
 async function commitImport(){
@@ -3366,8 +3508,27 @@ function removeEditPhoto(i){editPhotos.splice(i,1);renderEditPhotoThumbs();}
 let toastTimer;
 function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2800);}
 
-async function init(){await initDB();await seedRealData();await loadCmpCache();await loadWorkTemplates();buildWorkTypeGrid();const today=new Date().toISOString().split('T')[0];['work-date','harvest-date'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=today;});await renderDashboard();document.getElementById('fab-btn').style.display='none';}
-init().catch(console.error);
+async function init(){
+  try{
+    await initDB();
+    try{await seedRealData();}catch(e){console.error('seed',e);}
+    try{await loadCmpCache();}catch(e){console.error('cmpCache',e);}
+    try{await loadWorkTemplates();}catch(e){console.error('templates',e);}
+    buildWorkTypeGrid();
+    const today=new Date().toISOString().split('T')[0];
+    ['work-date','harvest-date'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=today;});
+    try{await renderDashboard();}catch(e){
+      console.error('dashboard',e);
+      const el=document.getElementById('screen-dashboard');
+      if(el)el.innerHTML='<div style="padding:40px 24px;text-align:center"><div style="font-size:32px;margin-bottom:12px">🌿</div><div style="font-family:\'Shippori Mincho\',serif;font-size:16px;color:#4A3B2A">読み込みでつまずきました</div><div style="font-size:13px;color:#8a7a68;margin-top:10px;line-height:1.7">下のメニューから各タブは使えます。<br>気になるときはバックアップを書き出してから、ページを再読み込みしてみてください。</div></div>';
+    }
+    const fab=document.getElementById('fab-btn');if(fab)fab.style.display='none';
+  }catch(e){
+    console.error('init',e);
+    document.body.insertAdjacentHTML('afterbegin','<div style="padding:30px;font-family:sans-serif;color:#7A4B52;text-align:center">アプリの起動でエラーが起きました。<br>ページを再読み込みしてみてください。</div>');
+  }
+}
+init();
 </script>
 </body>
 </html>
