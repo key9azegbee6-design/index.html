@@ -275,6 +275,17 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .imp-multiday{font-size:13px;font-weight:700;color:var(--bark);background:var(--cream);border:1px solid var(--dusk);border-radius:var(--radius-sm);padding:11px 14px;margin-top:14px;letter-spacing:.03em;}
 .imp-day-block{margin-top:12px;padding-top:4px;border-top:1px dashed var(--line);}
 .imp-day-block:first-of-type{border-top:none;}
+.spray-agent-box{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px;margin-bottom:12px;}
+.spray-add-agent-btn{width:100%;padding:11px;border:1px dashed var(--bark);border-radius:var(--radius-sm);background:var(--cream);color:var(--bark);font-family:'Shippori Mincho',serif;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.04em;}
+.spray-add-agent-btn:active{background:var(--line-soft);}
+.spray-agent-list{margin-bottom:12px;}
+.spray-agent-list-title{font-size:11px;font-weight:700;color:var(--bark);letter-spacing:.08em;margin-bottom:8px;}
+.spray-agent-item{display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--cream);border:1px solid var(--line);border-radius:var(--radius-sm);margin-bottom:6px;}
+.spray-agent-badge{width:30px;height:30px;border-radius:8px;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.spray-agent-info{flex:1;min-width:0;}
+.spray-agent-name{font-size:14px;font-weight:600;color:var(--vine);}
+.spray-agent-sub{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.spray-agent-del{width:24px;height:24px;border-radius:50%;background:var(--line);color:var(--cream);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;flex-shrink:0;}
 .imp-edit-hint{font-size:11px;color:var(--text-muted);padding:8px 2px 2px;letter-spacing:.03em;}
 .imp-row{position:relative;}
 .imp-row-tap{display:flex;align-items:center;gap:10px;flex:1;cursor:pointer;padding-right:26px;}
@@ -681,21 +692,27 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
     <div class="modal-handle"></div>
     <div class="modal-title" id="modal-spray-title">防除を記す</div>
     <div class="form-body">
-      <div class="form-group"><label class="form-label">散布日</label><input class="form-input" type="date" id="spray-date"></div>
       <div class="form-group">
-        <label class="form-label">薬剤名</label>
-        <input class="form-input" type="text" id="spray-agent" placeholder="例：ダントツ、ボルドー液、ジマンダイセン">
-        <div class="wx-quick-words" id="spray-agent-recent"></div>
+        <label class="form-label">散布日</label><input class="form-input" type="date" id="spray-date">
       </div>
-      <div class="form-group">
-        <label class="form-label">対象（病気・害虫）</label>
-        <input class="form-input" type="text" id="spray-target" placeholder="例：カメムシ、ベト病、灰色かび病">
-        <div class="wx-quick-words" id="spray-target-quick"></div>
+      <div class="spray-agent-box">
+        <div class="form-group" style="margin-bottom:10px">
+          <label class="form-label">薬剤名</label>
+          <input class="form-input" type="text" id="spray-agent" placeholder="例：ダントツ、ボルドー液、ジマンダイセン">
+          <div class="wx-quick-words" id="spray-agent-recent"></div>
+        </div>
+        <div class="form-group" style="margin-bottom:10px">
+          <label class="form-label">対象（病気・害虫）</label>
+          <input class="form-input" type="text" id="spray-target" placeholder="例：カメムシ、ベト病、灰色かび病">
+          <div class="wx-quick-words" id="spray-target-quick"></div>
+        </div>
+        <div class="form-row" style="margin-bottom:10px">
+          <div class="form-group" style="margin:0"><label class="form-label">希釈倍率</label><input class="form-input" type="text" id="spray-dilution" placeholder="例：2000倍"></div>
+          <div class="form-group" style="margin:0"><label class="form-label">散布量(L)</label><input class="form-input" type="number" id="spray-amount" placeholder="任意" step="1"></div>
+        </div>
+        <button class="spray-add-agent-btn" onclick="addSprayAgent()">＋ この薬剤を足す</button>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">希釈倍率</label><input class="form-input" type="text" id="spray-dilution" placeholder="例：2000倍"></div>
-        <div class="form-group"><label class="form-label">散布量(L)</label><input class="form-input" type="number" id="spray-amount" placeholder="任意" step="1"></div>
-      </div>
+      <div class="spray-agent-list" id="spray-agent-list"></div>
       <div class="form-group">
         <label class="form-label">対象の圃場（複数えらべます・任意）</label>
         <div class="plot-multi-wrap" id="spray-field-multi"></div>
@@ -2309,34 +2326,60 @@ function currentScheduleItem(year){
   return cur;
 }
 
+let stagedAgents=[]; // この防除で足した薬剤 [{agent,target,dilution,amount}]
 function openSprayForm(){
   editingSprayId=null;
   document.getElementById('modal-spray-title').textContent='防除を記す';
   document.getElementById('spray-date').value=(sprayCalSelDate)||new Date().toISOString().split('T')[0];
   ['spray-agent','spray-target','spray-dilution','spray-amount','spray-comment','spray-wx-text','spray-wx-tmax','spray-wx-tmin'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   document.getElementById('spray-delete-btn').style.display='none';
+  stagedAgents=[];renderSprayAgentList();
   buildSprayFieldMulti([]);
   buildSprayQuickChips();
   openModalNoFill('modal-spray');
 }
+// 入力中の薬剤をリストに足す
+function addSprayAgent(){
+  const agent=document.getElementById('spray-agent').value.trim();
+  if(!agent){showToast('薬剤名を入れてください');return;}
+  stagedAgents.push({
+    agent,
+    target:document.getElementById('spray-target').value.trim()||null,
+    dilution:document.getElementById('spray-dilution').value.trim()||null,
+    amount:parseFloat(document.getElementById('spray-amount').value)||null});
+  ['spray-agent','spray-target','spray-dilution','spray-amount'].forEach(id=>{document.getElementById(id).value='';});
+  renderSprayAgentList();
+  showToast('薬剤を足しました');
+}
+function renderSprayAgentList(){
+  const box=document.getElementById('spray-agent-list');if(!box)return;
+  if(!stagedAgents.length){box.innerHTML='';return;}
+  box.innerHTML=`<div class="spray-agent-list-title">この日に撒く薬剤（${stagedAgents.length}）</div>`+stagedAgents.map((a,i)=>{
+    const sub=[a.target,a.dilution,a.amount!=null?a.amount+'L':null].filter(Boolean).join(' ・ ');
+    return `<div class="spray-agent-item"><div class="spray-agent-badge">💧</div><div class="spray-agent-info"><div class="spray-agent-name">${a.agent}</div>${sub?`<div class="spray-agent-sub">${sub}</div>`:''}</div><div class="spray-agent-del" onclick="removeSprayAgent(${i})">×</div></div>`;
+  }).join('');
+}
+function removeSprayAgent(i){stagedAgents.splice(i,1);renderSprayAgentList();}
+
 async function buildSprayFieldMulti(selectedIds){
   const fields=await dbGetAll('fields');
   const wrap=document.getElementById('spray-field-multi');
   wrap.innerHTML=fields.map(f=>`<button class="plot-multi-chip ${selectedIds.includes(f.id)?'active':''}" data-fid="${f.id}" onclick="this.classList.toggle('active')">${f.name}</button>`).join('');
 }
 async function buildSprayQuickChips(){
-  // 病害虫のよく使う語
-  document.getElementById('spray-target-quick').innerHTML=PEST_WORDS.map(p=>`<button class="wx-word-chip" onclick="document.getElementById('spray-target').value='${p}'">${p}</button>`).join('');
-  // 最近使った薬剤
+  document.getElementById('spray-target-quick').innerHTML=PEST_QUICK.map(p=>`<button class="wx-word-chip" onclick="document.getElementById('spray-target').value='${p}'">${p}</button>`).join('');
   const sprays=await dbGetAll('spray');
   const agents=[...new Set(sprays.map(s=>s.agent).filter(Boolean))].slice(0,8);
   document.getElementById('spray-agent-recent').innerHTML=agents.map(a=>`<button class="wx-word-chip" onclick="document.getElementById('spray-agent').value='${a.replace(/'/g,"")}'">${a}</button>`).join('');
 }
+
 async function saveSpray(){
   const date=document.getElementById('spray-date').value;
-  const agent=document.getElementById('spray-agent').value.trim();
   if(!date){showToast('散布日を入れてください');return;}
-  if(!agent){showToast('薬剤名を入れてください');return;}
+  // 入力欄に書きかけの薬剤があれば、それも足す
+  const typing=document.getElementById('spray-agent').value.trim();
+  if(typing)addSprayAgent();
+  if(!stagedAgents.length){showToast('薬剤を1つ以上足してください');return;}
   const selFids=[...document.querySelectorAll('#spray-field-multi .plot-multi-chip.active')].map(c=>c.dataset.fid);
   const cond=document.getElementById('spray-wx-text').value.trim();
   const tmax=document.getElementById('spray-wx-tmax').value;
@@ -2344,15 +2387,26 @@ async function saveSpray(){
   let weather=null;
   if(cond||tmax!==''||tmin!==''){weather={code:null,cond:cond||null,tmax:tmax!==''?parseFloat(tmax):null,tmin:tmin!==''?parseFloat(tmin):null,rain:null,sun:null,manual:true,source:'手入力'};}
   const iso=isoWeek(date);
-  const rec={id:editingSprayId||uid(),spray_date:date,agent,
-    target:document.getElementById('spray-target').value.trim()||null,
-    dilution:document.getElementById('spray-dilution').value.trim()||null,
-    amount:parseFloat(document.getElementById('spray-amount').value)||null,
-    field_ids:selFids, weather,
-    comment:document.getElementById('spray-comment').value.trim()||null,
-    iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()};
-  await dbPut('spray',rec);
-  closeModal('modal-spray');showToast(editingSprayId?'防除を直しました':'防除を記録しました');
+  const comment=document.getElementById('spray-comment').value.trim()||null;
+  if(editingSprayId){
+    // 編集時は1件目だけを更新（編集は1薬剤単位）
+    const a=stagedAgents[0];
+    await dbPut('spray',{id:editingSprayId,spray_date:date,agent:a.agent,target:a.target,dilution:a.dilution,amount:a.amount,
+      field_ids:selFids,weather,comment,iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});
+    // 2件目以降は新規追加
+    for(let k=1;k<stagedAgents.length;k++){const a2=stagedAgents[k];
+      await dbPut('spray',{id:uid(),spray_date:date,agent:a2.agent,target:a2.target,dilution:a2.dilution,amount:a2.amount,
+        field_ids:selFids,weather,comment,iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});}
+  }else{
+    // 薬剤ごとに1レコード（同じ日・同じ圃場の防除としてまとめて記録）
+    for(const a of stagedAgents){
+      await dbPut('spray',{id:uid(),spray_date:date,agent:a.agent,target:a.target,dilution:a.dilution,amount:a.amount,
+        field_ids:selFids,weather,comment,iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});
+    }
+  }
+  const n=stagedAgents.length;
+  stagedAgents=[];
+  closeModal('modal-spray');showToast(editingSprayId?'防除を直しました':`${n}剤の防除を記録しました`);
   editingSprayId=null;renderTab(currentTab);
 }
 async function openEditSpray(id){
@@ -2371,6 +2425,7 @@ async function openEditSpray(id){
   document.getElementById('spray-wx-tmin').value=wx.tmin!=null?Math.round(wx.tmin):'';
   await buildSprayFieldMulti(s.field_ids||[]);
   buildSprayQuickChips();
+  stagedAgents=[];renderSprayAgentList();
   document.getElementById('spray-delete-btn').style.display='block';
   openModalNoFill('modal-spray');
 }
@@ -2934,6 +2989,18 @@ function parseReportLine(line, ctx, fields, plots){
   const tokens=rest.split(/[、\s]+/).map(t=>t.trim()).filter(Boolean);
   const rows=[];
   let usedFieldId=fieldId, usedFieldName=fieldName;
+
+  // 区画トークンが無い（例：「余川 防除」）→ 圃場ぜんぶに対する作業として1件
+  if(!tokens.length){
+    if(usedFieldId){
+      rows.push({fieldId:usedFieldId, fieldName:usedFieldName,
+        plotName:'圃場ぜんぶ', plotId:null, variety:null, scope:'field',
+        rawToken:'', workType:wt.label, workIcon:wt.icon, status, known:true});
+      ctx.fieldName=usedFieldName;ctx.fieldId=usedFieldId;
+    }
+    return rows;
+  }
+
   for(const tk of tokens){
     for(let raw of expandPlotToken(tk)){
       // まず現在の圃場で照合
