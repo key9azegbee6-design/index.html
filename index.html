@@ -307,6 +307,7 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .edit-plot-chip{padding:8px 14px;border:1px solid var(--line);border-radius:18px;background:var(--paper);font-family:inherit;font-size:13px;color:var(--bark);cursor:pointer;transition:all .12s;}
 .edit-plot-chip.active{background:var(--vine);border-color:var(--vine);color:var(--cream);font-weight:700;}
 .edit-plot-chip:active{opacity:.7;}
+.edit-target-hint{font-size:11px;color:var(--text-muted);margin-top:8px;letter-spacing:.03em;}
 .import-link{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px;font-size:13px;color:var(--bark);font-weight:700;text-align:center;cursor:pointer;letter-spacing:.04em;transition:background .12s;}
 .import-link:active{background:var(--line-soft);}
 .edit-delete-btn{text-align:center;font-size:13px;color:var(--wine);padding:14px;cursor:pointer;letter-spacing:.04em;margin-top:4px;}
@@ -358,6 +359,18 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
 .work-edit-hint{font-size:20px;color:var(--line);align-self:center;flex-shrink:0;}
 .add-block{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:18px;}
 .add-block-title{font-size:11px;font-weight:700;color:var(--bark);letter-spacing:.12em;margin:-2px 0 -6px;}
+.opt-details{border:1px solid var(--line-soft);border-radius:var(--radius);background:var(--paper);}
+.opt-details>summary{list-style:none;cursor:pointer;padding:11px 14px;font-size:11px;font-weight:700;color:var(--bark);letter-spacing:.1em;display:flex;align-items:center;gap:6px;user-select:none;}
+.opt-details>summary::-webkit-details-marker{display:none;}
+.opt-details>summary::before{content:'▸';font-size:10px;color:var(--dusk);transition:transform .15s;}
+.opt-details[open]>summary::before{transform:rotate(90deg);}
+.opt-details[open]>summary{border-bottom:1px solid var(--line-soft);}
+.opt-details .opt-body{padding:14px;display:flex;flex-direction:column;gap:14px;}
+.opt-summary-hint{font-size:10.5px;color:var(--text-muted);font-weight:500;letter-spacing:.02em;margin-left:auto;}
+.lastlike-btn{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--cream);border:1px solid var(--dusk);color:var(--dusk);border-radius:var(--radius);padding:9px;font-size:12.5px;font-weight:700;letter-spacing:.04em;cursor:pointer;font-family:inherit;}
+.lastlike-btn:active{transform:scale(.98);}
+.dash-lastyear-period{font-size:12px;color:var(--text-muted);margin-bottom:10px;letter-spacing:.03em;}
+.dash-lastyear-list{display:flex;flex-wrap:wrap;gap:7px;}
 .plot-multi-wrap{display:flex;flex-wrap:wrap;gap:7px;}
 .plot-multi-chip{font-size:12px;padding:7px 13px;border-radius:20px;border:1px solid var(--line);background:var(--cream);color:var(--bark);cursor:pointer;font-family:inherit;transition:all .12s;}
 .plot-multi-chip.active{background:var(--vine);border-color:var(--vine);color:var(--cream);font-weight:700;}
@@ -586,6 +599,7 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
       <div class="card"><div style="padding:16px 18px" id="dash-trellis-list"><div class="loading-dots"><span></span><span></span><span></span></div></div></div>
     </div>
     <div id="dash-stage"></div>
+    <div id="dash-lastyear"></div>
     <div id="dash-pest"></div>
     <div style="height:80px"></div>
   </div>
@@ -622,6 +636,7 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
         <div class="tpl-chips" id="work-template-chips"></div>
       </div>
       <div class="form-group"><label class="form-label">作業日</label><input class="form-input" type="date" id="work-date"></div>
+      <button type="button" class="lastlike-btn" onclick="applyLastLikeWork()">⚡ 前回と同じ（天気・ステージ・気がかり）</button>
 
       <div class="add-block">
         <div class="add-block-title">作業を1つずつ足す</div>
@@ -645,17 +660,21 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
             <div class="form-group"><label class="form-label">散布量(L)</label><input class="form-input" type="number" id="work-spray-amount" placeholder="—" step="1"></div>
           </div>
         </div>
-        <div class="form-group" id="work-stage-group">
-          <label class="form-label">生育ステージ（任意）</label>
-          <select class="form-select" id="work-stage" onchange="renderStageInfo('work-stage','work-stage-info')"><option value="">記録しない</option></select>
-          <div id="work-stage-info"></div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">気づいた病気・害虫（任意）</label>
-          <input class="form-input" type="text" id="work-pest" placeholder="例：べと病、カメムシ、晩腐病">
-          <div class="pest-quick" id="work-pest-quick"></div>
-          <div class="form-hint">書いておくと、防除暦の「発生メモ」と「気がかり」に残ります。</div>
-        </div>
+        <details class="opt-details" id="work-stage-group">
+          <summary>🌱 生育ステージ（任意）</summary>
+          <div class="opt-body">
+            <select class="form-select" id="work-stage" onchange="renderStageInfo('work-stage','work-stage-info')"><option value="">記録しない</option></select>
+            <div id="work-stage-info"></div>
+          </div>
+        </details>
+        <details class="opt-details">
+          <summary>🐛 気づいた病気・害虫（任意）</summary>
+          <div class="opt-body">
+            <input class="form-input" type="text" id="work-pest" placeholder="例：べと病、カメムシ、晩腐病">
+            <div class="pest-quick" id="work-pest-quick"></div>
+            <div class="form-hint">書いておくと、防除暦の「発生メモ」と「気がかり」に残ります。</div>
+          </div>
+        </details>
         <button class="add-to-list-btn" onclick="addWorkToList()">＋ この作業をリストに足す</button>
       </div>
 
@@ -664,35 +683,42 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
         <div id="work-staged-list"></div>
       </div>
 
-      <div class="form-group">
-        <label class="form-label">その日の天気（任意・全部に共通）</label>
-        <input class="form-input" type="text" id="wx-text" placeholder="例：晴れ、曇りのち雨、晴れ時々曇り">
-        <div class="wx-quick-words" id="wx-quick-words"></div>
-        <div class="wx-temp-row">
-          <div class="wx-temp-field">
-            <span class="wx-temp-cap">最高</span>
-            <input class="wx-temp-input" type="number" id="wx-tmax" inputmode="numeric" placeholder="—">
-            <span class="wx-temp-unit">℃</span>
+      <details class="opt-details">
+        <summary>☀️ その日の天気（任意・全部に共通）</summary>
+        <div class="opt-body">
+          <input class="form-input" type="text" id="wx-text" placeholder="例：晴れ、曇りのち雨、晴れ時々曇り">
+          <div class="wx-quick-words" id="wx-quick-words"></div>
+          <div class="wx-temp-row">
+            <div class="wx-temp-field">
+              <span class="wx-temp-cap">最高</span>
+              <input class="wx-temp-input" type="number" id="wx-tmax" inputmode="numeric" placeholder="—">
+              <span class="wx-temp-unit">℃</span>
+            </div>
+            <div class="wx-temp-field">
+              <span class="wx-temp-cap">最低</span>
+              <input class="wx-temp-input" type="number" id="wx-tmin" inputmode="numeric" placeholder="—">
+              <span class="wx-temp-unit">℃</span>
+            </div>
           </div>
-          <div class="wx-temp-field">
-            <span class="wx-temp-cap">最低</span>
-            <input class="wx-temp-input" type="number" id="wx-tmin" inputmode="numeric" placeholder="—">
-            <span class="wx-temp-unit">℃</span>
+          <div class="wx-auto-row">
+            <span class="wx-auto-hint" id="wx-auto-hint">天気をことばで書けます（日報の表現そのままでOK）</span>
+            <span class="wx-auto-btn" id="wx-auto-btn" onclick="tryFetchWorkWeather()">📡 自動でひく</span>
           </div>
         </div>
-        <div class="wx-auto-row">
-          <span class="wx-auto-hint" id="wx-auto-hint">天気をことばで書けます（日報の表現そのままでOK）</span>
-          <span class="wx-auto-btn" id="wx-auto-btn" onclick="tryFetchWorkWeather()">📡 自動でひく</span>
+      </details>
+      <details class="opt-details">
+        <summary>✎ 覚え書き（任意・全部に共通）</summary>
+        <div class="opt-body"><textarea class="form-textarea" id="work-comment" placeholder="畑の様子など"></textarea></div>
+      </details>
+      <details class="opt-details">
+        <summary>📷 写真（任意・全部に共通）</summary>
+        <div class="opt-body">
+          <div class="photo-add-row">
+            <label class="photo-add-btn">📷 写真をえらぶ<input type="file" accept="image/*" multiple style="display:none" onchange="onWorkPhotoPick(event)"></label>
+          </div>
+          <div class="photo-thumbs" id="work-photo-thumbs"></div>
         </div>
-      </div>
-      <div class="form-group"><label class="form-label">覚え書き（任意・全部に共通）</label><textarea class="form-textarea" id="work-comment" placeholder="畑の様子など"></textarea></div>
-      <div class="form-group">
-        <label class="form-label">写真（任意・全部に共通）</label>
-        <div class="photo-add-row">
-          <label class="photo-add-btn">📷 写真をえらぶ<input type="file" accept="image/*" multiple style="display:none" onchange="onWorkPhotoPick(event)"></label>
-        </div>
-        <div class="photo-thumbs" id="work-photo-thumbs"></div>
-      </div>
+      </details>
       <button class="save-btn" onclick="saveWork()" id="work-save-btn">記録する</button>
       <div style="height:8px"></div>
     </div>
@@ -809,14 +835,16 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
         <select class="form-select" id="edit-work-stage" onchange="renderStageInfo('edit-work-stage','edit-work-stage-info')"><option value="">記録しない</option></select>
         <div id="edit-work-stage-info"></div>
       </div>
-      <div class="form-group">
-        <label class="form-label">その日の天気（任意）</label>
-        <input class="form-input" type="text" id="edit-wx-text" placeholder="例：晴れ、曇りのち雨">
-        <div class="wx-temp-row">
-          <div class="wx-temp-field"><span class="wx-temp-cap">最高</span><input class="wx-temp-input" type="number" id="edit-wx-tmax" placeholder="—"><span class="wx-temp-unit">℃</span></div>
-          <div class="wx-temp-field"><span class="wx-temp-cap">最低</span><input class="wx-temp-input" type="number" id="edit-wx-tmin" placeholder="—"><span class="wx-temp-unit">℃</span></div>
+      <details class="opt-details" id="edit-wx-details">
+        <summary>☀️ その日の天気（任意）</summary>
+        <div class="opt-body">
+          <input class="form-input" type="text" id="edit-wx-text" placeholder="例：晴れ、曇りのち雨">
+          <div class="wx-temp-row">
+            <div class="wx-temp-field"><span class="wx-temp-cap">最高</span><input class="wx-temp-input" type="number" id="edit-wx-tmax" placeholder="—"><span class="wx-temp-unit">℃</span></div>
+            <div class="wx-temp-field"><span class="wx-temp-cap">最低</span><input class="wx-temp-input" type="number" id="edit-wx-tmin" placeholder="—"><span class="wx-temp-unit">℃</span></div>
+          </div>
         </div>
-      </div>
+      </details>
       <div class="form-group"><label class="form-label">気づいた病気・害虫（任意）</label><input class="form-input" type="text" id="edit-work-pest" placeholder="例：べと病、カメムシ"></div>
       <div class="form-group">
         <label class="form-label">写真</label>
@@ -1118,6 +1146,63 @@ async function tryFetchWorkWeather(){
   }
 }
 
+// ── 天気の自動統一：過去の作業・防除記録の天気を、実測（archive API・余川GPS）で自動補正／自動補完 ──
+// 1日1回・直近60日ぶん・当日〜2日前は実測データが未反映のため対象から除外
+async function syncPastWeatherFromArchive(){
+  try{
+    const metaAll=await dbGetAll('meta');
+    const todayStr=new Date().toISOString().split('T')[0];
+    const syncRec=metaAll.find(x=>x.id==='weatherSyncDate');
+    if(syncRec&&syncRec.date===todayStr)return; // すでに今日じっこう済み
+    const fields=await dbGetAll('fields');
+    const f=fields.find(x=>x.id==='f_yokawa')||fields.find(x=>x.lat!=null);
+    if(!f||f.lat==null)return; // GPS登録の圃場がなければ何もしない
+    const end=fmtDate(todayStr,-3);   // 当日〜2日前は実測未反映のため除外
+    const start=fmtDate(end,-59);     // endを含め60日ぶん
+    const daily='weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,sunshine_duration';
+    const url=`https://archive-api.open-meteo.com/v1/archive?latitude=${f.lat}&longitude=${f.lng}&start_date=${start}&end_date=${end}&daily=${daily}&timezone=Asia%2FTokyo`;
+    const res=await fetch(url);
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const j=await res.json();
+    const d=j&&j.daily;
+    if(!d||!Array.isArray(d.time))throw new Error('データなし');
+    const byDate={};
+    d.time.forEach((ds,i)=>{
+      const code=d.weather_code?d.weather_code[i]:null;
+      const tmax=d.temperature_2m_max?d.temperature_2m_max[i]:null;
+      const tmin=d.temperature_2m_min?d.temperature_2m_min[i]:null;
+      if(tmax==null&&tmin==null&&code==null)return;
+      const sunSec=d.sunshine_duration?d.sunshine_duration[i]:null;
+      byDate[ds]={code,cond:weatherInfo(code).t,tmax,tmin,
+        rain:d.precipitation_sum?d.precipitation_sum[i]:null,
+        sun:sunSec!=null?Math.round((sunSec/3600)*10)/10:null,
+        lat:f.lat,lng:f.lng,source:'実測（自動補正）',fetched_at:new Date().toISOString(),manual:false};
+    });
+    let updated=0;
+    const works=await dbGetAll('work_records');
+    for(const w of works){
+      const wx=byDate[w.work_date];
+      if(!wx)continue;
+      w.weather={...wx};
+      await dbPut('work_records',w);
+      updated++;
+    }
+    const sprays=await dbGetAll('spray');
+    for(const s of sprays){
+      const wx=byDate[s.spray_date];
+      if(!wx)continue;
+      s.weather={...wx};
+      await dbPut('spray',s);
+      updated++;
+    }
+    await dbPut('meta',{id:'weatherSyncDate',date:todayStr});
+    if(updated>0){
+      showToast(`📡 ${updated}件の天気を実測で自動補正しました`);
+      try{await renderTab(currentTab);}catch(e){}
+    }
+  }catch(e){console.error('weatherSync',e);}
+}
+
 function isoWeek(dateStr){
   const d=new Date(dateStr+'T00:00:00');
   const t=new Date(d.valueOf());
@@ -1345,6 +1430,41 @@ async function refreshVarietyPickAvailability(){
 function pickWorkVariety(v,btn){if(selectedWorkVariety===v){selectedWorkVariety=null;btn.classList.remove('active');}else{selectedWorkVariety=v;document.querySelectorAll('#work-variety-pick .vp-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');}}
 
 // 「この作業をリストに足す」：選んだところまでが対象
+// ⚡前回と同じ：直前に記録した作業から、天気・生育ステージ・気がかりを呼び出す（入力の手間を省く）
+async function applyLastLikeWork(){
+  const works=await dbGetAll('work_records');
+  if(!works.length){showToast('まだ記録がありません');return;}
+  const sorted=works.slice().sort((a,b)=>{
+    const dc=(b.work_date||'').localeCompare(a.work_date||'');
+    if(dc)return dc;
+    return (b.created_at||'').localeCompare(a.created_at||'');
+  });
+  // 今えらんでいる作業の種類があれば、まずその種類の直近を探す。無ければ全体の直近。
+  const last=sorted.find(w=>w.work_type===selectedWorkType)||sorted[0];
+  if(!last){showToast('前回の記録が見つかりません');return;}
+  // 天気
+  const wx=last.weather||{};
+  if(wx.cond||wx.tmax!=null||wx.tmin!=null){
+    currentWorkWeather={...wx,manual:true,source:'前回と同じ'};
+    document.getElementById('wx-text').value=wx.cond||'';
+    document.getElementById('wx-tmax').value=wx.tmax!=null?Math.round(wx.tmax):'';
+    document.getElementById('wx-tmin').value=wx.tmin!=null?Math.round(wx.tmin):'';
+    const hint=document.getElementById('wx-auto-hint');if(hint)hint.textContent='✓ 前回の記録から呼び出しました';
+    const wxDetails=document.getElementById('wx-text').closest('details');if(wxDetails)wxDetails.open=true;
+  }
+  // 生育ステージ
+  if(last.stage){
+    const stageSel=document.getElementById('work-stage');
+    if(stageSel){stageSel.value=last.stage;renderStageInfo('work-stage','work-stage-info');}
+    const stageDetails=document.getElementById('work-stage-group');if(stageDetails)stageDetails.open=true;
+  }
+  // 気づいた病気・害虫
+  if(last.pest){
+    document.getElementById('work-pest').value=last.pest;
+    const pestDetails=document.getElementById('work-pest').closest('details');if(pestDetails)pestDetails.open=true;
+  }
+  showToast('前回と同じ内容を呼び出しました');
+}
 async function addWorkToList(){
   const fid=document.getElementById('work-field').value;
   if(!fid){showToast('圃場を選んでください');return;}
@@ -1460,6 +1580,7 @@ function openWorkForm(t){selectedWorkType=t;buildWorkTypeGrid();document.getElem
   ['work-spray-agent','work-spray-target','work-spray-dilution','work-spray-amount'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});toggleWorkSprayFields();
   workPhotos=[];renderWorkPhotoThumbs();
   renderTemplateChips();
+  document.querySelectorAll('#modal-work .opt-details').forEach(d=>d.open=false);
   openModal('modal-work');}
 
 function buildFieldVarietyPick(){fieldFormVarieties=[];document.getElementById('field-variety-pick').innerHTML=VARIETIES.map(v=>`<button class="vp-chip" onclick="toggleFieldVariety('${v.name.replace(/'/g,"\\'")}',this)">${v.name}</button>`).join('');}
@@ -1520,24 +1641,24 @@ async function openEditWork(id){
   const w=works.find(x=>x.id===id);
   if(!w){showToast('記録が見つかりません');return;}
   editingWorkId=id;
-  editGroupIds=null; // 単独編集
-  // 作業種別グリッド
+  // 単独でも「この記録1件のまとまり」として扱い、区画を足す/外すできるようにする
+  editGroupIds=[id];
+  editGroupFieldId=w.field_id;
+  editGroupSelectedPlots=w.plot_id?[w.plot_id]:[];
+  const [fields,plots]=await Promise.all([dbGetAll('fields'),dbGetAll('plots')]);
+  const fieldMap=Object.fromEntries(fields.map(f=>[f.id,f]));
   document.getElementById('edit-work-type-grid').innerHTML=WORK_TYPES.map(t=>`<button class="wt-chip ${t.label===w.work_type?'active':''}" onclick="selectEditWorkType('${t.label}',this)"><span class="wt-icon">${t.icon}</span><span class="wt-text">${t.label}</span></button>`).join('');
   editSelectedType=w.work_type;
   document.getElementById('edit-work-date').value=w.work_date||'';
-  // 対象（圃場・区画・品種）の表示。日報取込の未登録区画も出す
-  const [fields,plots]=await Promise.all([dbGetAll('fields'),dbGetAll('plots')]);
-  const plotMap=Object.fromEntries(plots.map(p=>[p.id,p])),fieldMap=Object.fromEntries(fields.map(f=>[f.id,f]));
-  const tgt=workTargetLabel(w,plotMap,fieldMap);
-  document.getElementById('edit-target-info').innerHTML=`<label class="form-label">対象</label><div class="edit-target-box">${tgt}</div>`;
-  // ステージ
+  // 対象：圃場の切り替え＋区画チップ
+  renderEditTargetPicker(w, fields, plots);
   document.getElementById('edit-work-stage').innerHTML=stageOptions(w.stage);
   renderStageInfo('edit-work-stage','edit-work-stage-info');
-  // 天気
   const wx=w.weather||{};
   document.getElementById('edit-wx-text').value=wx.cond||'';
   document.getElementById('edit-wx-tmax').value=wx.tmax!=null?Math.round(wx.tmax):'';
   document.getElementById('edit-wx-tmin').value=wx.tmin!=null?Math.round(wx.tmin):'';
+  const editWxDetails=document.getElementById('edit-wx-details');if(editWxDetails)editWxDetails.open=!!(wx.cond||wx.tmax!=null||wx.tmin!=null);
   document.getElementById('edit-work-comment').value=w.comment||'';
   document.getElementById('edit-work-pest').value=w.pest||'';
   editPhotos=w.photos?normPhotos(w.photos):[];renderEditPhotoThumbs();
@@ -1570,33 +1691,58 @@ async function openEditMergedWork(idsStr){
   editSelectedType=base.work_type;
   document.getElementById('edit-work-date').value=base.work_date||'';
   // 対象：圃場名＋区画チップ（足す・外す）
-  renderEditPlotPicker(fieldMap[base.field_id]?.name||'圃場', plots);
+  renderEditTargetPicker(base, fields, plots);
   document.getElementById('edit-work-stage').innerHTML=stageOptions(base.stage);
   renderStageInfo('edit-work-stage','edit-work-stage-info');
   const wx=base.weather||{};
   document.getElementById('edit-wx-text').value=wx.cond||'';
   document.getElementById('edit-wx-tmax').value=wx.tmax!=null?Math.round(wx.tmax):'';
   document.getElementById('edit-wx-tmin').value=wx.tmin!=null?Math.round(wx.tmin):'';
+  const editWxDetailsM=document.getElementById('edit-wx-details');if(editWxDetailsM)editWxDetailsM.open=!!(wx.cond||wx.tmax!=null||wx.tmin!=null);
   document.getElementById('edit-work-comment').value=base.comment||'';
   document.getElementById('edit-work-pest').value=base.pest||'';
   editPhotos=base.photos?normPhotos(base.photos):[];renderEditPhotoThumbs();
   pendingDeleteId=null;const delBtn=document.querySelector('#modal-edit-work .edit-delete-btn');if(delBtn){delBtn.textContent='このまとまりを全部削除する';delBtn.style.color='var(--wine)';delBtn.style.background='none';}
   openModalNoFill('modal-edit-work');
 }
-// 区画チップ（編集画面の対象選択）
+// 編集画面の対象ピッカー（圃場の切り替え＋区画チップの足す/外す）
+function renderEditTargetPicker(w, fields, plots){
+  const fieldOptions=fields.map(f=>`<option value="${f.id}" ${editGroupFieldId===f.id?'selected':''}>${f.name}</option>`).join('');
+  const fps=plots.filter(p=>p.field_id===editGroupFieldId);
+  const chips=fps.map(p=>{
+    const on=editGroupSelectedPlots.includes(p.id);
+    return `<button class="edit-plot-chip ${on?'active':''}" onclick="toggleEditPlot('${p.id}')">${p.name}</button>`;
+  }).join('');
+  const allOn=editGroupSelectedPlots.length===0; // 区画ゼロ＝圃場ぜんぶ
+  document.getElementById('edit-target-info').innerHTML=`
+    <label class="form-label">圃場</label>
+    <select class="form-select" onchange="changeEditField(this.value)">${fieldOptions}</select>
+    <label class="form-label" style="margin-top:12px">区画（タップで足す・外す／ぜんぶ外すと圃場ぜんぶ）</label>
+    <div class="edit-plot-picker">${chips||'<span style="font-size:12px;color:var(--text-muted)">この圃場には区画がありません</span>'}</div>
+    <div class="edit-target-hint">${allOn?'いまは「圃場ぜんぶ」が対象です':editGroupSelectedPlots.length+'区画を選択中'}</div>`;
+}
+async function changeEditField(fieldId){
+  editGroupFieldId=fieldId;
+  editGroupSelectedPlots=[]; // 圃場を変えたら区画選択はリセット
+  const [fields,plots]=await Promise.all([dbGetAll('fields'),dbGetAll('plots')]);
+  const w={field_id:fieldId};
+  renderEditTargetPicker(w, fields, plots);
+}
+// 旧グループ専用ピッカー（まとめ編集から呼ばれる）も同じ実体に寄せる
 function renderEditPlotPicker(fieldName, plots){
   const fps=plots.filter(p=>p.field_id===editGroupFieldId);
   const chips=fps.map(p=>{
     const on=editGroupSelectedPlots.includes(p.id);
     return `<button class="edit-plot-chip ${on?'active':''}" onclick="toggleEditPlot('${p.id}')">${p.name}</button>`;
   }).join('');
-  document.getElementById('edit-target-info').innerHTML=`<label class="form-label">対象（${fieldName}・区画を足す/外す）</label><div class="edit-plot-picker">${chips}</div>`;
+  const allOn=editGroupSelectedPlots.length===0;
+  document.getElementById('edit-target-info').innerHTML=`<label class="form-label">対象（${fieldName}・区画を足す/外す）</label><div class="edit-plot-picker">${chips}</div><div class="edit-target-hint">${allOn?'いまは「圃場ぜんぶ」が対象です':editGroupSelectedPlots.length+'区画を選択中'}</div>`;
 }
 async function toggleEditPlot(pid){
   const i=editGroupSelectedPlots.indexOf(pid);
   if(i>=0)editGroupSelectedPlots.splice(i,1);else editGroupSelectedPlots.push(pid);
-  const plots=await dbGetAll('plots');const fields=await dbGetAll('fields');
-  renderEditPlotPicker(fields.find(f=>f.id===editGroupFieldId)?.name||'圃場', plots);
+  const [fields,plots]=await Promise.all([dbGetAll('fields'),dbGetAll('plots')]);
+  renderEditTargetPicker({field_id:editGroupFieldId}, fields, plots);
 }
 
 // ── 作業テンプレート（よく使う組み合わせ）──
@@ -1711,14 +1857,37 @@ async function saveEditWork(){
     return null;
   };
 
-  // ── まとめ編集（複数区画）──
+  // ── まとめ編集（複数区画 or 圃場ぜんぶ）──
   if(editGroupIds){
     const plots=await dbGetAll('plots');
     const groupRecords=editGroupIds.map(id=>works.find(x=>x.id===id)).filter(Boolean);
     const selected=editGroupSelectedPlots;
-    if(!selected.length){showToast('区画を1つ以上えらんでください');return;}
+
+    // 区画が1つも選ばれていない → 「圃場ぜんぶ」の1件にする
+    if(!selected.length){
+      // 既存記録のうち1件を圃場スコープに作り替え、残りは削除
+      const keep=groupRecords[0];
+      for(let k=1;k<groupRecords.length;k++){await dbDelete('work_records',groupRecords[k].id);}
+      if(keep){
+        keep.field_id=editGroupFieldId;keep.plot_id=null;keep.scope='field';keep.variety=null;
+        keep.work_type=workType;keep.work_date=date;keep.iso_year=iso.year;keep.iso_week=iso.week;
+        keep.stage=stage;keep.weather=buildWx(keep.weather);keep.comment=comment;keep.pest=pest;keep.photos=photos;
+        await dbPut('work_records',keep);
+      }else{
+        await dbPut('work_records',{id:uid(),field_id:editGroupFieldId,plot_id:null,scope:'field',
+          variety:null,work_date:date,work_type:workType,stage,weather:buildWx(null),
+          comment,pest,photos,iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});
+      }
+      editingWorkId=null;editGroupIds=null;
+      closeModal('modal-edit-work');showToast('圃場ぜんぶの作業に直しました');renderTab(currentTab);
+      return;
+    }
+
     // 既存記録の区画→記録の対応
     const byPlot={};for(const r of groupRecords){if(r.plot_id)byPlot[r.plot_id]=r;}
+    // 圃場スコープ（区画なし）の既存記録は、区画指定に変わるので使い回す候補に
+    const fieldScopeRecs=groupRecords.filter(r=>!r.plot_id);
+    let reusePool=[...fieldScopeRecs];
     // 1) 外された区画の記録を削除
     for(const r of groupRecords){
       if(r.plot_id && !selected.includes(r.plot_id)){await dbDelete('work_records',r.id);}
@@ -1726,8 +1895,10 @@ async function saveEditWork(){
     // 2) 残った・足された区画を更新/新規
     for(const pid of selected){
       const p=plots.find(x=>x.id===pid);
-      const ex=byPlot[pid];
+      let ex=byPlot[pid];
+      if(!ex && reusePool.length){ex=reusePool.shift();ex.plot_id=pid;ex.scope='plot';} // 圃場スコープ記録を区画に転用
       if(ex){
+        ex.field_id=editGroupFieldId;ex.plot_id=pid;ex.scope='plot';
         ex.work_type=workType;ex.work_date=date;ex.iso_year=iso.year;ex.iso_week=iso.week;
         ex.stage=stage;ex.weather=buildWx(ex.weather);ex.comment=comment;ex.pest=pest;ex.photos=photos;
         await dbPut('work_records',ex);
@@ -1737,8 +1908,10 @@ async function saveEditWork(){
           comment,pest,photos,iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});
       }
     }
+    // 使い回されなかった圃場スコープ記録は削除
+    for(const r of reusePool){await dbDelete('work_records',r.id);}
     editingWorkId=null;editGroupIds=null;
-    closeModal('modal-edit-work');showToast('まとまりを直しました');renderTab(currentTab);
+    closeModal('modal-edit-work');showToast('対象を直しました');renderTab(currentTab);
     return;
   }
 
@@ -1914,6 +2087,9 @@ async function renderDashboard(){
     </div></div>`;
   }else{stEl.innerHTML='';}
 
+  // ③' 去年の今ごろ（同じ週±1週の作業を集計）
+  renderDashLastYear(works);
+
   // ③ 発生メモ（病害虫）
   const pestList=works.filter(w=>w.pest&&w.work_date).sort((a,b)=>b.work_date.localeCompare(a.work_date)).slice(0,3);
   const pEl=document.getElementById('dash-pest');
@@ -1959,6 +2135,34 @@ async function renderDashboard(){
 
   // ⑥ 天気と数日の予報（最後にDOM確定してから予報取得）
   renderDashWeather();
+}
+
+// 去年の同じ週（±1週）に何をしていたかを集計
+function lastYearSameWeekSummary(works){
+  const todayStr=new Date().toISOString().split('T')[0];
+  const iso=isoWeek(todayStr);
+  const targetYear=iso.year-1;
+  const weeks=[iso.week-1,iso.week,iso.week+1];
+  const matched=works.filter(w=>w.iso_year===targetYear&&weeks.includes(w.iso_week)&&w.work_date);
+  if(!matched.length)return null;
+  const counts={};
+  matched.forEach(w=>{counts[w.work_type]=(counts[w.work_type]||0)+1;});
+  const items=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([type,count])=>({
+    type,count,icon:(WORK_TYPES.find(t=>t.label===type)||{}).icon||'✎'
+  }));
+  const dates=[...new Set(matched.map(w=>w.work_date))].sort();
+  return {year:targetYear,items,dateFrom:dates[0],dateTo:dates[dates.length-1]};
+}
+function renderDashLastYear(works){
+  const el=document.getElementById('dash-lastyear');if(!el)return;
+  const s=lastYearSameWeekSummary(works);
+  if(!s){el.innerHTML='';return;}
+  const md=ds=>{const d=new Date(ds+'T00:00:00');return `${d.getMonth()+1}/${d.getDate()}`;};
+  el.innerHTML=`<div class="section"><div class="section-header"><span class="section-title"><span class="dot"></span>去年の今ごろ（${s.year}年）</span></div>
+    <div class="card" style="padding:14px 18px">
+      <div class="dash-lastyear-period">${md(s.dateFrom)}〜${md(s.dateTo)}ごろの記録</div>
+      <div class="dash-lastyear-list">${s.items.map(it=>`<span class="spray-agent-chip">${it.icon} ${it.type} ×${it.count}</span>`).join('')}</div>
+    </div></div>`;
 }
 
 // ホームの天気カードを描画（予報キャッシュを使用、無ければ取得）
@@ -2584,8 +2788,9 @@ async function deleteSpray(){
 
 async function renderSpray(){
   const el=document.getElementById('spray-content');
-  const [sprays,fields,works]=await Promise.all([dbGetAll('spray'),dbGetAll('fields'),dbGetAll('work_records')]);
+  const [sprays,fields,works,plots]=await Promise.all([dbGetAll('spray'),dbGetAll('fields'),dbGetAll('work_records'),dbGetAll('plots')]);
   const fieldMap=Object.fromEntries(fields.map(f=>[f.id,f]));
+  const plotMap=Object.fromEntries(plots.map(p=>[p.id,p]));
   const now=new Date();
   if(sprayCalYear==null){sprayCalYear=now.getFullYear();sprayCalMonth=now.getMonth();}
 
@@ -2596,8 +2801,15 @@ async function renderSpray(){
   const wxByDate={};
   for(const w of works){if(w.weather&&w.work_date&&!wxByDate[w.work_date])wxByDate[w.work_date]=w.weather;}
   for(const s of sprays){if(s.weather&&s.spray_date&&!wxByDate[s.spray_date])wxByDate[s.spray_date]=s.weather;}
-  // 病害虫の発見メモ（作業記録のpest）
-  const pestRecs=works.filter(w=>w.pest).map(w=>({date:w.work_date,text:w.pest,fieldId:w.field_id,plotId:w.plot_id})).sort((a,b)=>b.date.localeCompare(a.date));
+  // 病害虫の発見メモ（作業記録のpest）。同じ日・同じ病害虫・同じ圃場はまとめて区画を集約
+  const pestMap={};
+  for(const w of works){
+    if(!w.pest)continue;
+    const key=`${w.work_date}__${w.pest}__${w.field_id}`;
+    if(!pestMap[key])pestMap[key]={date:w.work_date,text:w.pest,fieldId:w.field_id,plotIds:new Set()};
+    if(w.plot_id)pestMap[key].plotIds.add(w.plot_id);
+  }
+  const pestRecs=Object.values(pestMap).map(p=>({...p,plotIds:[...p.plotIds]})).sort((a,b)=>b.date.localeCompare(a.date));
 
   // 状態サマリ：最後の防除からの日数、今月の防除回数、未対応の発生メモ数
   const sortedSpray=[...sprays].sort((a,b)=>b.spray_date.localeCompare(a.spray_date));
@@ -2707,7 +2919,9 @@ async function renderSpray(){
   if(!pestRecs.length){html+=`<div class="spray-empty">発生メモはありません。<br>作業記録の「病気・害虫の発見」に書くとここに出ます。</div>`;}
   else{html+=pestRecs.slice(0,12).map(p=>{
     const f=fieldMap[p.fieldId];const d=new Date(p.date+'T00:00:00');
-    return `<div class="pest-rec"><div class="pest-rec-top"><div class="pest-rec-text">${p.text}</div><div class="pest-rec-date">${d.getMonth()+1}/${d.getDate()}</div></div>${f?`<div class="pest-rec-where">${f.name}</div>`:''}</div>`;
+    const plotNames=(p.plotIds||[]).map(id=>plotMap[id]?.name).filter(Boolean);
+    const where=f?f.name+(plotNames.length?' ・ '+plotNames.join('、'):''):'';
+    return `<div class="pest-rec"><div class="pest-rec-top"><div class="pest-rec-text">${p.text}</div><div class="pest-rec-date">${d.getMonth()+1}/${d.getDate()}</div></div>${where?`<div class="pest-rec-where">${where}</div>`:''}</div>`;
   }).join('');}
   html+=`<div style="height:8px"></div>`;
 
@@ -3523,6 +3737,7 @@ async function init(){
       if(el)el.innerHTML='<div style="padding:40px 24px;text-align:center"><div style="font-size:32px;margin-bottom:12px">🌿</div><div style="font-family:\'Shippori Mincho\',serif;font-size:16px;color:#4A3B2A">読み込みでつまずきました</div><div style="font-size:13px;color:#8a7a68;margin-top:10px;line-height:1.7">下のメニューから各タブは使えます。<br>気になるときはバックアップを書き出してから、ページを再読み込みしてみてください。</div></div>';
     }
     const fab=document.getElementById('fab-btn');if(fab)fab.style.display='none';
+    syncPastWeatherFromArchive(); // 背景で1日1回、過去の天気を実測に自動補正（結果を待たない）
   }catch(e){
     console.error('init',e);
     document.body.insertAdjacentHTML('afterbegin','<div style="padding:30px;font-family:sans-serif;color:#7A4B52;text-align:center">アプリの起動でエラーが起きました。<br>ページを再読み込みしてみてください。</div>');
