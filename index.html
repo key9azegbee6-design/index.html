@@ -830,6 +830,15 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
       <div class="form-group"><label class="form-label">作業の種類</label><div class="work-type-grid" id="edit-work-type-grid"></div></div>
       <div class="form-group"><label class="form-label">作業日</label><input class="form-input" type="date" id="edit-work-date"></div>
       <div class="form-group" id="edit-target-info"></div>
+      <div id="edit-work-spray-fields" style="display:none">
+        <div class="form-group"><label class="form-label">薬剤名</label><input class="form-input" type="text" id="edit-work-spray-agent" placeholder="例：ボルドー液、ダントツ"><div class="wx-quick-words" id="edit-work-spray-agent-quick"></div></div>
+        <div class="form-group"><label class="form-label">対象（病気・害虫）</label><input class="form-input" type="text" id="edit-work-spray-target" placeholder="例：べと病、カメムシ"></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">希釈倍率</label><input class="form-input" type="text" id="edit-work-spray-dilution" placeholder="例：600倍"></div>
+          <div class="form-group"><label class="form-label">散布量(L)</label><input class="form-input" type="number" id="edit-work-spray-amount" placeholder="—" step="1"></div>
+        </div>
+        <div class="form-hint">ここを直すと、防除暦（防除タブの記録）も同じ内容に更新されます。</div>
+      </div>
       <div class="form-group">
         <label class="form-label">生育ステージ（任意）</label>
         <select class="form-select" id="edit-work-stage" onchange="renderStageInfo('edit-work-stage','edit-work-stage-info')"><option value="">記録しない</option></select>
@@ -1600,33 +1609,41 @@ async function saveWork(){
   const weather=collectWorkWeather();
   const comment=document.getElementById('work-comment').value;
   const pest=document.getElementById('work-pest').value.trim();
-  for(const s of stagedWorks){
+
+  // 防除の作業は、防除暦（sprayストア）にも記録する。同じ薬剤・対象・希釈でまとめ、対象圃場を集約。
+  // 先に防除暦レコードを作り、そのidを各作業記録に持たせておく（あとで統一編集できるように）。
+  const sprayIdOf={}; // stagedWorksのindex -> spray店のid
+  const sprayStagedIdx=stagedWorks.map((s,i)=>({s,i})).filter(({s})=>s.workType==='防除'&&s.spray&&s.spray.agent);
+  if(sprayStagedIdx.length){
+    const groups={};
+    for(const {s,i} of sprayStagedIdx){
+      const key=[s.spray.agent,s.spray.target||'',s.spray.dilution||''].join('|');
+      if(!groups[key])groups[key]={spray:s.spray, fieldIds:new Set(), idxs:[]};
+      groups[key].fieldIds.add(s.fieldId);
+      groups[key].idxs.push(i);
+    }
+    for(const key in groups){
+      const g=groups[key];
+      const sprayId=uid();
+      await dbPut('spray',{id:sprayId,spray_date:date,agent:g.spray.agent,target:g.spray.target||null,
+        dilution:g.spray.dilution||null,amount:g.spray.amount||null,field_ids:[...g.fieldIds],
+        weather:weather?{...weather}:null,comment:comment||null,
+        iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});
+      for(const i of g.idxs)sprayIdOf[i]=sprayId;
+    }
+  }
+  for(let i=0;i<stagedWorks.length;i++){
+    const s=stagedWorks[i];
     const rec={id:uid(),field_id:s.fieldId,plot_id:s.plotId||null,scope:s.scope,variety:s.variety||null,
       work_date:date,work_type:s.workType,stage:s.stage||'',
       weather:weather?{...weather}:null,
       comment, pest:s.pest||'', photos:workPhotos.length?[...workPhotos]:null,
+      spray:s.spray?{...s.spray}:null, spray_id:sprayIdOf[i]||null,
       iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()};
     await dbPut('work_records',rec);
     // 誘引なら進捗を連動（区画スコープのときのみ）
     if(s.workType==='誘引'&&s.plotId){
       await applyTrellisProgress(s.plotId, date, trellisPctFromStatus(comment, s.stage));
-    }
-  }
-  // 防除の作業は、防除暦（sprayストア）にも記録する。同じ薬剤・対象・希釈でまとめ、対象圃場を集約。
-  const sprayStaged=stagedWorks.filter(s=>s.workType==='防除'&&s.spray&&s.spray.agent);
-  if(sprayStaged.length){
-    const groups={};
-    for(const s of sprayStaged){
-      const key=[s.spray.agent,s.spray.target||'',s.spray.dilution||''].join('|');
-      if(!groups[key])groups[key]={spray:s.spray, fieldIds:new Set()};
-      groups[key].fieldIds.add(s.fieldId);
-    }
-    for(const key in groups){
-      const g=groups[key];
-      await dbPut('spray',{id:uid(),spray_date:date,agent:g.spray.agent,target:g.spray.target||null,
-        dilution:g.spray.dilution||null,amount:g.spray.amount||null,field_ids:[...g.fieldIds],
-        weather:weather?{...weather}:null,comment:comment||null,
-        iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});
     }
   }
   const n=stagedWorks.length;
@@ -1661,12 +1678,31 @@ async function openEditWork(id){
   const editWxDetails=document.getElementById('edit-wx-details');if(editWxDetails)editWxDetails.open=!!(wx.cond||wx.tmax!=null||wx.tmin!=null);
   document.getElementById('edit-work-comment').value=w.comment||'';
   document.getElementById('edit-work-pest').value=w.pest||'';
+  const wSpray=w.spray||{};
+  document.getElementById('edit-work-spray-agent').value=wSpray.agent||'';
+  document.getElementById('edit-work-spray-target').value=wSpray.target||'';
+  document.getElementById('edit-work-spray-dilution').value=wSpray.dilution||'';
+  document.getElementById('edit-work-spray-amount').value=wSpray.amount!=null?wSpray.amount:'';
+  toggleEditWorkSprayFields();
   editPhotos=w.photos?normPhotos(w.photos):[];renderEditPhotoThumbs();
   pendingDeleteId=null;const delBtn=document.querySelector('#modal-edit-work .edit-delete-btn');if(delBtn){delBtn.textContent='この記録を削除する';delBtn.style.color='var(--wine)';delBtn.style.background='none';}
   openModalNoFill('modal-edit-work');
 }
 let editSelectedType=null;
-function selectEditWorkType(t,btn){editSelectedType=t;document.querySelectorAll('#edit-work-type-grid .wt-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');}
+function selectEditWorkType(t,btn){editSelectedType=t;document.querySelectorAll('#edit-work-type-grid .wt-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');toggleEditWorkSprayFields();}
+async function toggleEditWorkSprayFields(){
+  const box=document.getElementById('edit-work-spray-fields');
+  if(!box)return;
+  if(editSelectedType==='防除'){
+    box.style.display='';
+    const sprays=await dbGetAll('spray');
+    const agents=[...new Set(sprays.map(s=>s.agent).filter(Boolean))].slice(0,8);
+    const wrap=document.getElementById('edit-work-spray-agent-quick');
+    if(wrap)wrap.innerHTML=agents.map(a=>`<button class="wx-word-chip" onclick="document.getElementById('edit-work-spray-agent').value='${a.replace(/'/g,"\\'")}'">${a}</button>`).join('');
+  }else{
+    box.style.display='none';
+  }
+}
 
 // まとめた複数記録（同じ圃場・作業の複数区画）をまとめて編集
 let editGroupIds=null;         // [記録id,...] まとめ編集中はここに入る。単独編集時はnull
@@ -1701,6 +1737,12 @@ async function openEditMergedWork(idsStr){
   const editWxDetailsM=document.getElementById('edit-wx-details');if(editWxDetailsM)editWxDetailsM.open=!!(wx.cond||wx.tmax!=null||wx.tmin!=null);
   document.getElementById('edit-work-comment').value=base.comment||'';
   document.getElementById('edit-work-pest').value=base.pest||'';
+  const bSpray=base.spray||{};
+  document.getElementById('edit-work-spray-agent').value=bSpray.agent||'';
+  document.getElementById('edit-work-spray-target').value=bSpray.target||'';
+  document.getElementById('edit-work-spray-dilution').value=bSpray.dilution||'';
+  document.getElementById('edit-work-spray-amount').value=bSpray.amount!=null?bSpray.amount:'';
+  toggleEditWorkSprayFields();
   editPhotos=base.photos?normPhotos(base.photos):[];renderEditPhotoThumbs();
   pendingDeleteId=null;const delBtn=document.querySelector('#modal-edit-work .edit-delete-btn');if(delBtn){delBtn.textContent='このまとまりを全部削除する';delBtn.style.color='var(--wine)';delBtn.style.background='none';}
   openModalNoFill('modal-edit-work');
@@ -1826,8 +1868,39 @@ async function copyWorkAsNew(){
   }
   // ステージ・病害虫を引き継ぐ（日付は今日のまま、天気・写真は引き継がない）
   if(w.stage){document.getElementById('work-stage').value=w.stage;renderStageInfo('work-stage','work-stage-info');}
+  if(w.work_type==='防除'&&w.spray){
+    const sa=document.getElementById('work-spray-agent');if(sa)sa.value=w.spray.agent||'';
+    const st=document.getElementById('work-spray-target');if(st)st.value=w.spray.target||'';
+    const sd=document.getElementById('work-spray-dilution');if(sd)sd.value=w.spray.dilution||'';
+    const sm=document.getElementById('work-spray-amount');if(sm)sm.value=w.spray.amount!=null?w.spray.amount:'';
+  }
   showToast('コピーしました。対象を確かめて「リストに足す」へ');
 }
+// 防除の薬剤情報を防除暦(sprayストア)と結びつける。既存のリンクがあれば更新、なければ新規作成。
+async function ensureSprayLink(existingSprayIds, fieldIds, sprayObj, date, weather, comment, iso){
+  if(!sprayObj)return null;
+  const sprays=await dbGetAll('spray');
+  const existingId=(existingSprayIds||[]).find(Boolean);
+  if(existingId){
+    const rec=sprays.find(s=>s.id===existingId);
+    if(rec){
+      rec.agent=sprayObj.agent;rec.target=sprayObj.target||null;rec.dilution=sprayObj.dilution||null;rec.amount=sprayObj.amount||null;
+      rec.spray_date=date;rec.field_ids=[...new Set(fieldIds)];
+      if(weather)rec.weather={...weather};
+      if(comment)rec.comment=comment;
+      rec.iso_year=iso.year;rec.iso_week=iso.week;
+      await dbPut('spray',rec);
+      return existingId;
+    }
+  }
+  const newId=uid();
+  await dbPut('spray',{id:newId,spray_date:date,agent:sprayObj.agent,target:sprayObj.target||null,
+    dilution:sprayObj.dilution||null,amount:sprayObj.amount||null,field_ids:[...new Set(fieldIds)],
+    weather:weather?{...weather}:null,comment:comment||null,
+    iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});
+  return newId;
+}
+
 async function saveEditWork(){
   if(!editingWorkId)return;
   const works=await dbGetAll('work_records');
@@ -1844,6 +1917,15 @@ async function saveEditWork(){
   const comment=document.getElementById('edit-work-comment').value;
   const pest=document.getElementById('edit-work-pest').value.trim();
   const photos=editPhotos.length?[...editPhotos]:null;
+  // 防除のときの薬剤情報
+  const sprayAgent=document.getElementById('edit-work-spray-agent').value.trim();
+  let sprayObj=null;
+  if(workType==='防除'&&sprayAgent){
+    sprayObj={agent:sprayAgent,
+      target:document.getElementById('edit-work-spray-target').value.trim()||null,
+      dilution:document.getElementById('edit-work-spray-dilution').value.trim()||null,
+      amount:parseFloat(document.getElementById('edit-work-spray-amount').value)||null};
+  }
   // 天気オブジェクトを組む共通関数
   const buildWx=(base)=>{
     if(cond||tmax!==''||tmin!==''||(base&&(base.rain!=null||base.sun!=null))){
@@ -1856,15 +1938,18 @@ async function saveEditWork(){
     }
     return null;
   };
+  const wxForSpray=buildWx(null);
 
   // ── まとめ編集（複数区画 or 圃場ぜんぶ）──
   if(editGroupIds){
     const plots=await dbGetAll('plots');
     const groupRecords=editGroupIds.map(id=>works.find(x=>x.id===id)).filter(Boolean);
     const selected=editGroupSelectedPlots;
+    const existingSprayIds=groupRecords.map(r=>r.spray_id).filter(Boolean);
 
     // 区画が1つも選ばれていない → 「圃場ぜんぶ」の1件にする
     if(!selected.length){
+      const sprayId=await ensureSprayLink(existingSprayIds,[editGroupFieldId],sprayObj,date,wxForSpray,comment,iso);
       // 既存記録のうち1件を圃場スコープに作り替え、残りは削除
       const keep=groupRecords[0];
       for(let k=1;k<groupRecords.length;k++){await dbDelete('work_records',groupRecords[k].id);}
@@ -1872,17 +1957,20 @@ async function saveEditWork(){
         keep.field_id=editGroupFieldId;keep.plot_id=null;keep.scope='field';keep.variety=null;
         keep.work_type=workType;keep.work_date=date;keep.iso_year=iso.year;keep.iso_week=iso.week;
         keep.stage=stage;keep.weather=buildWx(keep.weather);keep.comment=comment;keep.pest=pest;keep.photos=photos;
+        keep.spray=sprayObj;keep.spray_id=sprayObj?sprayId:null;
         await dbPut('work_records',keep);
       }else{
         await dbPut('work_records',{id:uid(),field_id:editGroupFieldId,plot_id:null,scope:'field',
           variety:null,work_date:date,work_type:workType,stage,weather:buildWx(null),
-          comment,pest,photos,iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});
+          comment,pest,photos,spray:sprayObj,spray_id:sprayObj?sprayId:null,
+          iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});
       }
       editingWorkId=null;editGroupIds=null;
       closeModal('modal-edit-work');showToast('圃場ぜんぶの作業に直しました');renderTab(currentTab);
       return;
     }
 
+    const sprayId=await ensureSprayLink(existingSprayIds,[editGroupFieldId],sprayObj,date,wxForSpray,comment,iso);
     // 既存記録の区画→記録の対応
     const byPlot={};for(const r of groupRecords){if(r.plot_id)byPlot[r.plot_id]=r;}
     // 圃場スコープ（区画なし）の既存記録は、区画指定に変わるので使い回す候補に
@@ -1901,11 +1989,13 @@ async function saveEditWork(){
         ex.field_id=editGroupFieldId;ex.plot_id=pid;ex.scope='plot';
         ex.work_type=workType;ex.work_date=date;ex.iso_year=iso.year;ex.iso_week=iso.week;
         ex.stage=stage;ex.weather=buildWx(ex.weather);ex.comment=comment;ex.pest=pest;ex.photos=photos;
+        ex.spray=sprayObj;ex.spray_id=sprayObj?sprayId:null;
         await dbPut('work_records',ex);
       }else{
         await dbPut('work_records',{id:uid(),field_id:editGroupFieldId,plot_id:pid,scope:'plot',
           variety:null,work_date:date,work_type:workType,stage,weather:buildWx(null),
-          comment,pest,photos,iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});
+          comment,pest,photos,spray:sprayObj,spray_id:sprayObj?sprayId:null,
+          iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});
       }
     }
     // 使い回されなかった圃場スコープ記録は削除
@@ -1916,11 +2006,15 @@ async function saveEditWork(){
   }
 
   // ── 単独編集 ──
+  const sprayId=await ensureSprayLink([w.spray_id].filter(Boolean),[w.field_id],sprayObj,date,wxForSpray,comment,iso);
   w.work_type=workType;w.work_date=date;w.iso_year=iso.year;w.iso_week=iso.week;
   w.stage=stage;w.weather=buildWx(w.weather);w.comment=comment;w.pest=pest;w.photos=photos;
+  w.spray=sprayObj;w.spray_id=sprayObj?sprayId:null;
   await dbPut('work_records',w);
   editingWorkId=null;
-  closeModal('modal-edit-work');showToast('記録を直しました');renderTab(currentTab);
+  closeModal('modal-edit-work');
+  showToast(sprayObj?'記録を直しました（防除暦も更新）':'記録を直しました');
+  renderTab(currentTab);
 }
 let pendingDeleteId=null, deleteConfirmTimer=null;
 async function deleteEditWork(){
@@ -3283,7 +3377,7 @@ async function loadCmpCache(){try{const all=await dbGetAll('meta');const c=all.f
 // ── 日報からの取り込み ──
 let importParsedDays=null; // [{date, weather, rows:[...]}, ...] 複数日対応
 
-function openImport(){document.getElementById('import-text').value='';document.getElementById('import-preview').innerHTML='';openModal('modal-import');}
+function openImport(){document.getElementById('import-text').value='';document.getElementById('import-preview').innerHTML='';impEditKey=null;dayEditKey=null;impGroupMap={};openModal('modal-import');}
 
 // 全角→半角の数字・記号、区切りの正規化
 function normLine(s){
@@ -3513,15 +3607,30 @@ async function renderImportPreview(){
   if(days.length>1){
     html+=`<div class="imp-multiday">📅 ${days.length}日分・あわせて ${totalRows}件 を読み取りました</div>`;
   }
-  html+=`<div class="imp-edit-hint">同じ圃場・作業はまとめています。区画の×で個別に外せます。作業名をタップで直せます。</div>`;
+  html+=`<div class="imp-edit-hint">同じ圃場・作業はまとめています。区画の×で個別に外せます。タップで日付・天気・作業・状態・区画を直せます。</div>`;
   days.forEach((day,di)=>{
     const w=day.weather;
     const d=new Date(day.date+'T00:00:00');
     const dateLabel=`${d.getMonth()+1}月${d.getDate()}日`;
-    html+=`<div class="imp-day-block"><div class="imp-head">
+    html+=`<div class="imp-day-block"><div class="imp-head" style="cursor:pointer" onclick="dayEditOpen(${di})">
       <div class="imp-head-item"><span>日付</span>${dateLabel}</div>
       ${w?`<div class="imp-head-item"><span>天気</span>${w.cond||'—'}${w.tmax!=null?` ${w.tmax}〜${w.tmin}℃`:''}</div>`:'<div class="imp-head-item"><span>天気</span>読み取れず</div>'}
+      <div class="imp-row-edit" style="position:static;opacity:.55">✎</div>
     </div>`;
+    if(dayEditKey===di){
+      html+=`<div class="imp-editor" style="margin:0 0 10px">
+        <label class="imp-ed-label">日付</label>
+        <input class="imp-ed-sel" type="date" value="${day.date}" onchange="impEditDayDate(${di},this.value)">
+        <label class="imp-ed-label">天気（ことば）</label>
+        <input class="imp-ed-sel" type="text" value="${w&&w.cond?w.cond:''}" placeholder="例：晴れ、曇りのち雨" onchange="impEditDayWx(${di},'cond',this.value)">
+        <label class="imp-ed-label">最高／最低気温（℃）</label>
+        <div style="display:flex;gap:8px">
+          <input class="imp-ed-sel" style="flex:1" type="number" value="${w&&w.tmax!=null?w.tmax:''}" placeholder="最高" onchange="impEditDayWx(${di},'tmax',this.value)">
+          <input class="imp-ed-sel" style="flex:1" type="number" value="${w&&w.tmin!=null?w.tmin:''}" placeholder="最低" onchange="impEditDayWx(${di},'tmin',this.value)">
+        </div>
+        <button class="imp-ed-done" onclick="dayEditClose()">とじる</button>
+      </div>`;
+    }
 
     // 圃場×作業×状態でグループ化（行の元indexを保持）
     const groups=[];
@@ -3543,6 +3652,7 @@ async function renderImportPreview(){
       if(editing){
         const firstIdx=g.items[0].i;
         const fps=plots.filter(p=>p.field_id===g.fieldId);
+        const unknownItems=g.items.filter(({r})=>!r.known);
         editor=`<div class="imp-editor">
           <label class="imp-ed-label">圃場（このまとまり全部）</label>
           <select class="imp-ed-sel" onchange="impEditGroupField(${di},${gi},this.value)">
@@ -3553,6 +3663,28 @@ async function renderImportPreview(){
           <select class="imp-ed-sel" onchange="impEditGroupWork(${di},${gi},this.value)">
             ${WORK_TYPES.map(t=>`<option value="${t.label}" ${g.workType===t.label?'selected':''}>${t.icon} ${t.label}</option>`).join('')}
           </select>
+          <label class="imp-ed-label">状態（任意・このまとまり全部）</label>
+          <input class="imp-ed-sel" type="text" value="${g.status||''}" placeholder="例：完了、一部" onchange="impEditGroupStatus(${di},${gi},this.value)">
+          ${g.workType==='防除'?`
+          <label class="imp-ed-label">薬剤名（このまとまり全部）</label>
+          <input class="imp-ed-sel" type="text" value="${(g.items[0].r.spray&&g.items[0].r.spray.agent)||''}" placeholder="例：ボルドー液、ダントツ" onchange="impEditGroupSpray(${di},${gi},'agent',this.value)">
+          <label class="imp-ed-label">対象（病気・害虫）</label>
+          <input class="imp-ed-sel" type="text" value="${(g.items[0].r.spray&&g.items[0].r.spray.target)||''}" placeholder="例：べと病、カメムシ" onchange="impEditGroupSpray(${di},${gi},'target',this.value)">
+          <div style="display:flex;gap:8px">
+            <input class="imp-ed-sel" style="flex:1" type="text" value="${(g.items[0].r.spray&&g.items[0].r.spray.dilution)||''}" placeholder="希釈倍率 例：600倍" onchange="impEditGroupSpray(${di},${gi},'dilution',this.value)">
+            <input class="imp-ed-sel" style="flex:1" type="number" value="${(g.items[0].r.spray&&g.items[0].r.spray.amount!=null)?g.items[0].r.spray.amount:''}" placeholder="散布量(L)" onchange="impEditGroupSpray(${di},${gi},'amount',this.value)">
+          </div>
+          <div class="form-hint">薬剤名を入れると、防除暦にも同じ内容で登録されます。</div>`:''}
+          ${unknownItems.length?`<label class="imp-ed-label">区画を直す（未登録ぶんのみ）</label>
+          ${unknownItems.map(({r,i})=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+            <span style="font-size:12px;color:var(--dusk);min-width:78px">${r.plotName||'不明'}</span>
+            <select class="imp-ed-sel" style="flex:1" onchange="impEditRowPlot(${di},${i},this.value)">
+              <option value="">— 区画を選ぶ —</option>
+              ${fps.map(p=>`<option value="${p.id}">${p.name}${p.variety?'／'+p.variety:''}</option>`).join('')}
+            </select>
+          </div>`).join('')}`:''}
+          <label class="imp-ed-label">メモを足す（任意・このまとまり全部）</label>
+          <input class="imp-ed-sel" type="text" value="${g.items[0].r.noteExtra||''}" placeholder="例：雨のため一部のみ" onchange="impEditGroupNote(${di},${gi},this.value)">
           <button class="imp-ed-done" onclick="impEditClose()">とじる</button>
         </div>`;
       }
@@ -3584,6 +3716,51 @@ function impEditOpen(key){impEditKey=impEditKey===key?null:key;renderImportPrevi
 function impEditClose(){impEditKey=null;renderImportPreview();}
 let impGroupMap={}; // 'di-gN' -> [行index,...]
 
+let dayEditKey=null; // 編集中の日付ブロック（di）
+function dayEditOpen(di){dayEditKey=dayEditKey===di?null:di;renderImportPreview();}
+function dayEditClose(){dayEditKey=null;renderImportPreview();}
+function impEditDayDate(di,val){if(!val)return;importParsedDays[di].date=val;renderImportPreview();}
+function impEditDayWx(di,field,val){
+  const day=importParsedDays[di];
+  if(!day.weather)day.weather={code:null,cond:null,tmax:null,tmin:null,rain:null,sun:null,manual:true,source:'日報（手直し）',fetched_at:new Date().toISOString()};
+  if(field==='cond')day.weather.cond=val||null;
+  else day.weather[field]=val===''?null:Number(val);
+  renderImportPreview();
+}
+// グループ全体の状態を変える
+// グループ全体の薬剤情報を変える（防除のみ）
+function impEditGroupSpray(di,gi,field,val){
+  const idxs=impGroupMap[`${di}-g${gi}`]||[];
+  for(const i of idxs){
+    const r=importParsedDays[di].rows[i];
+    if(!r.spray)r.spray={agent:'',target:null,dilution:null,amount:null};
+    if(field==='amount')r.spray.amount=val===''?null:parseFloat(val);
+    else r.spray[field]=val||(field==='agent'?'':null);
+  }
+  renderImportPreview();
+}
+function impEditGroupStatus(di,gi,val){
+  const idxs=impGroupMap[`${di}-g${gi}`]||[];
+  for(const i of idxs){importParsedDays[di].rows[i].status=val||null;}
+  renderImportPreview();
+}
+// グループ全体にメモを足す
+function impEditGroupNote(di,gi,val){
+  const idxs=impGroupMap[`${di}-g${gi}`]||[];
+  for(const i of idxs){importParsedDays[di].rows[i].noteExtra=val||'';}
+  renderImportPreview();
+}
+// 未登録の区画を、正しい区画に直す
+async function impEditRowPlot(di,i,plotId){
+  const r=importParsedDays[di].rows[i];
+  if(!plotId){r.plotId=null;r.known=false;renderImportPreview();return;}
+  const plots=await dbGetAll('plots');
+  const p=plots.find(x=>x.id===plotId);
+  if(!p)return;
+  r.plotId=p.id;r.plotName=p.name;r.variety=p.variety||r.variety||null;r.known=true;r.scope='plot';
+  renderImportPreview();
+}
+
 // グループ全体の圃場を変える
 async function impEditGroupField(di,gi,fieldId){
   const fields=await dbGetAll('fields');
@@ -3613,13 +3790,36 @@ async function commitImport(){
   for(const day of days){
     const iso=isoWeek(day.date);
     const w=day.weather;
-    for(const r of day.rows){
+    // 防除で薬剤名が入っている行は、防除暦（sprayストア）にも先にまとめて登録する
+    const sprayIdOf={};
+    const sprayRows=day.rows.map((r,i)=>({r,i})).filter(({r})=>r.workType==='防除'&&r.spray&&r.spray.agent);
+    if(sprayRows.length){
+      const groups={};
+      for(const {r,i} of sprayRows){
+        const key=[r.spray.agent,r.spray.target||'',r.spray.dilution||''].join('|');
+        if(!groups[key])groups[key]={spray:r.spray, fieldIds:new Set(), idxs:[]};
+        if(r.fieldId)groups[key].fieldIds.add(r.fieldId);
+        groups[key].idxs.push(i);
+      }
+      for(const key in groups){
+        const g=groups[key];
+        const sprayId=uid();
+        await dbPut('spray',{id:sprayId,spray_date:day.date,agent:g.spray.agent,target:g.spray.target||null,
+          dilution:g.spray.dilution||null,amount:g.spray.amount||null,field_ids:[...g.fieldIds],
+          weather:w?{...w}:null,comment:'日報取込',
+          iso_year:iso.year,iso_week:iso.week,created_at:new Date().toISOString()});
+        for(const i of g.idxs)sprayIdOf[i]=sprayId;
+      }
+    }
+    for(let i=0;i<day.rows.length;i++){
+      const r=day.rows[i];
       const rec={id:uid(),field_id:r.fieldId||null,plot_id:r.plotId||null,
         scope:r.scope||(r.plotId?'plot':'field'), variety:r.variety||null,
         work_date:day.date, work_type:r.workType,
         stage:'', weather:w?{...w}:null,
-        comment:(r.known?'':`日報取込：${r.fieldName||''}${r.plotName}`)+(r.status?(r.known?'日報取込 ・ ':' ・ ')+r.status:''),
+        comment:(r.known?'':`日報取込：${r.fieldName||''}${r.plotName}`)+(r.status?(r.known?'日報取込 ・ ':' ・ ')+r.status:'')+(r.noteExtra?' ・ '+r.noteExtra:''),
         import_plot_name:r.known?null:r.plotName,
+        spray:r.spray&&r.spray.agent?{...r.spray}:null, spray_id:sprayIdOf[i]||null,
         iso_year:iso.year, iso_week:iso.week, created_at:new Date().toISOString()};
       await dbPut('work_records',rec);
       if(r.workType==='誘引'&&r.plotId){
