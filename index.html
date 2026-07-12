@@ -852,6 +852,10 @@ html,body{height:100%;background:var(--paper);font-family:'Zen Kaku Gothic New',
             <div class="wx-temp-field"><span class="wx-temp-cap">最高</span><input class="wx-temp-input" type="number" id="edit-wx-tmax" placeholder="—"><span class="wx-temp-unit">℃</span></div>
             <div class="wx-temp-field"><span class="wx-temp-cap">最低</span><input class="wx-temp-input" type="number" id="edit-wx-tmin" placeholder="—"><span class="wx-temp-unit">℃</span></div>
           </div>
+          <div class="wx-auto-row">
+            <span class="wx-auto-hint" id="edit-wx-auto-hint">圃場と作業日から実測・予報を自動でひけます</span>
+            <span class="wx-auto-btn" id="edit-wx-auto-btn" onclick="tryFetchEditWeather()">📡 自動でひく</span>
+          </div>
         </div>
       </details>
       <div class="form-group"><label class="form-label">気づいた病気・害虫（任意）</label><input class="form-input" type="text" id="edit-work-pest" placeholder="例：べと病、カメムシ"></div>
@@ -984,6 +988,7 @@ let workScope='field';
 let selectedWorkVariety=null;
 let fieldFormVarieties=[];
 let currentWorkWeather=null;   // 作業フォームで確定した天候
+let currentEditWeather=null;   // 手直し（編集）フォームで自動取得した天候
 let weatherFetchToken=0;       // 取得競合の防止
 
 // ── 天候コード → 絵文字・和名（Open-Meteo WMO weather_code）──
@@ -1143,6 +1148,38 @@ async function tryFetchWorkWeather(){
     if(w.cond&&txt&&txt.value.trim()==='')txt.value=w.cond;
     if(w.tmax!=null)document.getElementById('wx-tmax').value=Math.round(w.tmax);
     if(w.tmin!=null)document.getElementById('wx-tmin').value=Math.round(w.tmin);
+    const extra=[];if(w.rain!=null)extra.push(`雨${w.rain}mm`);if(w.sun!=null)extra.push(`日照${w.sun}h`);
+    if(hint)hint.textContent=`✓ ${w.source}から取得${extra.length?'（'+extra.join('・')+'）':''}`;
+  }catch(err){
+    if(token!==weatherFetchToken)return;
+    const reason=(err&&err.message)?err.message:'不明';
+    const offline=(typeof navigator!=='undefined'&&navigator.onLine===false);
+    if(hint)hint.textContent=offline?'オフラインのため取得できません（手入力でOK）':`自動取得できませんでした（手入力でOK）／${reason}`;
+  }finally{
+    btn.classList.remove('loading');btn.textContent='📡 自動でひく';
+  }
+}
+
+// 手直し（編集）フォームの「自動でひく」（対象の圃場・作業日から取得）
+async function tryFetchEditWeather(){
+  const date=document.getElementById('edit-work-date').value;
+  const hint=document.getElementById('edit-wx-auto-hint');
+  const btn=document.getElementById('edit-wx-auto-btn');
+  const fid=editGroupFieldId;
+  if(!fid||!date){if(hint)hint.textContent='作業日が入っているか確かめてください';return;}
+  const fields=await dbGetAll('fields');const f=fields.find(x=>x.id===fid);
+  if(!f||f.lat==null){if(hint)hint.textContent='この圃場はGPS未登録のため自動取得できません（手入力でOK）';return;}
+  const token=++weatherFetchToken;
+  btn.classList.add('loading');btn.textContent='取得中…';
+  try{
+    const w=await fetchWeather(f.lat,f.lng,date);
+    if(token!==weatherFetchToken)return;
+    currentEditWeather=w;
+    const txt=document.getElementById('edit-wx-text');
+    if(w.cond&&txt)txt.value=w.cond;
+    if(w.tmax!=null)document.getElementById('edit-wx-tmax').value=Math.round(w.tmax);
+    if(w.tmin!=null)document.getElementById('edit-wx-tmin').value=Math.round(w.tmin);
+    const editWxDetails=document.getElementById('edit-wx-details');if(editWxDetails)editWxDetails.open=true;
     const extra=[];if(w.rain!=null)extra.push(`雨${w.rain}mm`);if(w.sun!=null)extra.push(`日照${w.sun}h`);
     if(hint)hint.textContent=`✓ ${w.source}から取得${extra.length?'（'+extra.join('・')+'）':''}`;
   }catch(err){
@@ -1675,6 +1712,8 @@ async function openEditWork(id){
   document.getElementById('edit-wx-text').value=wx.cond||'';
   document.getElementById('edit-wx-tmax').value=wx.tmax!=null?Math.round(wx.tmax):'';
   document.getElementById('edit-wx-tmin').value=wx.tmin!=null?Math.round(wx.tmin):'';
+  currentEditWeather=null;
+  const editWxHint=document.getElementById('edit-wx-auto-hint');if(editWxHint)editWxHint.textContent='圃場と作業日から実測・予報を自動でひけます';
   const editWxDetails=document.getElementById('edit-wx-details');if(editWxDetails)editWxDetails.open=!!(wx.cond||wx.tmax!=null||wx.tmin!=null);
   document.getElementById('edit-work-comment').value=w.comment||'';
   document.getElementById('edit-work-pest').value=w.pest||'';
@@ -1734,6 +1773,8 @@ async function openEditMergedWork(idsStr){
   document.getElementById('edit-wx-text').value=wx.cond||'';
   document.getElementById('edit-wx-tmax').value=wx.tmax!=null?Math.round(wx.tmax):'';
   document.getElementById('edit-wx-tmin').value=wx.tmin!=null?Math.round(wx.tmin):'';
+  currentEditWeather=null;
+  const editWxHintM=document.getElementById('edit-wx-auto-hint');if(editWxHintM)editWxHintM.textContent='圃場と作業日から実測・予報を自動でひけます';
   const editWxDetailsM=document.getElementById('edit-wx-details');if(editWxDetailsM)editWxDetailsM.open=!!(wx.cond||wx.tmax!=null||wx.tmin!=null);
   document.getElementById('edit-work-comment').value=base.comment||'';
   document.getElementById('edit-work-pest').value=base.pest||'';
@@ -1926,17 +1967,23 @@ async function saveEditWork(){
       dilution:document.getElementById('edit-work-spray-dilution').value.trim()||null,
       amount:parseFloat(document.getElementById('edit-work-spray-amount').value)||null};
   }
-  // 天気オブジェクトを組む共通関数
+  // 天気オブジェクトを組む共通関数（自動取得した天気があればそれを優先的に使う）
   const buildWx=(base)=>{
-    if(cond||tmax!==''||tmin!==''||(base&&(base.rain!=null||base.sun!=null))){
-      const b=base||{};
-      return {code:b.code!=null?b.code:null,cond:cond||b.cond||null,
-        tmax:tmax!==''?parseFloat(tmax):(b.tmax!=null?b.tmax:null),
-        tmin:tmin!==''?parseFloat(tmin):(b.tmin!=null?b.tmin:null),
-        rain:b.rain!=null?b.rain:null,sun:b.sun!=null?b.sun:null,
-        manual:true,source:b.source||'手入力',fetched_at:b.fetched_at||new Date().toISOString()};
-    }
-    return null;
+    const fetched=currentEditWeather||{};
+    const b=base||{};
+    const hasAny = cond||tmax!==''||tmin!==''||fetched.rain!=null||fetched.sun!=null||b.rain!=null||b.sun!=null;
+    if(!hasAny)return null;
+    return {
+      code: fetched.code!=null?fetched.code:(b.code!=null?b.code:null),
+      cond: cond||fetched.cond||b.cond||null,
+      tmax: tmax!==''?parseFloat(tmax):(fetched.tmax!=null?fetched.tmax:(b.tmax!=null?b.tmax:null)),
+      tmin: tmin!==''?parseFloat(tmin):(fetched.tmin!=null?fetched.tmin:(b.tmin!=null?b.tmin:null)),
+      rain: fetched.rain!=null?fetched.rain:(b.rain!=null?b.rain:null),
+      sun:  fetched.sun!=null?fetched.sun:(b.sun!=null?b.sun:null),
+      manual: !(fetched.source&&cond===''&&tmax===''&&tmin===''),
+      source: (fetched.source&&cond===''&&tmax===''&&tmin==='')?fetched.source:'手入力',
+      fetched_at: fetched.fetched_at||b.fetched_at||new Date().toISOString()
+    };
   };
   const wxForSpray=buildWx(null);
 
